@@ -1,0 +1,16 @@
+{
+  "name": "Police.hu",
+  "baseUrl": "https://www.police.hu/",
+  "iconUrl": "https://www.police.hu/sites/default/files/logo_favicon.png",
+  "enabled": true,
+  "feeds": ["https://www.police.hu/hu/rss/feed"],
+  "categories": {
+    "default": "domestic",
+    "rules": {
+      "domestic": {
+        "feed": ["Bűnügyek", "Közlekedésrendészet", "Határrendészet", "Balesetek", "Prevenció", "Aktuális"],
+        "paths": ["/hu/hirek-es-informaciok", "/hu/a-rendorsegrol"]
+      }
+    }
+  }
+}

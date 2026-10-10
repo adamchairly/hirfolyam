@@ -1,0 +1,40 @@
+{
+  "name": "Kontroll.hu",
+  "baseUrl": "https://kontroll.hu/",
+  "iconUrl": "https://kontroll.hu/apple-icon.png",
+  "enabled": true,
+  "feeds": ["https://kontroll.hu/feed.xml"],
+  "categories": {
+    "ignore": ["Vélemény", "Interjú"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Gulyáságyú"],
+        "paths": ["/cikk/belfold", "/cikk/gulyasagyu"]
+      },
+      "world": {
+        "feed": ["Külföld"],
+        "paths": ["/cikk/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság / Tech"],
+        "paths": ["/cikk/gazdasag-tech"]
+      },
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/cikk/kultura"]
+      },
+      "science-tech": {
+        "feed": ["Tudomány"],
+        "paths": ["/cikk/tudomany"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/cikk/sport"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Egészség"],
+        "paths": ["/cikk/eletmod", "/cikk/egeszseg"]
+      }
+    }
+  }
+}

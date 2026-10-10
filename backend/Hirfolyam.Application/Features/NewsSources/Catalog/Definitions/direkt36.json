@@ -1,0 +1,18 @@
+{
+  "name": "Direkt36",
+  "baseUrl": "https://www.direkt36.hu/",
+  "iconUrl": "https://direkt36-hu.b-cdn.net/wp-content/uploads/2015/02/favicon.png",
+  "enabled": true,
+  "feeds": ["https://www.direkt36.hu/feed/"],
+  "categories": {
+    "ignore": ["Direkt36", "Podcast"],
+    "rules": {
+      "domestic": {
+        "feed": ["Kórházi fertőzések"]
+      },
+      "politics": {
+        "feed": ["A propaganda titkai", "Lázár János utazásai"]
+      }
+    }
+  }
+}

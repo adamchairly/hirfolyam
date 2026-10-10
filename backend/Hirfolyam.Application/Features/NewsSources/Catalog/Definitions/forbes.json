@@ -1,0 +1,32 @@
+{
+  "name": "Forbes",
+  "baseUrl": "https://www.forbes.hu/",
+  "iconUrl": "https://www.forbes.hu/wp-content/themes/frontend/assets/icons/favicon-32x32.png",
+  "enabled": true,
+  "feeds": ["https://www.forbes.hu/feed/"],
+  "categories": {
+    "ignore": [
+      "Hírek",
+      "Forbes-sztori",
+      "Interjú",
+      "Listák és Extrák",
+      "Content Lab HUB",
+      "Brand Club",
+      "Brand Voice",
+      "Támogatói tartalom"
+    ],
+    "rules": {
+      "economy": {
+        "feed": ["Üzlet", "Pénz", "Milliárdosok", "Zöld"],
+        "paths": ["/uzlet", "/penz", "/milliardosok", "/zold"]
+      },
+      "politics": {
+        "feed": ["Politika", "Elszámoltatás", "NER"]
+      },
+      "lifestyle": {
+        "feed": ["A jó élet", "Legyél jobb"],
+        "paths": ["/a-jo-elet", "/legyel-jobb"]
+      }
+    }
+  }
+}

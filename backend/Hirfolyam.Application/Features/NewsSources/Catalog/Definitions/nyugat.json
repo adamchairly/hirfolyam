@@ -1,0 +1,23 @@
+{
+  "name": "Nyugat.hu",
+  "baseUrl": "https://www.nyugat.hu/",
+  "iconUrl": "https://www.nyugat.hu/static/nyugat/favicon-96x96.png",
+  "enabled": true,
+  "feeds": ["https://www.nyugat.hu/rss"],
+  "categories": {
+    "rules": {
+      "domestic": {
+        "feed": ["Hírek", "Közélet", "Sokkoló"]
+      },
+      "culture": {
+        "feed": ["Kultúra"]
+      },
+      "sport": {
+        "feed": ["Sport", "Haladás FC", "Falco KC"]
+      },
+      "tabloid": {
+        "feed": ["Könnyű"]
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "Válasz Online",
+  "baseUrl": "https://www.valaszonline.hu/",
+  "iconUrl": "https://www.valaszonline.hu/wp-content/themes/vo/icons/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://www.valaszonline.hu/feed/"],
+  "categories": {
+    "ignore": [
+      "Háttér",
+      "Induló",
+      "Interjú",
+      "Nagytotál",
+      "sztori",
+      "esszé",
+      "nekrológ",
+      "Vélemény",
+      "Gyorshír",
+      "In English"
+    ],
+    "rules": {
+      "politics": {
+        "feed": ["NER", "elszámoltatás"]
+      },
+      "domestic": {
+        "feed": ["egészségügy", "oktatás"]
+      },
+      "world": {
+        "feed": ["külpolitika", "diplomácia"]
+      },
+      "economy": {
+        "feed": ["gazdaság"]
+      },
+      "culture": {
+        "feed": ["kultúra", "irodalom", "zene", "színház"]
+      },
+      "science-tech": {
+        "feed": ["tudomány"]
+      }
+    }
+  }
+}

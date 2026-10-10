@@ -1,0 +1,24 @@
+{
+  "name": "Glamour",
+  "baseUrl": "https://www.glamour.hu/",
+  "iconUrl": "https://glamour.ocdn.eu/resource/img/icons/apple_touch_icons/apple-touch-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://www.glamour.hu/rss"],
+  "categories": {
+    "ignore": ["Extra ajánló", "GLAMOUR 20", "Glamour+"],
+    "rules": {
+      "culture": {
+        "feed": ["Kultúra", "Olvasás"],
+        "paths": ["/kultura", "/olvasas"]
+      },
+      "tabloid": {
+        "feed": ["Sztárok", "GLAMOUR Horoszkóp", "Horoszkóp", "Tarot"],
+        "paths": ["/sztarok", "/glamour-horoszkop", "/horoszkop", "/selenvie-tarot"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Divat", "Szépség", "GLAMOUR napok", "GLAMOUR Power"],
+        "paths": ["/eletmod", "/divat", "/szepseg", "/glamour-napok", "/glamour-power"]
+      }
+    }
+  }
+}

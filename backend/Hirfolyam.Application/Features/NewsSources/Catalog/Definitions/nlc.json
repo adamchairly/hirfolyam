@@ -1,0 +1,24 @@
+{
+  "name": "Nők Lapja Café",
+  "baseUrl": "https://nlc.hu/",
+  "iconUrl": "https://nlc.hu/themes/nlcafe/favicon-32x32.png",
+  "enabled": true,
+  "feeds": ["https://nlc.hu/feed/"],
+  "categories": {
+    "ignore": ["cmx"],
+    "rules": {
+      "domestic": {
+        "feed": ["Itt & most"],
+        "paths": ["/ezvan"]
+      },
+      "tabloid": {
+        "feed": ["Sztárok", "Horoszkóp"],
+        "paths": ["/sztarok", "/horoszkop", "/alomszotar"]
+      },
+      "lifestyle": {
+        "feed": ["Baba & Szülők", "Család", "Életmód", "Gasztro & Receptek", "Otthon", "Szabadidő", "Szépség & Divat"],
+        "paths": ["/baba", "/csalad", "/eletmod", "/gasztro", "/otthon", "/szabadido", "/trend"]
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "444",
+  "baseUrl": "https://444.hu/",
+  "iconUrl": "https://cdn.444r.cloud/assets/appicon-180.f28fd1db6b2192fcd860.png",
+  "enabled": true,
+  "feeds": ["https://444.hu/feed"],
+  "categories": {
+    "ignore": ["Kör", "Vélemény"],
+    "rules": {
+      "domestic": {
+        "feed": ["belföld"]
+      },
+      "world": {
+        "feed": ["külföld"]
+      },
+      "economy": {
+        "feed": ["gazdaság", "Ingatlan"]
+      },
+      "politics": {
+        "feed": ["politika"]
+      },
+      "culture": {
+        "feed": ["kultúra", "Film", "Zene", "Történelem"]
+      },
+      "science-tech": {
+        "feed": ["tudomány", "tech"]
+      },
+      "sport": {
+        "feed": ["sport"]
+      },
+      "tabloid": {
+        "feed": ["bulvár"]
+      },
+      "lifestyle": {
+        "feed": ["életmód"]
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Ripost",
+  "baseUrl": "https://ripost.hu/",
+  "iconUrl": "https://ripost.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://ripost.hu/publicapi/hu/rss/ripost/articles"],
+  "categories": {
+    "rules": {
+      "politics": {
+        "feed": ["Politik"],
+        "paths": ["/politik"]
+      },
+      "economy": {
+        "feed": ["Mani"],
+        "paths": ["/mani"]
+      },
+      "sport": {
+        "feed": ["Sport", "Tüzelőállás", "Oldalvonal"],
+        "paths": ["/sport", "/tuzeloallas", "/oldalvonal"]
+      },
+      "tabloid": {
+        "feed": ["Sztár", "Sztárdzsúsz", "Hűha", "YESSS", "Ezo", "Kompost"],
+        "paths": ["/sztar", "/sztardzsusz", "/huha", "/yesss", "/ezo", "/kompost"]
+      },
+      "lifestyle": {
+        "feed": ["Életmódi", "Sikk", "Fittfazék", "Fazék", "Love", "Otthonka", "Medicina"],
+        "paths": ["/eletmodi", "/sikk", "/fittfazek", "/fazek", "/love", "/otthonka", "/medicina"]
+      }
+    }
+  }
+}

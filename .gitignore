@@ -1,0 +1,37 @@
+.vs/
+.idea/
+.env
+.env.*
+!.env.example
+*.local
+
+# Local configuration and credentials
+appsettings.*.json
+secrets.json
+secrets/
+*.key
+*.pem
+*.pfx
+*.p12
+*.publishsettings
+*.pubxml
+*.pubxml.user
+.npmrc
+.netrc
+
+# Logs and database files
+logs/
+*.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.bak
+*.dump
+*.sql
+*.sql.gz
+*.dump.gz
+*.backup
+backups/

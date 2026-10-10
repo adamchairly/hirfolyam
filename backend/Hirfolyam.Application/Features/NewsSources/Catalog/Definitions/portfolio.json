@@ -1,0 +1,44 @@
+{
+  "name": "Portfolio.hu",
+  "baseUrl": "https://www.portfolio.hu/",
+  "iconUrl": "https://assets.portfolio.hu/images/favicon/favicon-96x96.png",
+  "enabled": true,
+  "feeds": ["https://www.portfolio.hu/rss/all.xml"],
+  "categories": {
+    "ignore": ["Prémium", "Signature", "Elemzés", "Interjú", "Podcast", "Videó"],
+    "rules": {
+      "world": {
+        "feed": ["Globál"],
+        "paths": ["/global"]
+      },
+      "economy": {
+        "feed": [
+          "Befektetés",
+          "Bank",
+          "Deviza",
+          "Gazdaság",
+          "Uniós források",
+          "Üzlet",
+          "Ingatlan",
+          "Agrár",
+          "Energia",
+          "KKV",
+          "Pénzügy"
+        ],
+        "paths": [
+          "/befektetes",
+          "/bank",
+          "/deviza",
+          "/gazdasag",
+          "/unios-forrasok",
+          "/uzlet",
+          "/ingatlan",
+          "/agrar",
+          "/energia",
+          "/kkv",
+          "/penzugy"
+        ]
+      }
+    }
+  }
+}

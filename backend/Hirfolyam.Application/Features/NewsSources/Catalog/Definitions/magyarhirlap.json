@@ -1,0 +1,44 @@
+{
+  "name": "Magyar Hírlap",
+  "baseUrl": "https://magyarhirlap.hu/",
+  "iconUrl": "https://magyarhirlap.hu/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://magyarhirlap.hu/rss"],
+  "categories": {
+    "ignore": ["Háttér", "Publicisztika", "Képírás"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Krónika", "Honvédelem"],
+        "paths": ["/belfold", "/kronika", "/honvedelem"]
+      },
+      "world": {
+        "feed": ["Külföld", "Oroszország-Ukrajna", "Közel-Kelet", "Európai Unió"],
+        "paths": ["/kulfold", "/oroszorszag-ukrajna", "/kozel-kelet", "/europai-unio"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Történelem"],
+        "paths": ["/kultura", "/tortenelem"]
+      },
+      "science-tech": {
+        "feed": ["Tech"],
+        "paths": ["/tech"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Montázs", "Bulvár", "Királyi család"],
+        "paths": ["/montazs", "/bulvar", "/kiralyi-csalad"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

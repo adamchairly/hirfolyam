@@ -1,0 +1,21 @@
+{
+  "name": "Qubit.hu",
+  "baseUrl": "https://qubit.hu/",
+  "iconUrl": "https://cdn.qubitr.cloud/assets/appicon-180.0604bcdfc6b1be9dd943.png",
+  "enabled": true,
+  "feeds": ["https://qubit.hu/feed"],
+  "categories": {
+    "ignore": ["Vélemény", "Qubit+", "Podcast"],
+    "rules": {
+      "science-tech": {
+        "feed": ["tudomány", "TECH", "Etológia"]
+      },
+      "culture": {
+        "feed": ["KULTÚRA"]
+      },
+      "economy": {
+        "feed": ["gazdaság"]
+      }
+    }
+  }
+}

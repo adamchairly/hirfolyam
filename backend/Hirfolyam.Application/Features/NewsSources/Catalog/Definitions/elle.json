@@ -1,0 +1,60 @@
+{
+  "name": "Elle.hu",
+  "baseUrl": "https://elle.hu/",
+  "iconUrl": "https://elle.hu/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://elle.hu/rss"],
+  "categories": {
+    "ignore": ["Hírek", "Event", "Awards"],
+    "rules": {
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/kultura"]
+      },
+      "economy": {
+        "feed": ["Business"],
+        "paths": ["/business"]
+      },
+      "tabloid": {
+        "feed": ["Horoszkóp", "Sztárhírek"],
+        "paths": ["/horoszkop", "/sztarhirek"]
+      },
+      "lifestyle": {
+        "feed": [
+          "Divat",
+          "Szépség",
+          "Psziché",
+          "Életmód",
+          "Decor",
+          "Párkapcsolat",
+          "Elle Digital",
+          "Her Time",
+          "Ötletek",
+          "Szobák",
+          "Kert és terasz",
+          "Trendek",
+          "Konyha",
+          "Nappali",
+          "Szép terek",
+          "Anya",
+          "EDIDA",
+          "Gourmet Awards",
+          "Beauty Awards"
+        ],
+        "paths": [
+          "/divat",
+          "/szepseg",
+          "/psziche",
+          "/eletmod",
+          "/decor",
+          "/parkapcsolat",
+          "/elle-digital",
+          "/anya",
+          "/edida",
+          "/gourmet-awards",
+          "/beauty-awards"
+        ]
+      }
+    }
+  }
+}

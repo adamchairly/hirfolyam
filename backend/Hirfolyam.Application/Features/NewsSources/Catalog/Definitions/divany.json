@@ -1,0 +1,24 @@
+{
+  "name": "Dívány.hu",
+  "baseUrl": "https://divany.hu/",
+  "iconUrl": "https://divany.hu/neon/static/images/divany/favicon_32x32.png",
+  "enabled": true,
+  "feeds": ["https://divany.hu/24ora/rss/"],
+  "categories": {
+    "ignore": ["bcs"],
+    "rules": {
+      "domestic": {
+        "feed": ["Mindennapi"],
+        "paths": ["/mindennapi"]
+      },
+      "tabloid": {
+        "feed": ["VIP"],
+        "paths": ["/vip", "/kviz"]
+      },
+      "lifestyle": {
+        "feed": ["Testem", "Életem", "Lájfhekk", "Offline", "Önidő", "Édes otthon", "Szülőség", "Világom"],
+        "paths": ["/testem", "/eletem", "/lajfhekk", "/offline", "/onido", "/edesotthon", "/szuloseg", "/vilagom"]
+      }
+    }
+  }
+}

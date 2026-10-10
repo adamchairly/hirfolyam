@@ -1,0 +1,37 @@
+{
+  "name": "Mfor.hu",
+  "baseUrl": "https://mfor.hu/",
+  "iconUrl": "https://mfor.hu/mfor/images/icons/apple-touch-icon-152x152.png",
+  "enabled": true,
+  "feeds": ["https://mfor.hu/rss/"],
+  "categories": {
+    "rules": {
+      "economy": {
+        "feed": ["Makró", "Vállalatok", "Befektetés", "Személyes pénzügyek", "Ingatlan"],
+        "paths": [
+          "/cikkek/makro",
+          "/cikkek/vallalatok",
+          "/cikkek/befektetes",
+          "/cikkek/szemelyes_penzugyek",
+          "/cikkek/ingatlan"
+        ]
+      },
+      "domestic": {
+        "feed": ["Közérdekű", "Egészségügy", "Oktatás"],
+        "paths": ["/cikkek/kozerdeku", "/cikkek/egeszsegugy", "/cikkek/oktatas"]
+      },
+      "politics": {
+        "feed": ["Közélet"],
+        "paths": ["/cikkek/kozelet"]
+      },
+      "world": {
+        "feed": ["Külpolitika"],
+        "paths": ["/cikkek/kulpolitika"]
+      },
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/cikkek/kultura"]
+      }
+    }
+  }
+}

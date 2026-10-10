@@ -1,0 +1,66 @@
+{
+  "name": "Euronews Magyarország",
+  "baseUrl": "https://hu.euronews.com/",
+  "iconUrl": "https://hu.euronews.com/favicon-96x96.png",
+  "enabled": true,
+  "feeds": ["https://hu.euronews.com/rss"],
+  "categories": {
+    "ignore": ["No comment", "The Cube", "Videók"],
+    "rules": {
+      "world": {
+        "feed": [
+          "Világ",
+          "World",
+          "Európa",
+          "My Europe",
+          "Európai hírek",
+          "Nemzetközi",
+          "Amerika",
+          "Közel-Kelet",
+          "Afrika",
+          "Ázsia",
+          "Óceánia"
+        ],
+        "paths": [
+          "/my-europe",
+          "/hirek/nemzetkozi",
+          "/hirek/americas",
+          "/hirek/middle-east",
+          "/hirek/africa",
+          "/hirek/asia",
+          "/hirek/oceania"
+        ]
+      },
+      "economy": {
+        "feed": ["Business", "Üzlet", "Gazdaság", "Piacok", "Pénzügy", "A munka világa"],
+        "paths": ["/business", "/next/penzugy", "/next/a-munka-vilaga"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Culture", "Kulturális hírek", "Art", "Musica", "Cinema"],
+        "paths": ["/culture", "/programs/musica", "/programs/cinema"]
+      },
+      "science-tech": {
+        "feed": ["Next", "Tech hírek", "Tud/tech", "Earth", "Földünk", "Természet", "Víz", "EcoTech"],
+        "paths": ["/next", "/earth", "/programs/sci-tech"]
+      },
+      "sport": {
+        "feed": ["Sport", "Sports", "Football Now"],
+        "paths": ["/hirek/sport", "/programs/football-now"]
+      },
+      "lifestyle": {
+        "feed": [
+          "Utazás",
+          "Travel",
+          "Egészség",
+          "Health",
+          "Lifestyle",
+          "Design",
+          "Food and Drink",
+          "Táplálkozás",
+          "Wellbeing"
+        ],
+        "paths": ["/utazas", "/egeszseg", "/culture/culture-lifestyle", "/culture/design", "/culture/food-and-drink"]
+      }
+    }
+  }
+}

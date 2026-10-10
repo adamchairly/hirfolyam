@@ -1,0 +1,27 @@
+{
+  "name": "Metropol",
+  "baseUrl": "https://metropol.hu/",
+  "iconUrl": "https://metropol.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://metropol.hu/publicapi/hu/rss/metropol/articles"],
+  "categories": {
+    "rules": {
+      "domestic": {
+        "feed": ["Aktuális"],
+        "paths": ["/aktualis"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["VIP"],
+        "paths": ["/vip"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

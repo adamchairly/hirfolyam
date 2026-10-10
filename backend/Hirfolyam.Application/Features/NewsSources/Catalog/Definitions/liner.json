@@ -1,0 +1,57 @@
+{
+  "name": "Liner.hu",
+  "baseUrl": "https://liner.hu/",
+  "iconUrl": "https://liner.hu/wp-content/uploads/2021/02/fav.jpg",
+  "enabled": true,
+  "feeds": ["https://liner.hu/feed/"],
+  "categories": {
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Baleset", "Bűnügy"]
+      },
+      "politics": {
+        "feed": ["Belpolitika"]
+      },
+      "world": {
+        "feed": [
+          "Külföld",
+          "Európa",
+          "Észak-Amerika",
+          "Dél-Amerika",
+          "Ázsia",
+          "Afrika",
+          "Ausztrália és Óceánia",
+          "Közel-Kelet"
+        ]
+      },
+      "economy": {
+        "feed": ["Gazdaság"]
+      },
+      "culture": {
+        "feed": ["Kult", "Kultúra"]
+      },
+      "science-tech": {
+        "feed": [
+          "Tudomány",
+          "Orvostudomány",
+          "Világűr",
+          "Smart",
+          "Technológia",
+          "Mobil",
+          "PC",
+          "Konzol/Videójátékok",
+          "Greenbox"
+        ]
+      },
+      "sport": {
+        "feed": ["Sport"]
+      },
+      "tabloid": {
+        "feed": ["Bulvár", "Showtime", "Cool"]
+      },
+      "lifestyle": {
+        "feed": ["Egészség/Életmód", "Style"]
+      }
+    }
+  }
+}

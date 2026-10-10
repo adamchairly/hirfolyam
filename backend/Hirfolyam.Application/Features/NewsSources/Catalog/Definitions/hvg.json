@@ -1,0 +1,40 @@
+{
+  "name": "HVG",
+  "baseUrl": "https://hvg.hu/",
+  "iconUrl": "https://cdn.hvg.hu/assets/hvghu/favicon/favicon-96x96.png",
+  "enabled": true,
+  "feeds": ["https://hvg.hu/rss/"],
+  "categories": {
+    "ignore": ["hvg360", "hvg360 Extra", "Vélemény"],
+    "rules": {
+      "domestic": {
+        "feed": ["Itthon"],
+        "paths": ["/itthon"]
+      },
+      "world": {
+        "feed": ["Világ", "EUrologus"],
+        "paths": ["/vilag", "/eurologus"]
+      },
+      "economy": {
+        "feed": ["Gazdaság", "Vállalkozás", "Ingatlan", "Kapitalizmus Balásyval"],
+        "paths": ["/gazdasag", "/kkv", "/ingatlan"]
+      },
+      "culture": {
+        "feed": ["Kult", "Kultúra", "A mű"],
+        "paths": ["/kultura"]
+      },
+      "science-tech": {
+        "feed": ["Tech", "Tudomány", "Autó"],
+        "paths": ["/tudomany", "/cegauto"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "lifestyle": {
+        "feed": ["Élet+Stílus"],
+        "paths": ["/elet"]
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "Blikk.hu",
+  "baseUrl": "https://www.blikk.hu/",
+  "iconUrl": "https://ocdn.eu/blikk_static/resource/icons/new/apple-touch-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://www.blikk.hu/rss-articles.xml"],
+  "categories": {
+    "ignore": ["Aktuális", "Férfiaknak"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Krimi", "Vészhelyzet"],
+        "paths": ["/aktualis/belfold", "/aktualis/krimi", "/aktualis/veszhelyzet"]
+      },
+      "world": {
+        "feed": ["Külföld", "Világpolitika"],
+        "paths": ["/aktualis/kulfold", "/politika/vilagpolitika"]
+      },
+      "politics": {
+        "feed": ["Politika", "Magyar politika"],
+        "paths": ["/politika"]
+      },
+      "economy": {
+        "feed": ["Gazdaság", "Pénzügyek", "Nyugdíj", "Vásárlás", "Rezsi"],
+        "paths": ["/gazdasag", "/rezsi"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Filmklikk", "Zene"],
+        "paths": ["/sztarvilag/kultura", "/sztarvilag/filmklikk", "/sztarvilag/zene"]
+      },
+      "science-tech": {
+        "feed": ["Tech+tudomány", "Tech", "Autó"],
+        "paths": ["/ferfiaknak/tech", "/auto"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Sztárvilág", "Sztárok", "Hazai sztárok", "Nemzetközi sztárok", "Horoszkóp"],
+        "paths": ["/sztarvilag", "/horoszkop-napi"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Gasztro", "Divat", "Tippek", "Egészség", "Világ titkai", "Lélek", "Utazás"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

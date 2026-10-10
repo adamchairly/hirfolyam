@@ -1,0 +1,28 @@
+{
+  "name": "Átlátszó",
+  "baseUrl": "https://atlatszo.hu/",
+  "iconUrl": "https://atlatszo.hu/wp-content/themes/atlatszo2021/i/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://atlatszo.hu/feed/"],
+  "categories": {
+    "ignore": ["Adatvizualizáció", "Mutyimondó", "Heti lapszemle", "cikkünk nyomán"],
+    "rules": {
+      "politics": {
+        "feed": ["Közpénz", "Az elmúlt 16 év"],
+        "paths": ["/kozpenz"]
+      },
+      "domestic": {
+        "feed": ["Közadat", "Környezet", "Országszerte", "Közügy", "Oktatás", "Impakt"],
+        "paths": ["/kozadat", "/kornyezet", "/orszagszerte", "/kozugy", "/oktatas", "/impakt"]
+      },
+      "world": {
+        "feed": ["Világtérkép"],
+        "paths": ["/vilagterkep"]
+      },
+      "culture": {
+        "feed": ["Kult"],
+        "paths": ["/kult"]
+      }
+    }
+  }
+}

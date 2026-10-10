@@ -1,0 +1,19 @@
+{
+  "name": "Blikk Rúzs",
+  "baseUrl": "https://blikkruzs.blikk.hu/",
+  "iconUrl": "https://ocdn.eu/blikk_static/blikkruzs/resource/img/icons/apple-touch-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://blikkruzs.blikk.hu/rss"],
+  "categories": {
+    "rules": {
+      "tabloid": {
+        "feed": ["Sztárhírek", "Ezotéria", "Horoszkóp"],
+        "paths": ["/sztarhirek", "/ezoteria", "/horoszkop"]
+      },
+      "lifestyle": {
+        "feed": ["Test és Pszichológia", "Otthoni Praktikák", "Szerelem"],
+        "paths": ["/test-es-pszichologia", "/otthoni-praktikak", "/szerelem"]
+      }
+    }
+  }
+}

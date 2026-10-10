@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+*.local
+.env*
+**/.env*
+**/.npmrc
+**/.netrc
+**/secrets.json
+**/secrets
+**/*.key
+**/*.pem
+**/*.pfx
+**/*.p12

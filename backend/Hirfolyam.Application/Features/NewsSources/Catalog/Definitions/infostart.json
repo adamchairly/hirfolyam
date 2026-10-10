@@ -1,0 +1,44 @@
+{
+  "name": "Infostart",
+  "baseUrl": "https://infostart.hu/",
+  "iconUrl": "https://infostart.hu/images/android-icon-192x192.png",
+  "enabled": true,
+  "feeds": ["https://infostart.hu/24ora/rss/"],
+  "categories": {
+    "ignore": ["Aréna", "Napinfó", "Interjú"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Bűnügyek"],
+        "paths": ["/belfold", "/bunugyek"]
+      },
+      "world": {
+        "feed": ["Külföld"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/kultura"]
+      },
+      "science-tech": {
+        "feed": ["Tudomány", "Autó"],
+        "paths": ["/tudomany", "/auto"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Bulvár"],
+        "paths": ["/bulvar"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

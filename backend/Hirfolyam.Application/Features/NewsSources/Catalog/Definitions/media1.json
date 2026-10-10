@@ -1,0 +1,21 @@
+{
+  "name": "Media1",
+  "baseUrl": "https://media1.hu/",
+  "iconUrl": "https://media1.hu/wp-content/uploads/2020/01/cropped-wordpress_icon512x512-01-1-192x192.png",
+  "enabled": true,
+  "feeds": ["https://media1.hu/feed/"],
+  "categories": {
+    "ignore": ["Vélemény"],
+    "rules": {
+      "economy": {
+        "feed": ["TV", "Rádió", "Online média", "Sajtó", "Karrier", "E-kereskedelem", "Márka"]
+      },
+      "science-tech": {
+        "feed": ["Mobil"]
+      },
+      "lifestyle": {
+        "feed": ["Lifestyle"]
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Mindmegette.hu",
+  "baseUrl": "https://www.mindmegette.hu/",
+  "iconUrl": "https://www.mindmegette.hu/android-chrome-192x192.png",
+  "enabled": true,
+  "feeds": ["https://www.mindmegette.hu/publicapi/hu/rss/mindmegette/articles"],
+  "categories": {
+    "default": "lifestyle",
+    "rules": {
+      "lifestyle": {
+        "feed": ["Alapételek", "Érdekességek", "Egészséges", "Praktikus", "Diéták", "Receptek", "Recept"],
+        "paths": ["/alapetelek", "/erdekessegek", "/egeszseges", "/praktikus", "/dietak", "/receptek", "/recept"]
+      }
+    }
+  }
+}

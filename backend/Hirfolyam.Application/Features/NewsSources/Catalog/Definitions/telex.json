@@ -1,0 +1,40 @@
+{
+  "name": "Telex",
+  "baseUrl": "https://telex.hu/",
+  "iconUrl": "https://telex.hu/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://telex.hu/rss"],
+  "categories": {
+    "ignore": ["English", "Direkt36", "Transtelex", "PR-cikk"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld"],
+        "paths": ["/belfold"]
+      },
+      "world": {
+        "feed": ["Külföld"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság", "G7", "Pénz"],
+        "paths": ["/gazdasag", "/g7"]
+      },
+      "culture": {
+        "feed": ["After", "Karakter", "Könyvespolc"],
+        "paths": ["/after", "/karakter"]
+      },
+      "science-tech": {
+        "feed": ["Techtud", "Észkombájn"],
+        "paths": ["/techtud", "/eszkombajn"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "lifestyle": {
+        "feed": ["Élet", "Életmód", "Gasztro", "Szépkilátás"],
+        "paths": ["/eletmod", "/gasztro", "/szepkilatas"]
+      }
+    }
+  }
+}

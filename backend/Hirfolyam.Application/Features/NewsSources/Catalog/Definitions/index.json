@@ -1,0 +1,40 @@
+{
+  "name": "Index",
+  "baseUrl": "https://index.hu/",
+  "iconUrl": "https://index.hu/assets/images/favicons/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://index.hu/24ora/rss/"],
+  "categories": {
+    "ignore": ["Vélemény", "Blog"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld"],
+        "paths": ["/belfold"]
+      },
+      "world": {
+        "feed": ["Külföld"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság", "CE napi"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúr", "Kult", "Cinematrix"],
+        "paths": ["/kultur"]
+      },
+      "science-tech": {
+        "feed": ["Tech-tudomány", "Tech-Tud", "Tudomány", "Autó-motor"],
+        "paths": ["/techtud", "/tudomany", "/tech", "/auto"]
+      },
+      "sport": {
+        "feed": ["Sport", "Futball", "Tenisz", "Forma-1", "Motorsport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Fomo", "Mindeközben", "CE femina"],
+        "paths": ["/fomo", "/mindekozben"]
+      }
+    }
+  }
+}

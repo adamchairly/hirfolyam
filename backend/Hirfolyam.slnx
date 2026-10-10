@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Hirfolyam.Infrastructure/Hirfolyam.Infrastructure.csproj" />
+  <Project Path="Hirfolyam.Domain/Hirfolyam.Domain.csproj" />
+  <Project Path="Hirfolyam.Application/Hirfolyam.Application.csproj" />
+  <Project Path="Hirfolyam.Presentation/Hirfolyam.API.csproj" />
+  <Project Path="Hirfolyam.Tests/Hirfolyam.Tests.csproj" />
+</Solution>

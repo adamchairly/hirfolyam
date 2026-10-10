@@ -1,0 +1,48 @@
+{
+  "name": "Origo",
+  "baseUrl": "https://www.origo.hu/",
+  "iconUrl": "https://www.origo.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://www.origo.hu/publicapi/hu/rss/origo/articles"],
+  "categories": {
+    "ignore": ["Vélemény"],
+    "rules": {
+      "politics": {
+        "feed": ["Belpol"],
+        "paths": ["/belpol"]
+      },
+      "domestic": {
+        "feed": ["Itthon", "Kék hírek"],
+        "paths": ["/itthon", "/kek-hirek"]
+      },
+      "world": {
+        "feed": ["Külpol", "Nagyvilág"],
+        "paths": ["/kulpol", "/nagyvilag"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Filmklub", "Kultúra"],
+        "paths": ["/filmklub", "/kultura"]
+      },
+      "science-tech": {
+        "feed": ["Techbázis", "Tudomány", "Autó"],
+        "paths": ["/techbazis", "/tudomany", "/auto"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Tévé"],
+        "paths": ["/teve"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Utazás", "Gasztro"],
+        "paths": ["/eletmod", "/utazas", "/gasztro"]
+      }
+    }
+  }
+}

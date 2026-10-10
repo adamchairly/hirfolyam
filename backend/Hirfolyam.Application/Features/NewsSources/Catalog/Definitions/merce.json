@@ -1,0 +1,24 @@
+{
+  "name": "Mérce.hu",
+  "baseUrl": "https://merce.hu/",
+  "iconUrl": "https://merce.hu/app/themes/merce/dist/images/favicon/favicon180.png",
+  "enabled": true,
+  "feeds": ["https://merce.hu/feed/"],
+  "categories": {
+    "ignore": ["Publicisztika", "Percről percre"],
+    "rules": {
+      "domestic": {
+        "feed": ["belföld", "oktatás", "felsőoktatás", "egészségügy"]
+      },
+      "world": {
+        "feed": ["külföld"]
+      },
+      "economy": {
+        "feed": ["gazdaság"]
+      },
+      "culture": {
+        "feed": ["kultúra", "könyvrészlet"]
+      }
+    }
+  }
+}

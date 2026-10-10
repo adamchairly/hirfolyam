@@ -1,0 +1,56 @@
+{
+  "name": "Kisalföld",
+  "baseUrl": "https://www.kisalfold.hu/",
+  "iconUrl": "https://www.kisalfold.hu/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://www.kisalfold.hu/publicapi/hu/rss/kisalfold/articles"],
+  "categories": {
+    "ignore": ["Ország-világ", "Ország, világ"],
+    "rules": {
+      "domestic": {
+        "feed": [
+          "Helyi közélet",
+          "Közélet",
+          "Helyi kék hírek",
+          "Hazai kék hírek",
+          "Helyi időjárás",
+          "Győr",
+          "Sopron",
+          "Mosonmagyaróvár",
+          "Rábaköz"
+        ],
+        "paths": [
+          "/helyi-kozelet",
+          "/kozelet",
+          "/helyi-kek-hirek",
+          "/hazai-kek-hirek",
+          "/helyi-idojaras",
+          "/gyor",
+          "/sopron",
+          "/mosonmagyarovar",
+          "/rabakoz"
+        ]
+      },
+      "sport": {
+        "feed": ["Helyi sport", "Hazai sport", "Nemzetközi sport"],
+        "paths": ["/helyi-sport", "/hazai-sport", "/nemzetkozi-sport"]
+      },
+      "culture": {
+        "feed": ["Helyi kultúra", "Hazai kultúra"],
+        "paths": ["/helyi-kultura", "/hazai-kultura"]
+      },
+      "economy": {
+        "feed": ["Helyi gazdaság", "Gazdaság"],
+        "paths": ["/helyi-gazdasag", "/gazdasag"]
+      },
+      "tabloid": {
+        "feed": ["Helyi bulvár és celeb", "Hazai bulvár és celeb", "Nemzetközi bulvár és celeb"],
+        "paths": ["/helyi-bulvar-celeb", "/hazai-bulvar-celeb", "/nemzetkozi-bulvar-celeb"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

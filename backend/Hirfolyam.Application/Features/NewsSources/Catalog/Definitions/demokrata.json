@@ -1,0 +1,52 @@
+{
+  "name": "Demokrata",
+  "baseUrl": "https://demokrata.hu/",
+  "iconUrl": "https://demokrata.hu/wp-content/uploads/2019/04/152x152/croppeddemikon.png",
+  "enabled": true,
+  "feeds": ["https://demokrata.hu/feed/"],
+  "categories": {
+    "ignore": ["Vélemény", "Sétatér", "Levelezés"],
+    "rules": {
+      "domestic": {
+        "feed": ["Magyarország"],
+        "paths": ["/magyarorszag"]
+      },
+      "world": {
+        "feed": ["Világ"],
+        "paths": ["/vilag", "/demokrata-kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Film", "Könyv", "Színház", "Tárlat", "Zene", "Magyar Katonai Hagyományőrzés"],
+        "paths": [
+          "/kultura",
+          "/filmkritika",
+          "/konyvkritika",
+          "/szinhazkritika",
+          "/tarlatkritika",
+          "/cd-kritika",
+          "/katonai-hagyomanyorzes"
+        ]
+      },
+      "science-tech": {
+        "feed": ["Tudomány"],
+        "paths": ["/tudomany"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["MAZsola"],
+        "paths": ["/mazsola-viccek"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Étterem"],
+        "paths": ["/eletmod", "/etteremkritika"]
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "Világgazdaság",
+  "baseUrl": "https://www.vg.hu/",
+  "iconUrl": "https://www.vg.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://www.vg.hu/publicapi/hu/rss/vilaggazdasag/articles"],
+  "categories": {
+    "ignore": ["Vélemény", "Blog", "Extra", "Hirdetés", "Alapozó"],
+    "rules": {
+      "economy": {
+        "feed": [
+          "Magyar gazdaság",
+          "Nemzetközi gazdaság",
+          "Pénz- és Tőkepiac",
+          "Cégvilág",
+          "Agrár",
+          "Energia",
+          "Ingatlan",
+          "Karrier",
+          "Kiskereskedelem",
+          "Logisztika",
+          "Műtárgy",
+          "Régió",
+          "Sportgazdaság",
+          "Zöldgazdaság",
+          "Turizmus"
+        ],
+        "paths": [
+          "/vilaggazdasag-magyar-gazdasag",
+          "/nemzetkozi-gazdasag",
+          "/penz-es-tokepiac",
+          "/cegvilag",
+          "/agrar",
+          "/energia-vgplus",
+          "/ingatlan",
+          "/karrier",
+          "/kiskereskedelem",
+          "/logisztika",
+          "/mutargy",
+          "/regio",
+          "/sportgazdasag",
+          "/zoldgazdasag",
+          "/turizmus"
+        ]
+      },
+      "domestic": {
+        "feed": ["Közélet"],
+        "paths": ["/kozelet"]
+      },
+      "science-tech": {
+        "feed": ["Tech", "Autó"],
+        "paths": ["/tech", "/auto"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

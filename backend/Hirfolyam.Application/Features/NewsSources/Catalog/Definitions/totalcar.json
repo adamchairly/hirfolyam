@@ -1,0 +1,43 @@
+{
+  "name": "Totalcar.hu",
+  "baseUrl": "https://totalcar.hu/",
+  "iconUrl": "https://totalcar.hu/static/images/totalcar/favicon_32x32.png",
+  "enabled": true,
+  "feeds": ["https://totalcar.hu/feed/lastweek/?"],
+  "categories": {
+    "rules": {
+      "science-tech": {
+        "feed": [
+          "Hírek",
+          "Tesztek",
+          "Videó & Podcast",
+          "Totalbike",
+          "Magazin",
+          "Belsőség",
+          "Tanácsok",
+          "Technika",
+          "Használtteszt",
+          "TB Tesztek",
+          "Gumidoktor",
+          "Nepperűző",
+          "Olajdoktor"
+        ],
+        "paths": [
+          "/hirek",
+          "/tesztek",
+          "/video-podcast",
+          "/totalbike",
+          "/magazin",
+          "/belsoseg",
+          "/tanacsok",
+          "/technika",
+          "/hasznaltteszt",
+          "/totalbike-tesztek",
+          "/gumidoktor",
+          "/nepperuzo",
+          "/olajdoktor"
+        ]
+      }
+    }
+  }
+}

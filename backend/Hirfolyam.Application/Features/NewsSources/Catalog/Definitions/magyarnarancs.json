@@ -1,0 +1,36 @@
+{
+  "name": "Magyar Narancs",
+  "baseUrl": "https://magyarnarancs.hu/",
+  "iconUrl": "https://magyarnarancs.hu/static/frontend/imgs/favicon.png",
+  "enabled": true,
+  "feeds": ["https://magyarnarancs.hu/rss"],
+  "categories": {
+    "ignore": ["Vélemény", "Publicisztika", "A szerk.", "Sorköz", "Interaktív", "Fekete Lyuk", "Narancsblog"],
+    "rules": {
+      "politics": {
+        "feed": ["Politika", "Belpol"],
+        "paths": ["/politika", "/belpol"]
+      },
+      "domestic": {
+        "feed": ["Kis-Magyarország", "Lokál"],
+        "paths": ["/kismagyarorszag", "/lokal"]
+      },
+      "world": {
+        "feed": ["Külpol"],
+        "paths": ["/kulpol"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Zene", "Könyv", "Színház", "Film", "Kritika"],
+        "paths": ["/kultura", "/zene2", "/zene", "/konyv", "/szinhaz2", "/szinhaz", "/film", "/kritika", "/mikrofilm"]
+      },
+      "lifestyle": {
+        "feed": ["Élet+mód"],
+        "paths": ["/elet_mod"]
+      }
+    }
+  }
+}

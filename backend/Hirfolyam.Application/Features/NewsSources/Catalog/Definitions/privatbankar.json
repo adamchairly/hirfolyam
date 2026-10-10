@@ -1,0 +1,39 @@
+{
+  "name": "Privátbankár",
+  "baseUrl": "https://privatbankar.hu/",
+  "iconUrl": "https://privatbankar.hu/privatbankar/favicon.ico?t=70f8d60e552043d9b805933959e6a447",
+  "enabled": true,
+  "feeds": ["https://privatbankar.hu/rss/"],
+  "categories": {
+    "rules": {
+      "economy": {
+        "feed": [
+          "Makro / Külgazdaság",
+          "Részvény / Deviza / Áru",
+          "Pénzügyi szektor",
+          "Állampapír / Kötvény",
+          "Személyes pénzügyek",
+          "Ingatlan",
+          "Vásárló"
+        ],
+        "paths": [
+          "/cikkek/makro",
+          "/cikkek/reszveny",
+          "/cikkek/penzugyi_szektor",
+          "/cikkek/kotveny",
+          "/cikkek/szemelyes_penzugyek",
+          "/cikkek/ingatlan",
+          "/cikkek/vasarlo"
+        ]
+      },
+      "domestic": {
+        "feed": ["Közérdekű"],
+        "paths": ["/cikkek/kozerdeku"]
+      },
+      "world": {
+        "feed": ["Nemzetközi"],
+        "paths": ["/cikkek/nemzetkozi"]
+      }
+    }
+  }
+}

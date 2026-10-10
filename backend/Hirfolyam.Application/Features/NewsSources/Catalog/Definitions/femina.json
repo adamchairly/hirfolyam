@@ -1,0 +1,19 @@
+{
+  "name": "Femina",
+  "baseUrl": "https://femina.hu/",
+  "iconUrl": "https://femina.hu/neon/static/images/femina/favicon_32x32.png",
+  "enabled": true,
+  "feeds": ["https://femina.hu/24ora/rss/"],
+  "categories": {
+    "rules": {
+      "tabloid": {
+        "feed": ["Hazai sztár", "Világsztár", "Terasz"],
+        "paths": ["/hazai_sztar", "/vilagsztar", "/terasz", "/kviz"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Gyerek", "Szépség", "Otthon", "Retikül", "Utazás", "Recept"],
+        "paths": ["/egeszseg", "/gyerek", "/szepseg", "/otthon", "/retikul", "/utazas", "/recept"]
+      }
+    }
+  }
+}

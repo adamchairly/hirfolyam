@@ -1,0 +1,32 @@
+{
+  "name": "ATV",
+  "baseUrl": "https://www.atv.hu/",
+  "iconUrl": "https://www.atv.hu/wp-content/uploads/2024/11/favicon-1.ico",
+  "enabled": true,
+  "feeds": ["https://www.atv.hu/feed/"],
+  "categories": {
+    "ignore": ["Öt", "Vélemény"],
+    "rules": {
+      "domestic": {
+        "feed": ["Itthon"],
+        "paths": ["/belfold"]
+      },
+      "world": {
+        "feed": ["Nagyvilág"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Színes", "Bulvár"],
+        "paths": ["/szines", "/bulvar"]
+      }
+    }
+  }
+}

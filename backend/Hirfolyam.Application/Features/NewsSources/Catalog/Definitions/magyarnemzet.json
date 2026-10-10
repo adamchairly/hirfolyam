@@ -1,0 +1,54 @@
+{
+  "name": "Magyar Nemzet",
+  "baseUrl": "https://magyarnemzet.hu/",
+  "iconUrl": "https://magyarnemzet.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://magyarnemzet.hu/publicapi/hu/rss/magyar_nemzet/articles"],
+  "categories": {
+    "ignore": [
+      "A Helyzet",
+      "Bayer Zsolt blogja",
+      "Tollhegyen",
+      "Vélemény",
+      "Poszt-trauma",
+      "Lugas",
+      "Így írnak ők",
+      "English",
+      "Véleményváró"
+    ],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Országszerte"],
+        "paths": ["/belfold", "/orszagszerte"]
+      },
+      "world": {
+        "feed": ["Külföld"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Ez történt 100 éve"],
+        "paths": ["/kultura", "/ez-tortent-100-eve"]
+      },
+      "science-tech": {
+        "feed": ["Tudomány", "Autó-Motor"],
+        "paths": ["/tudomany", "/auto-motor-2"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Mozaik"],
+        "paths": ["/mozaik"]
+      },
+      "lifestyle": {
+        "feed": ["Repeta"],
+        "paths": ["/repeta"]
+      }
+    }
+  }
+}

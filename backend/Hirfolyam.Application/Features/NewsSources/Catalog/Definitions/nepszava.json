@@ -1,0 +1,36 @@
+{
+  "name": "Népszava",
+  "baseUrl": "https://nepszava.hu/",
+  "iconUrl": "https://nepszava.hu/pub/i/icon180.png",
+  "enabled": true,
+  "feeds": ["https://nepszava.hu/feed"],
+  "categories": {
+    "ignore": ["Fotógaléria", "Vélemény", "Szép Szó", "Visszhang", "Pápai-karikatúra"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld", "Bűnügy-baleset"]
+      },
+      "world": {
+        "feed": ["Külföld"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Kultúra-Média"]
+      },
+      "science-tech": {
+        "feed": ["Tudomány", "Technológia"]
+      },
+      "sport": {
+        "feed": ["Sport"]
+      },
+      "tabloid": {
+        "feed": ["Bulvár"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"]
+      }
+    }
+  }
+}

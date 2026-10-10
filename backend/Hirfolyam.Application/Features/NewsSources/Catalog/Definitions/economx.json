@@ -1,0 +1,45 @@
+{
+  "name": "Economx",
+  "baseUrl": "https://www.economx.hu/",
+  "iconUrl": "https://www.economx.hu/neon/static/images/economx/favicon_32x32.png",
+  "enabled": true,
+  "feeds": ["https://www.economx.hu/feed/"],
+  "categories": {
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld"],
+        "paths": ["/belfold"]
+      },
+      "world": {
+        "feed": ["Külföld"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": [
+          "Gazdaság",
+          "Magyar gazdaság",
+          "Tőzsde",
+          "Befektetés",
+          "Ingatlan",
+          "Realista",
+          "Vállalkozások",
+          "Pénzügy"
+        ],
+        "paths": [
+          "/gazdasag",
+          "/magyar-gazdasag",
+          "/tozsde",
+          "/befektetes",
+          "/ingatlan",
+          "/realista",
+          "/vallalkozasok",
+          "/penzugy"
+        ]
+      },
+      "science-tech": {
+        "feed": ["Tech"],
+        "paths": ["/tech"]
+      }
+    }
+  }
+}

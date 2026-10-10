@@ -1,0 +1,48 @@
+{
+  "name": "24.hu",
+  "baseUrl": "https://24.hu/",
+  "iconUrl": "https://s.24.hu/apple-touch-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://24.hu/feed/"],
+  "categories": {
+    "ignore": ["Vélemény", "24 EXTRA"],
+    "rules": {
+      "domestic": {
+        "feed": ["Belföld"],
+        "paths": ["/belfold"]
+      },
+      "politics": {
+        "feed": ["Közélet"],
+        "paths": ["/kozelet"]
+      },
+      "world": {
+        "feed": ["Nagyvilág"],
+        "paths": ["/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság", "Pénzügy"],
+        "paths": ["/gazdasag", "/fn/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/kultura"]
+      },
+      "science-tech": {
+        "feed": ["Tech", "Tech / Mobil", "Tudomány"],
+        "paths": ["/tech", "/tudomany"]
+      },
+      "sport": {
+        "feed": ["Sport", "Foci"],
+        "paths": ["/sport", "/foci"]
+      },
+      "tabloid": {
+        "feed": ["Szórakozás", "Kikapcs"],
+        "paths": ["/szorakozas", "/kvizek"]
+      },
+      "lifestyle": {
+        "feed": ["Élet-Stílus", "Élet+Stílus", "Otthon"],
+        "paths": ["/elet-stilus", "/otthon"]
+      }
+    }
+  }
+}
