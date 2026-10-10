@@ -77,6 +77,17 @@ public sealed class CategoryMapperTests
     [TestCase("mandiner", "Makronóm", "economy")]
     [TestCase("valaszonline", "diplomácia", "world")]
     [TestCase("police", "Határrendészet", "domestic")]
+    [TestCase("penzcentrum", "Szórakozás", "tabloid")]
+    [TestCase("penzcentrum", "Nyugdíj", "economy")]
+    [TestCase("nationalgeographic", "Természet", "science-tech")]
+    [TestCase("agrarszektor", "Növény", "economy")]
+    [TestCase("magyarmezogazdasag", "Természet", "science-tech")]
+    [TestCase("csakfoci", "Külföldi körkép", "sport")]
+    [TestCase("vezess", "Forma-1", "sport")]
+    [TestCase("roadster", "Road Trip", "lifestyle")]
+    [TestCase("roadster", "Kult", "culture")]
+    [TestCase("egeszsegkalauz", "Orvostudományi kutatások", "science-tech")]
+    [TestCase("maszol", "Belföld", "world")]
     public void MapsKnownSourceCategories(string key, string category, string expectedSlug)
     {
         Assert.That(mapper.Map(key, [category]), Is.EqualTo(CategoryId(expectedSlug)));
@@ -94,6 +105,12 @@ public sealed class CategoryMapperTests
     [TestCase("privatbankar", "/cikkek/nemzetkozi/hir.html", "world")]
     [TestCase("femina", "/hazai_sztar/hir/", "tabloid")]
     [TestCase("kisalfold", "/helyi-sport/2026/10/hir", "sport")]
+    [TestCase("hirtv", "/ahirtvhirei/2026/10/hir", "domestic")]
+    [TestCase("hirtv", "/hirtvkulfold/2026/10/hir", "world")]
+    [TestCase("mta", "/mta_hirei/hir-115732", "science-tech")]
+    [TestCase("vezess", "/vezetunk/2026/10/hir", "science-tech")]
+    [TestCase("noklapja", "/gasztro/2026/10/10/hir", "lifestyle")]
+    [TestCase("maszol", "/belfold/hir", "world")]
     public void UrlSectionTakesPriorityOverUnrelatedTags(string key, string path, string expectedSlug)
     {
         var result = mapper.Map(key, ["politika", "tudomány"], SourceUrl(key, path));
@@ -136,6 +153,16 @@ public sealed class CategoryMapperTests
     [TestCase("nemzetisport", "sport")]
     [TestCase("mindmegette", "lifestyle")]
     [TestCase("police", "domestic")]
+    [TestCase("mta", "science-tech")]
+    [TestCase("nationalgeographic", "science-tech")]
+    [TestCase("bankmonitor", "economy")]
+    [TestCase("agrarszektor", "economy")]
+    [TestCase("magyarmezogazdasag", "economy")]
+    [TestCase("csakfoci", "sport")]
+    [TestCase("vezess", "science-tech")]
+    [TestCase("roadster", "lifestyle")]
+    [TestCase("noklapja", "lifestyle")]
+    [TestCase("egeszsegkalauz", "lifestyle")]
     public void UsesAnExplicitSourceDefaultWhenTheFeedHasNoCategory(string key, string expectedSlug)
     {
         Assert.That(mapper.Map(key, []), Is.EqualTo(CategoryId(expectedSlug)));

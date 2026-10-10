@@ -27,8 +27,8 @@ public sealed class NewsSourceSynchronizerTests
         var sources = await ReadSourcesAsync();
         var telex = sources.Single(source => source.Key == "telex");
 
-        Assert.That(result.Added, Is.EqualTo(46));
-        Assert.That(sources, Has.Count.EqualTo(46));
+        Assert.That(result.Added, Is.EqualTo(59));
+        Assert.That(sources, Has.Count.EqualTo(59));
         Assert.That(telex.Name, Is.EqualTo("Telex"));
         Assert.That(telex.BaseUrl, Is.EqualTo("https://telex.hu/"));
         Assert.That(telex.IsEnabled, Is.True);

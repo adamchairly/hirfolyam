@@ -1,0 +1,31 @@
+{
+  "name": "Egészségkalauz",
+  "baseUrl": "https://www.egeszsegkalauz.hu/",
+  "iconUrl": "https://ocdn.eu/medinfo/hu/resource/favicons/apple-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://egeszsegkalauz.hu/rss"],
+  "categories": {
+    "default": "lifestyle",
+    "rules": {
+      "science-tech": {
+        "feed": ["Orvostudományi kutatások"],
+        "paths": ["/kutatas"]
+      },
+      "lifestyle": {
+        "paths": [
+          "/hirek",
+          "/eletmod",
+          "/eletmodorvoslas",
+          "/prevencio",
+          "/tunet",
+          "/betegsegek",
+          "/vizsgalat",
+          "/kezeles",
+          "/allergia",
+          "/orvosmeteorologia",
+          "/kisallatok-egeszsege"
+        ]
+      }
+    }
+  }
+}

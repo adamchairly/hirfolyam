@@ -1,0 +1,16 @@
+{
+  "name": "Nők Lapja",
+  "baseUrl": "https://www.noklapja.hu/",
+  "iconUrl": "https://www.noklapja.hu/themes/noklapja/images/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://www.noklapja.hu/rss"],
+  "categories": {
+    "default": "lifestyle",
+    "rules": {
+      "lifestyle": {
+        "feed": ["Aktuális", "Egészség", "Gasztró", "Hetilap", "Kikapcs"],
+        "paths": ["/aktualis", "/egeszseg", "/gasztro", "/hetilap", "/kikapcs"]
+      }
+    }
+  }
+}

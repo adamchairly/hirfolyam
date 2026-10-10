@@ -1,0 +1,19 @@
+{
+  "name": "National Geographic Magyarország",
+  "baseUrl": "https://ng.24.hu/",
+  "enabled": true,
+  "feeds": ["https://ng.24.hu/feed/"],
+  "categories": {
+    "default": "science-tech",
+    "rules": {
+      "science-tech": {
+        "feed": ["Természet", "Tudomány", "A nap képe"],
+        "paths": ["/termeszet", "/tudomany", "/foto"]
+      },
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/kultura"]
+      }
+    }
+  }
+}

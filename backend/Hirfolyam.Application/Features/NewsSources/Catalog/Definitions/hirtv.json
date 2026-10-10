@@ -1,0 +1,26 @@
+{
+  "name": "Hír TV",
+  "baseUrl": "https://hirtv.origo.hu/",
+  "iconUrl": "https://hirtv.origo.hu/assets/images/favicons/apple-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://hirtv.origo.hu/publicapi/hu/rss/hirtv/articles"],
+  "categories": {
+    "rules": {
+      "domestic": {
+        "paths": ["/ahirtvhirei"]
+      },
+      "world": {
+        "paths": ["/hirtvkulfold"]
+      },
+      "economy": {
+        "paths": ["/hirtv-gazdasagi-hirei"]
+      },
+      "culture": {
+        "paths": ["/kultura"]
+      },
+      "lifestyle": {
+        "paths": ["/hirtvszines"]
+      }
+    }
+  }
+}

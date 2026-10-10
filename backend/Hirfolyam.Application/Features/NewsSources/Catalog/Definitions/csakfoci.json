@@ -1,0 +1,16 @@
+{
+  "name": "Csakfoci",
+  "baseUrl": "https://csakfoci.hu/",
+  "iconUrl": "https://csakfoci.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://csakfoci.hu/rss"],
+  "categories": {
+    "default": "sport",
+    "rules": {
+      "sport": {
+        "feed": ["Magyar foci", "Külföldi foci", "Külföldi körkép", "Átigazolások", "TV-műsor"],
+        "paths": ["/magyar-foci", "/kulfoldi-foci", "/kulfoldi-korkep", "/atigazolasok", "/sport-tv-musor_m4sport"]
+      }
+    }
+  }
+}

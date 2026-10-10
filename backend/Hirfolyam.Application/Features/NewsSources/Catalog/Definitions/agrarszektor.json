@@ -1,0 +1,36 @@
+{
+  "name": "Agrárszektor",
+  "baseUrl": "https://www.agrarszektor.hu/",
+  "iconUrl": "https://www.agrarszektor.hu/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://www.agrarszektor.hu/rss"],
+  "categories": {
+    "default": "economy",
+    "rules": {
+      "economy": {
+        "feed": [
+          "Növény",
+          "Állat",
+          "Élelmiszer",
+          "Agrárpénzek",
+          "Gépek",
+          "Innováció",
+          "Szabályozás",
+          "Fenntarthatóság",
+          "Metszet"
+        ],
+        "paths": [
+          "/noveny",
+          "/allat",
+          "/elelmiszer",
+          "/agrarpenzek",
+          "/gepek",
+          "/innovacio",
+          "/szabalyozas",
+          "/fenntarthatosag",
+          "/metszet"
+        ]
+      }
+    }
+  }
+}

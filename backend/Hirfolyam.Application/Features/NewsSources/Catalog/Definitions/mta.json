@@ -1,0 +1,16 @@
+{
+  "name": "MTA",
+  "baseUrl": "https://mta.hu/",
+  "iconUrl": "https://mta.hu/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://mta.hu/rss/mta_hirei", "https://mta.hu/rss/tudomany_hirei"],
+  "categories": {
+    "default": "science-tech",
+    "rules": {
+      "science-tech": {
+        "feed": ["Az MTA hírei", "A tudomány hírei"],
+        "paths": ["/mta_hirei", "/tudomany_hirei"]
+      }
+    }
+  }
+}

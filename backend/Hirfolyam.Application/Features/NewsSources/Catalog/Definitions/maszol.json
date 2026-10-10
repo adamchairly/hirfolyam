@@ -1,0 +1,32 @@
+{
+  "name": "Maszol.ro",
+  "baseUrl": "https://maszol.ro/",
+  "iconUrl": "https://maszol.ro/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://www.maszol.ro/index.php/rss"],
+  "categories": {
+    "ignore": ["Vélemény"],
+    "rules": {
+      "world": {
+        "feed": ["Belföld", "Külföld"],
+        "paths": ["/belfold", "/kulfold"]
+      },
+      "economy": {
+        "feed": ["Gazdaság"],
+        "paths": ["/gazdasag"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Könyvsarok"],
+        "paths": ["/kultura", "/konyvsarok"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód"],
+        "paths": ["/eletmod"]
+      }
+    }
+  }
+}

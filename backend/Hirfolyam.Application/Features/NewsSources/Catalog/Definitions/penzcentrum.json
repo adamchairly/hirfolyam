@@ -1,0 +1,59 @@
+{
+  "name": "Pénzcentrum",
+  "baseUrl": "https://www.penzcentrum.hu/",
+  "iconUrl": "https://www.penzcentrum.hu/assets/images/apple-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://www.penzcentrum.hu/rss/all.xml"],
+  "categories": {
+    "rules": {
+      "domestic": {
+        "feed": ["Oktatás"],
+        "paths": ["/oktatas"]
+      },
+      "world": {
+        "feed": ["Világ"],
+        "paths": ["/vilag"]
+      },
+      "economy": {
+        "feed": [
+          "Gazdaság",
+          "Adózás",
+          "Biztosítás",
+          "Hitel",
+          "Karrier",
+          "Megtakarítás",
+          "Nyugdíj",
+          "Vállalkozás",
+          "Vásárlás"
+        ],
+        "paths": [
+          "/gazdasag",
+          "/adozas",
+          "/biztositas",
+          "/hitel",
+          "/karrier",
+          "/megtakaritas",
+          "/nyugdij",
+          "/vallalkozas",
+          "/vasarlas"
+        ]
+      },
+      "science-tech": {
+        "feed": ["Tech", "Autó"],
+        "paths": ["/tech", "/auto"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport"]
+      },
+      "tabloid": {
+        "feed": ["Szórakozás"],
+        "paths": ["/szorakozas"]
+      },
+      "lifestyle": {
+        "feed": ["Egészség", "Otthon", "Utazás", "HelloVidék", "Kvíz"],
+        "paths": ["/egeszseg", "/otthon", "/utazas", "/hellovidek", "/kviz"]
+      }
+    }
+  }
+}

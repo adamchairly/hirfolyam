@@ -1,0 +1,16 @@
+{
+  "name": "Bankmonitor",
+  "baseUrl": "https://bankmonitor.hu/",
+  "iconUrl": "https://bankmonitor.hu/wp-content/uploads/2016/09/04095501/cropped-teszt-180x180.png",
+  "enabled": true,
+  "feeds": ["https://www.bankmonitor.hu/rss"],
+  "categories": {
+    "default": "economy",
+    "rules": {
+      "economy": {
+        "feed": ["Médiatár"],
+        "paths": ["/mediatar"]
+      }
+    }
+  }
+}
