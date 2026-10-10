@@ -138,6 +138,7 @@ function SourceLink({ article }: { article: HotTopicArticle }) {
           height={16}
           loading="lazy"
           decoding="async"
+          referrerPolicy="no-referrer"
           className="size-4 shrink-0 rounded-sm object-contain"
           onError={() => {
             setIconFailed(true)

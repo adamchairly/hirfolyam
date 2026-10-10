@@ -58,6 +58,7 @@ export function ArticleItem({ article, now, search = '', layout = 'list' }: Arti
             height={320}
             loading="lazy"
             decoding="async"
+            referrerPolicy="no-referrer"
             className="absolute inset-0 h-full w-full object-cover object-center"
             onError={() => {
               setImageFailed(true)
@@ -128,6 +129,7 @@ export function ArticleItem({ article, now, search = '', layout = 'list' }: Arti
                 height={16}
                 loading="lazy"
                 decoding="async"
+                referrerPolicy="no-referrer"
                 className="size-4 shrink-0 rounded-sm object-contain"
                 onError={() => {
                   setFailedIconUrl(icon)

@@ -37,6 +37,7 @@ export function SourceCard({ source, isEnabled, onToggle }: SourceCardProps) {
             alt=""
             width={32}
             height={32}
+            referrerPolicy="no-referrer"
             className="size-full rounded-sm object-contain"
             onError={() => {
               setFailedIconUrl(icon)
