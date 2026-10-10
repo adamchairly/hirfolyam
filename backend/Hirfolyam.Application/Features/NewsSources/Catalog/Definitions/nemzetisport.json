@@ -1,5 +1,6 @@
 {
   "name": "Nemzeti Sport",
+  "category": "sport",
   "baseUrl": "https://www.nemzetisport.hu/",
   "iconUrl": "https://www.nemzetisport.hu/assets/favicon/apple-touch-icon.png",
   "enabled": true,

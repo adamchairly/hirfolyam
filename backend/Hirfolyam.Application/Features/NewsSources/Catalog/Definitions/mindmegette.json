@@ -1,5 +1,6 @@
 {
   "name": "Mindmegette.hu",
+  "category": "lifestyle",
   "baseUrl": "https://www.mindmegette.hu/",
   "iconUrl": "https://www.mindmegette.hu/android-chrome-192x192.png",
   "enabled": true,

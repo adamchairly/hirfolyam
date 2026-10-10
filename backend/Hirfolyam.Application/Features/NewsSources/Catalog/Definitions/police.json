@@ -1,5 +1,6 @@
 {
   "name": "Police.hu",
+  "category": "domestic",
   "baseUrl": "https://www.police.hu/",
   "iconUrl": "https://www.police.hu/sites/default/files/logo_favicon.png",
   "enabled": true,

@@ -1,5 +1,6 @@
 {
   "name": "Blikk.hu",
+  "category": "tabloid",
   "baseUrl": "https://www.blikk.hu/",
   "iconUrl": "https://ocdn.eu/blikk_static/resource/icons/new/apple-touch-icon-180x180.png",
   "enabled": true,

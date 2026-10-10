@@ -1,5 +1,6 @@
 {
   "name": "Népszava",
+  "category": "domestic",
   "baseUrl": "https://nepszava.hu/",
   "iconUrl": "https://nepszava.hu/pub/i/icon180.png",
   "enabled": true,

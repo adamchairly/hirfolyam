@@ -1,5 +1,6 @@
 {
   "name": "Vezess",
+  "category": "science-tech",
   "baseUrl": "https://www.vezess.hu/",
   "iconUrl": "https://vezess2.p3k.hu/apple-touch-icon-180x180.png",
   "enabled": true,

@@ -21,5 +21,8 @@ public sealed class SourceListItemResponse
 
     public string? IconUrl { get; init; }
 
+    // The slug of the category the source belongs to.
+    public required string Category { get; init; }
+
     public int ArticleCount { get; init; }
 }

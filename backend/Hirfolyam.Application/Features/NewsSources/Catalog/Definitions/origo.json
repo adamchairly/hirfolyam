@@ -1,5 +1,6 @@
 {
   "name": "Origo",
+  "category": "domestic",
   "baseUrl": "https://www.origo.hu/",
   "iconUrl": "https://www.origo.hu/apple-touch-icon.png",
   "enabled": true,

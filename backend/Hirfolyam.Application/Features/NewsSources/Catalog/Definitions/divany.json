@@ -1,5 +1,6 @@
 {
   "name": "Dívány.hu",
+  "category": "lifestyle",
   "baseUrl": "https://divany.hu/",
   "iconUrl": "https://divany.hu/neon/static/images/divany/favicon_32x32.png",
   "enabled": true,

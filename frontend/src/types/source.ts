@@ -3,6 +3,8 @@ export interface Source {
   name: string
   url: string
   iconUrl: string | null
+  // The slug of the category that fits the source best.
+  category: string
   articleCount: number
 }
 

@@ -197,6 +197,7 @@ public sealed class ImportArticlesCommandHandlerTests
             Key = key,
             Name = key,
             BaseUrl = "https://example.com/",
+            CategoryId = 4,
             Enabled = enabled,
             Feeds = feeds
         };

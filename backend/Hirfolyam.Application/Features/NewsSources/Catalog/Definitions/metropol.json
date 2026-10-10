@@ -1,5 +1,6 @@
 {
   "name": "Metropol",
+  "category": "tabloid",
   "baseUrl": "https://metropol.hu/",
   "iconUrl": "https://metropol.hu/apple-touch-icon.png",
   "enabled": true,

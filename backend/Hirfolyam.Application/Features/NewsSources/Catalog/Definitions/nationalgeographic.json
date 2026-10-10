@@ -1,5 +1,6 @@
 {
   "name": "National Geographic Magyarország",
+  "category": "science-tech",
   "baseUrl": "https://ng.24.hu/",
   "enabled": true,
   "feeds": ["https://ng.24.hu/feed/"],

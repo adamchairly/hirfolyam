@@ -1,5 +1,6 @@
 {
   "name": "Telex",
+  "category": "domestic",
   "baseUrl": "https://telex.hu/",
   "iconUrl": "https://telex.hu/favicon.ico",
   "enabled": true,

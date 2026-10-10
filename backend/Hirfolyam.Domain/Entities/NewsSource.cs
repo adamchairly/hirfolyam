@@ -13,6 +13,11 @@ public sealed class NewsSource
 
     public string? IconUrl { get; set; }
 
+    // The category that fits the source best, used to group the sources.
+    public int CategoryId { get; set; }
+
+    public Category Category { get; set; } = null!;
+
     public bool IsEnabled { get; set; }
 
     public DateTimeOffset? LastImportedAt { get; set; }

@@ -1,5 +1,6 @@
 {
   "name": "MTA",
+  "category": "science-tech",
   "baseUrl": "https://mta.hu/",
   "iconUrl": "https://mta.hu/favicon.ico",
   "enabled": true,

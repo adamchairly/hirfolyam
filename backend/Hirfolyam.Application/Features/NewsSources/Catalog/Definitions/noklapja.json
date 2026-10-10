@@ -1,5 +1,6 @@
 {
   "name": "Nők Lapja",
+  "category": "lifestyle",
   "baseUrl": "https://www.noklapja.hu/",
   "iconUrl": "https://www.noklapja.hu/themes/noklapja/images/favicon.ico",
   "enabled": true,

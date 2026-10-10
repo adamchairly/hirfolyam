@@ -1,5 +1,6 @@
 {
   "name": "Válasz Online",
+  "category": "politics",
   "baseUrl": "https://www.valaszonline.hu/",
   "iconUrl": "https://www.valaszonline.hu/wp-content/themes/vo/icons/apple-touch-icon.png",
   "enabled": true,

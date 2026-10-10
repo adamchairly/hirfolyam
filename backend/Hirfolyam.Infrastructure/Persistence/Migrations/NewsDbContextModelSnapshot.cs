@@ -268,6 +268,9 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -294,6 +297,8 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("Key")
                         .IsUnique();
@@ -328,6 +333,17 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Snapshot");
+                });
+
+            modelBuilder.Entity("Hirfolyam.Domain.Entities.NewsSource", b =>
+                {
+                    b.HasOne("Hirfolyam.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Hirfolyam.Domain.Entities.HotTopicSnapshot", b =>

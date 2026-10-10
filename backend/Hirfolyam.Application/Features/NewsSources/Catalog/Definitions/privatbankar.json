@@ -1,5 +1,6 @@
 {
   "name": "Privátbankár",
+  "category": "economy",
   "baseUrl": "https://privatbankar.hu/",
   "iconUrl": "https://privatbankar.hu/privatbankar/favicon.ico?t=70f8d60e552043d9b805933959e6a447",
   "enabled": true,

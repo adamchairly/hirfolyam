@@ -1,5 +1,6 @@
 {
   "name": "Qubit.hu",
+  "category": "science-tech",
   "baseUrl": "https://qubit.hu/",
   "iconUrl": "https://cdn.qubitr.cloud/assets/appicon-180.0604bcdfc6b1be9dd943.png",
   "enabled": true,

@@ -8,7 +8,6 @@ const refreshInterval = 5 * 60_000
 
 export function useHotTopics() {
   const [topics, setTopics] = useState<HotTopic[]>([])
-  const [generatedAt, setGeneratedAt] = useState<string | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -27,7 +26,6 @@ export function useHotTopics() {
 
         if (!controller.signal.aborted) {
           setTopics(response.items)
-          setGeneratedAt(response.generatedAt ?? null)
         }
       } catch {
         // The block is optional, so a failed request keeps the last topics.
@@ -61,6 +59,5 @@ export function useHotTopics() {
 
   return {
     topics,
-    generatedAt,
   }
 }

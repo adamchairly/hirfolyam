@@ -1,4 +1,5 @@
 using Hirfolyam.Application.Features;
+using Hirfolyam.Domain.Catalogs;
 using Hirfolyam.Domain.Entities;
 using Hirfolyam.Infrastructure.StartupTasks;
 using Hirfolyam.Tests.Support;
@@ -31,6 +32,7 @@ public sealed class NewsSourceSynchronizerTests
         Assert.That(sources, Has.Count.EqualTo(59));
         Assert.That(telex.Name, Is.EqualTo("Telex"));
         Assert.That(telex.BaseUrl, Is.EqualTo("https://telex.hu/"));
+        Assert.That(telex.CategoryId, Is.EqualTo(CategoryId("domestic")));
         Assert.That(telex.IsEnabled, Is.True);
         Assert.That(telex.CreatedAt, Is.EqualTo(Now));
     }
@@ -48,6 +50,18 @@ public sealed class NewsSourceSynchronizerTests
         Assert.That(source.Name, Is.EqualTo("New name"));
         Assert.That(source.CreatedAt, Is.EqualTo(Earlier));
         Assert.That(source.UpdatedAt, Is.EqualTo(Now));
+    }
+
+    [Test]
+    public async Task ChangedCategoriesUpdateTheStoredSource()
+    {
+        await SeedAsync(CreateStoredSource(id: 5, key: "news", name: "News"));
+
+        var result = await HandleAsync(CreateCatalog(CreateDefinition("news", name: "News", category: "sport")));
+        var source = (await ReadSourcesAsync()).Single();
+
+        Assert.That(result.Updated, Is.EqualTo(1));
+        Assert.That(source.CategoryId, Is.EqualTo(CategoryId("sport")));
     }
 
     [Test]
@@ -105,13 +119,14 @@ public sealed class NewsSourceSynchronizerTests
         return new NewsSourceCatalog(sources);
     }
 
-    private static NewsSourceDefinition CreateDefinition(string key, string name)
+    private static NewsSourceDefinition CreateDefinition(string key, string name, string category = "domestic")
     {
         return new NewsSourceDefinition
         {
             Key = key,
             Name = name,
             BaseUrl = "https://example.com/",
+            CategoryId = CategoryId(category),
             Feeds = ["https://example.com/feed"]
         };
     }
@@ -124,9 +139,15 @@ public sealed class NewsSourceSynchronizerTests
             Key = key,
             Name = name,
             BaseUrl = "https://example.com/",
+            CategoryId = CategoryId("domestic"),
             IsEnabled = true,
             CreatedAt = Earlier,
             UpdatedAt = Earlier
         };
+    }
+
+    private static int CategoryId(string slug)
+    {
+        return Categories.All.Single(category => category.Slug == slug).Id;
     }
 }

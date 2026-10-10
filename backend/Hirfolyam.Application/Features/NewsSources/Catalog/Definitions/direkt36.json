@@ -1,5 +1,6 @@
 {
   "name": "Direkt36",
+  "category": "politics",
   "baseUrl": "https://www.direkt36.hu/",
   "iconUrl": "https://direkt36-hu.b-cdn.net/wp-content/uploads/2015/02/favicon.png",
   "enabled": true,

@@ -1,5 +1,6 @@
 {
   "name": "Glamour",
+  "category": "lifestyle",
   "baseUrl": "https://www.glamour.hu/",
   "iconUrl": "https://glamour.ocdn.eu/resource/img/icons/apple_touch_icons/apple-touch-icon-180x180.png",
   "enabled": true,

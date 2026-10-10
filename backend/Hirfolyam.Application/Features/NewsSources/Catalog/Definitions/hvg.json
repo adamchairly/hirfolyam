@@ -1,5 +1,6 @@
 {
   "name": "HVG",
+  "category": "economy",
   "baseUrl": "https://hvg.hu/",
   "iconUrl": "https://cdn.hvg.hu/assets/hvghu/favicon/favicon-96x96.png",
   "enabled": true,

@@ -1,5 +1,6 @@
 {
   "name": "Egészségkalauz",
+  "category": "lifestyle",
   "baseUrl": "https://www.egeszsegkalauz.hu/",
   "iconUrl": "https://ocdn.eu/medinfo/hu/resource/favicons/apple-icon-180x180.png",
   "enabled": true,

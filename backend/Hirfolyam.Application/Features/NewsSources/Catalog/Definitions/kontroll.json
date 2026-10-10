@@ -1,5 +1,6 @@
 {
   "name": "Kontroll.hu",
+  "category": "domestic",
   "baseUrl": "https://kontroll.hu/",
   "iconUrl": "https://kontroll.hu/apple-icon.png",
   "enabled": true,

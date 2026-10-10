@@ -1,5 +1,6 @@
 {
   "name": "Agrárszektor",
+  "category": "economy",
   "baseUrl": "https://www.agrarszektor.hu/",
   "iconUrl": "https://www.agrarszektor.hu/favicon.ico",
   "enabled": true,

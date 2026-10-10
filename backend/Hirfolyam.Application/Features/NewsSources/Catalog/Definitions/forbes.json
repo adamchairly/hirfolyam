@@ -1,5 +1,6 @@
 {
   "name": "Forbes",
+  "category": "economy",
   "baseUrl": "https://www.forbes.hu/",
   "iconUrl": "https://www.forbes.hu/wp-content/themes/frontend/assets/icons/favicon-32x32.png",
   "enabled": true,

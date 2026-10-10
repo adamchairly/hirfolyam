@@ -14,6 +14,7 @@ export async function getArticles(
   page: number,
   signal: AbortSignal,
   sourceFilter: string,
+  excludedCategories: string[],
   search?: string,
 ): Promise<ArticlesResponse> {
   const response = await api.get<ArticlesResponse>('/articles', {
@@ -23,6 +24,7 @@ export async function getArticles(
       page,
       pageSize: 20,
       sources: sourceFilter.split(','),
+      excludedCategories,
     },
     paramsSerializer: {
       indexes: null,

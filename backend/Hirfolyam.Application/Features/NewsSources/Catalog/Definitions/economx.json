@@ -1,5 +1,6 @@
 {
   "name": "Economx",
+  "category": "economy",
   "baseUrl": "https://www.economx.hu/",
   "iconUrl": "https://www.economx.hu/neon/static/images/economx/favicon_32x32.png",
   "enabled": true,

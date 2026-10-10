@@ -3,9 +3,10 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { SourcesContext } from '@/hooks/use-source-selection'
 import { useSources } from '@/hooks/use-sources'
 
-const storageKey = 'hirfolyam.disabledSources'
+const sourcesStorageKey = 'hirfolyam.disabledSources'
+const categoriesStorageKey = 'hirfolyam.disabledCategories'
 
-function readDisabledSources(): string[] {
+function readStoredKeys(storageKey: string): string[] {
   try {
     const stored: unknown = JSON.parse(window.localStorage.getItem(storageKey) ?? '[]')
 
@@ -19,29 +20,22 @@ function readDisabledSources(): string[] {
   }
 }
 
-export function SourcesProvider({ children }: { children: ReactNode }) {
-  const sourceList = useSources(60_000)
-  const [disabledSourceKeys, setDisabledSourceKeys] = useState(readDisabledSources)
-  const sourceFilter = sourceList.isLoading || sourceList.error
-    ? null
-    : sourceList.sources
-        .filter((source) => !disabledSourceKeys.includes(source.key))
-        .map((source) => source.key)
-        .sort()
-        .join(',')
+// Keeps a list of keys in local storage, in step with the other tabs.
+function useStoredKeys(storageKey: string) {
+  const [keys, setKeys] = useState(() => readStoredKeys(storageKey))
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(storageKey, JSON.stringify(disabledSourceKeys))
+      window.localStorage.setItem(storageKey, JSON.stringify(keys))
     } catch {
       // Keep the selection in memory if storage is not available.
     }
-  }, [disabledSourceKeys])
+  }, [keys, storageKey])
 
   useEffect(() => {
     function syncSelection(event: StorageEvent) {
       if (event.key === storageKey || event.key === null) {
-        setDisabledSourceKeys(readDisabledSources())
+        setKeys(readStoredKeys(storageKey))
       }
     }
 
@@ -50,15 +44,45 @@ export function SourcesProvider({ children }: { children: ReactNode }) {
     return () => {
       window.removeEventListener('storage', syncSelection)
     }
-  }, [])
+  }, [storageKey])
+
+  return [keys, setKeys] as const
+}
+
+function toggleKey(keys: string[], key: string) {
+  return keys.includes(key)
+    ? keys.filter((storedKey) => storedKey !== key)
+    : [...keys, key]
+}
+
+export function SourcesProvider({ children }: { children: ReactNode }) {
+  const sourceList = useSources(60_000)
+  const [disabledSourceKeys, setDisabledSourceKeys] = useStoredKeys(sourcesStorageKey)
+  const [disabledCategorySlugs, setDisabledCategorySlugs] = useStoredKeys(categoriesStorageKey)
+  const sourceFilter = sourceList.isLoading || sourceList.error
+    ? null
+    : sourceList.sources
+        .filter((source) => !disabledSourceKeys.includes(source.key))
+        .map((source) => source.key)
+        .sort()
+        .join(',')
 
   function toggleSource(key: string) {
-    setDisabledSourceKeys((previous) => {
-      if (previous.includes(key)) {
-        return previous.filter((sourceKey) => sourceKey !== key)
-      }
+    setDisabledSourceKeys((previous) => toggleKey(previous, key))
+  }
 
-      return [...previous, key]
+  // The sources of a category are switched off and on together with it.
+  function toggleCategory(slug: string) {
+    const isDisabling = !disabledCategorySlugs.includes(slug)
+    const categorySourceKeys = sourceList.sources
+      .filter((source) => source.category === slug)
+      .map((source) => source.key)
+
+    setDisabledCategorySlugs((previous) => toggleKey(previous, slug))
+    setDisabledSourceKeys((previous) => {
+      const otherKeys = previous.filter((key) => !categorySourceKeys.includes(key))
+
+      return isDisabling ? [...otherKeys, ...categorySourceKeys] : otherKeys
     })
   }
 
@@ -66,8 +90,10 @@ export function SourcesProvider({ children }: { children: ReactNode }) {
     <SourcesContext.Provider value={{
       ...sourceList,
       disabledSourceKeys,
+      disabledCategorySlugs,
       sourceFilter,
       toggleSource,
+      toggleCategory,
     }}>
       {children}
     </SourcesContext.Provider>

@@ -1,5 +1,6 @@
 {
   "name": "Mérce.hu",
+  "category": "politics",
   "baseUrl": "https://merce.hu/",
   "iconUrl": "https://merce.hu/app/themes/merce/dist/images/favicon/favicon180.png",
   "enabled": true,

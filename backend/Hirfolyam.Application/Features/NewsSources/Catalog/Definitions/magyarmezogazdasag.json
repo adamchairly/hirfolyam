@@ -1,5 +1,6 @@
 {
   "name": "Magyar Mezőgazdaság",
+  "category": "economy",
   "baseUrl": "https://magyarmezogazdasag.hu/",
   "iconUrl": "https://magyarmezogazdasag.hu/app/uploads/2023/08/cropped-mmg-1-1-180x180.png",
   "enabled": true,

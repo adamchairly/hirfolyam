@@ -1,5 +1,6 @@
 {
   "name": "Elle.hu",
+  "category": "lifestyle",
   "baseUrl": "https://elle.hu/",
   "iconUrl": "https://elle.hu/favicon.ico",
   "enabled": true,

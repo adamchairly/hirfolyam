@@ -34,6 +34,7 @@ public sealed class NewsSourceSynchronizer(
                     Name = definition.Name,
                     BaseUrl = definition.BaseUrl,
                     IconUrl = definition.IconUrl,
+                    CategoryId = definition.CategoryId,
                     IsEnabled = definition.Enabled,
                     CreatedAt = now,
                     UpdatedAt = now
@@ -46,6 +47,7 @@ public sealed class NewsSourceSynchronizer(
             if (source.Name == definition.Name
                 && source.BaseUrl == definition.BaseUrl
                 && source.IconUrl == definition.IconUrl
+                && source.CategoryId == definition.CategoryId
                 && source.IsEnabled == definition.Enabled)
             {
                 continue;
@@ -54,6 +56,7 @@ public sealed class NewsSourceSynchronizer(
             source.Name = definition.Name;
             source.BaseUrl = definition.BaseUrl;
             source.IconUrl = definition.IconUrl;
+            source.CategoryId = definition.CategoryId;
             source.IsEnabled = definition.Enabled;
             source.UpdatedAt = now;
             updated++;

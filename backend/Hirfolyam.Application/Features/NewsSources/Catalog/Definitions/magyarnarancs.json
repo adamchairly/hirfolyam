@@ -1,5 +1,6 @@
 {
   "name": "Magyar Narancs",
+  "category": "politics",
   "baseUrl": "https://magyarnarancs.hu/",
   "iconUrl": "https://magyarnarancs.hu/static/frontend/imgs/favicon.png",
   "enabled": true,

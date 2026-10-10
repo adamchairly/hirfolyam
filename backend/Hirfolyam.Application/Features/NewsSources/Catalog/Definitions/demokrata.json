@@ -1,5 +1,6 @@
 {
   "name": "Demokrata",
+  "category": "politics",
   "baseUrl": "https://demokrata.hu/",
   "iconUrl": "https://demokrata.hu/wp-content/uploads/2019/04/152x152/croppeddemikon.png",
   "enabled": true,

@@ -1,5 +1,6 @@
 {
   "name": "Femina",
+  "category": "lifestyle",
   "baseUrl": "https://femina.hu/",
   "iconUrl": "https://femina.hu/neon/static/images/femina/favicon_32x32.png",
   "enabled": true,

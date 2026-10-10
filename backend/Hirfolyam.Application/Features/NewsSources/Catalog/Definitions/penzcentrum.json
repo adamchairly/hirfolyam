@@ -1,5 +1,6 @@
 {
   "name": "Pénzcentrum",
+  "category": "economy",
   "baseUrl": "https://www.penzcentrum.hu/",
   "iconUrl": "https://www.penzcentrum.hu/assets/images/apple-icon-180x180.png",
   "enabled": true,

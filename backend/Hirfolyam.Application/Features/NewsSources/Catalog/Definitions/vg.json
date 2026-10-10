@@ -1,5 +1,6 @@
 {
   "name": "Világgazdaság",
+  "category": "economy",
   "baseUrl": "https://www.vg.hu/",
   "iconUrl": "https://www.vg.hu/apple-touch-icon.png",
   "enabled": true,

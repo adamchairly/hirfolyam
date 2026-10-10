@@ -1,5 +1,6 @@
 {
   "name": "Hír TV",
+  "category": "domestic",
   "baseUrl": "https://hirtv.origo.hu/",
   "iconUrl": "https://hirtv.origo.hu/assets/images/favicons/apple-icon-180x180.png",
   "enabled": true,

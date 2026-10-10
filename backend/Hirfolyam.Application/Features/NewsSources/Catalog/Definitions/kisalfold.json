@@ -1,5 +1,6 @@
 {
   "name": "Kisalföld",
+  "category": "domestic",
   "baseUrl": "https://www.kisalfold.hu/",
   "iconUrl": "https://www.kisalfold.hu/favicon.ico",
   "enabled": true,

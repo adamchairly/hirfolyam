@@ -1,5 +1,6 @@
 {
   "name": "Velvet",
+  "category": "tabloid",
   "baseUrl": "https://velvet.hu/",
   "iconUrl": "https://velvet.hu/assets/images/favicons/apple-touch-icon.png",
   "enabled": true,

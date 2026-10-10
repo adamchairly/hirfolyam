@@ -6,6 +6,7 @@ import { ExchangeRatesWidget } from '@/components/exchange-rates-widget'
 import { SiteSearch } from '@/components/site-search'
 import { WeatherWidget } from '@/components/weather-widget'
 import { useCurrentTime } from '@/hooks/use-current-time'
+import { useSourceSelection } from '@/hooks/use-source-selection'
 import { categories } from '@/lib/categories'
 import { cn } from '@/lib/utils'
 
@@ -20,6 +21,8 @@ const dateFormatter = new Intl.DateTimeFormat('hu-HU', {
 export function SiteHeader() {
   const [searchExpanded, setSearchExpanded] = useState(false)
   const today = useCurrentTime()
+  const { disabledCategorySlugs } = useSourceSelection()
+  const visibleCategories = categories.filter((category) => !disabledCategorySlugs.includes(category.slug))
 
   return (
     <header className="bg-neutral-900 text-neutral-50">
@@ -103,7 +106,7 @@ export function SiteHeader() {
               </NavLink>
             </li>
 
-            {categories.map((category) => (
+            {visibleCategories.map((category) => (
               <li key={category.slug}>
                 <NavLink
                   to={`/${category.slug}`}

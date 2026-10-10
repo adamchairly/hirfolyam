@@ -1,5 +1,6 @@
 {
   "name": "Totalcar.hu",
+  "category": "science-tech",
   "baseUrl": "https://totalcar.hu/",
   "iconUrl": "https://totalcar.hu/static/images/totalcar/favicon_32x32.png",
   "enabled": true,

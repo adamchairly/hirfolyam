@@ -1,5 +1,6 @@
 {
   "name": "Magyar Hírlap",
+  "category": "domestic",
   "baseUrl": "https://magyarhirlap.hu/",
   "iconUrl": "https://magyarhirlap.hu/favicon.ico",
   "enabled": true,

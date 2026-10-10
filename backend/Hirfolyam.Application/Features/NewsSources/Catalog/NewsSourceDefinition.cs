@@ -10,6 +10,8 @@ public sealed class NewsSourceDefinition
 
     public string? IconUrl { get; init; }
 
+    public required int CategoryId { get; init; }
+
     public bool Enabled { get; init; } = true;
 
     public IReadOnlyList<string> Feeds { get; init; } = [];

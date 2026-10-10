@@ -12,5 +12,10 @@ public sealed class NewsSourceConfiguration : IEntityTypeConfiguration<NewsSourc
         builder.Property(source => source.Key).HasMaxLength(100);
         builder.Property(source => source.Name).HasMaxLength(200);
         builder.HasIndex(source => source.Key).IsUnique();
+
+        builder.HasOne(source => source.Category)
+            .WithMany()
+            .HasForeignKey(source => source.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

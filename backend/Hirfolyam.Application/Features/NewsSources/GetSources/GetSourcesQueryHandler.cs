@@ -19,6 +19,7 @@ internal sealed class GetSourcesQueryHandler(IApplicationDbContext context)
                 Name = source.Name,
                 Url = source.BaseUrl,
                 IconUrl = source.IconUrl,
+                Category = source.Category.Slug,
                 ArticleCount = context.Articles.Count(article => article.NewsSourceId == source.Id)
             })
             .ToListAsync(cancellationToken);

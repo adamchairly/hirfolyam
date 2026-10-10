@@ -23,40 +23,40 @@ export function SourceCard({ source, isEnabled, onToggle }: SourceCardProps) {
       title={isEnabled ? 'Forrás kikapcsolása' : 'Forrás bekapcsolása'}
       onClick={onToggle}
       className={cn(
-        'group flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-md border p-2 text-center transition-colors hover:border-neutral-500 hover:bg-neutral-900/70',
-        isEnabled
-          ? 'border-neutral-700/70 bg-neutral-900'
-          : 'border-dashed border-neutral-600 bg-neutral-800',
+        'group flex h-full min-h-14 w-full items-center gap-3 rounded-md border border-neutral-700/70 bg-neutral-900 px-3 py-2 text-left transition-[border-color,background-color,opacity] hover:border-neutral-500',
+        !isEnabled && 'opacity-35 hover:opacity-60',
       )}
     >
       <span className={cn(
-        'flex aspect-square w-[44%] max-w-20 shrink-0 items-center justify-center overflow-hidden',
-        !isEnabled && 'opacity-40 grayscale',
+        'flex size-8 shrink-0 items-center justify-center overflow-hidden',
+        !isEnabled && 'grayscale',
       )}>
         {icon && icon !== failedIconUrl ? (
           <img
             src={icon}
             alt=""
-            width={80}
-            height={80}
-            className="aspect-square size-full rounded-sm object-contain"
+            width={32}
+            height={32}
+            className="size-full rounded-sm object-contain"
             onError={() => {
               setFailedIconUrl(icon)
             }}
           />
         ) : (
-          <span aria-hidden="true" className="text-2xl font-bold text-neutral-300">
+          <span aria-hidden="true" className="text-sm font-bold text-neutral-300">
             {source.name.slice(0, 2).toLocaleUpperCase('hu-HU')}
           </span>
         )}
       </span>
 
-      <span className="text-xs font-bold uppercase tracking-wide text-neutral-100">
-        {source.name}
-      </span>
+      <span className="flex min-w-0 flex-col gap-0.5">
+        <span className="line-clamp-2 text-xs font-bold uppercase leading-4 tracking-wide text-neutral-100">
+          {source.name}
+        </span>
 
-      <span className="text-xs font-semibold uppercase tabular-nums text-neutral-300 transition-colors group-hover:text-neutral-50">
-        {isEnabled ? `${countFormatter.format(source.articleCount)} cikk` : 'Kikapcsolva'}
+        <span className="text-[11px] font-semibold uppercase leading-4 tabular-nums text-neutral-400 transition-colors group-hover:text-neutral-200">
+          {countFormatter.format(source.articleCount)} cikk
+        </span>
       </span>
     </button>
   )

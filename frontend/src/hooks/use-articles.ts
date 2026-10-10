@@ -7,14 +7,18 @@ import type { Article } from '@/types/article'
 export function useArticles(category: string | undefined, search?: string) {
   const {
     sourceFilter,
+    disabledCategorySlugs,
     isLoading: sourcesLoading,
     error: sourcesError,
     retry: retrySources,
   } = useSourceSelection()
+  // A category page shows its own articles even when the category is hidden.
+  const categoryFilter = category ? '' : [...disabledCategorySlugs].sort().join(',')
   const filterKey = JSON.stringify([
     category,
     search,
     sourceFilter,
+    categoryFilter,
   ])
   const [previousFilterKey, setPreviousFilterKey] = useState(filterKey)
   const [articles, setArticles] = useState<Article[]>([])
@@ -53,6 +57,7 @@ export function useArticles(category: string | undefined, search?: string) {
           page,
           controller.signal,
           requestedSources,
+          categoryFilter ? categoryFilter.split(',') : [],
           search,
         )
 
@@ -89,7 +94,7 @@ export function useArticles(category: string | undefined, search?: string) {
     return () => {
       controller.abort()
     }
-  }, [category, search, sourceFilter, page, attempt])
+  }, [category, search, sourceFilter, categoryFilter, page, attempt])
 
   function loadMore() {
     if (isLoading || error || sourcesLoading || sourcesError || !hasMore) {

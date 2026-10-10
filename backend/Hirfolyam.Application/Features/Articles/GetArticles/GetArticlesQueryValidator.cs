@@ -7,6 +7,10 @@ public sealed class GetArticlesQueryValidator : AbstractValidator<GetArticlesQue
     public GetArticlesQueryValidator()
     {
         RuleFor(query => query.Category).MaximumLength(64);
+        RuleFor(query => query.ExcludedCategories)
+            .Must(categories => categories is null || categories.Length <= 20)
+            .WithMessage("Exclude no more than 20 categories.");
+        RuleForEach(query => query.ExcludedCategories).MaximumLength(64);
         RuleFor(query => query.Source).MaximumLength(100);
         RuleFor(query => query.Sources)
             .Must(sources => sources is null || sources.Length <= 100)

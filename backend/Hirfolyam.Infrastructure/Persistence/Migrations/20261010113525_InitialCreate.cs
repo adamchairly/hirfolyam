@@ -56,6 +56,7 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     BaseUrl = table.Column<string>(type: "text", nullable: false),
                     IconUrl = table.Column<string>(type: "text", nullable: true),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
                     IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     LastImportedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -64,6 +65,12 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NewsSources", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NewsSources_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,6 +197,11 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                 column: "GeneratedAt");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NewsSources_CategoryId",
+                table: "NewsSources",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_NewsSources_Key",
                 table: "NewsSources",
                 column: "Key",
@@ -206,13 +218,13 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                 name: "HotTopics");
 
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "NewsSources");
 
             migrationBuilder.DropTable(
                 name: "HotTopicSnapshots");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

@@ -1,5 +1,6 @@
 {
   "name": "Portfolio.hu",
+  "category": "economy",
   "baseUrl": "https://www.portfolio.hu/",
   "iconUrl": "https://assets.portfolio.hu/images/favicon/favicon-96x96.png",
   "enabled": true,

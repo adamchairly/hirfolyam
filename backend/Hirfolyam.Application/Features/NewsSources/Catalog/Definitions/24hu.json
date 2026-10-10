@@ -1,5 +1,6 @@
 {
   "name": "24.hu",
+  "category": "domestic",
   "baseUrl": "https://24.hu/",
   "iconUrl": "https://s.24.hu/apple-touch-icon-180x180.png",
   "enabled": true,

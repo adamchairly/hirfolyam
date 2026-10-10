@@ -20,6 +20,21 @@ internal sealed class GetArticlesQueryHandler(IApplicationDbContext context)
                 article.Category != null && article.Category.Slug == category);
         }
 
+        if (request.ExcludedCategories is not null)
+        {
+            var excludedCategories = request.ExcludedCategories
+                .Where(category => !string.IsNullOrWhiteSpace(category))
+                .Select(category => category!.Trim().ToLowerInvariant())
+                .Distinct()
+                .ToArray();
+
+            if (excludedCategories.Length > 0)
+            {
+                articles = articles.Where(article =>
+                    article.Category == null || !excludedCategories.Contains(article.Category.Slug));
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(request.Source))
         {
             var source = request.Source.Trim().ToLowerInvariant();

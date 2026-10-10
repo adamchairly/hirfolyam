@@ -1,5 +1,6 @@
 {
   "name": "Nyugat.hu",
+  "category": "domestic",
   "baseUrl": "https://www.nyugat.hu/",
   "iconUrl": "https://www.nyugat.hu/static/nyugat/favicon-96x96.png",
   "enabled": true,

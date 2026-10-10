@@ -1,5 +1,6 @@
 {
   "name": "Euronews Magyarország",
+  "category": "world",
   "baseUrl": "https://hu.euronews.com/",
   "iconUrl": "https://hu.euronews.com/favicon-96x96.png",
   "enabled": true,

@@ -1,5 +1,6 @@
 {
   "name": "Nők Lapja Café",
+  "category": "lifestyle",
   "baseUrl": "https://nlc.hu/",
   "iconUrl": "https://nlc.hu/themes/nlcafe/favicon-32x32.png",
   "enabled": true,

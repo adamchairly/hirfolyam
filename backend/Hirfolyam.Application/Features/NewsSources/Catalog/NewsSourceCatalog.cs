@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Hirfolyam.Domain.Catalogs;
 
 namespace Hirfolyam.Application.Features;
 
@@ -97,6 +98,9 @@ public sealed partial class NewsSourceCatalog
                 throw new InvalidOperationException("An enabled source needs at least one feed.");
             }
 
+            var category = Categories.All.SingleOrDefault(category => category.Slug == file.Category)
+                ?? throw new InvalidOperationException($"Unknown source category: {file.Category}.");
+
             string?[] urls = [file.BaseUrl, file.IconUrl, .. file.Feeds];
 
             foreach (var url in urls.OfType<string>())
@@ -113,6 +117,7 @@ public sealed partial class NewsSourceCatalog
                 Name = file.Name,
                 BaseUrl = file.BaseUrl,
                 IconUrl = file.IconUrl,
+                CategoryId = category.Id,
                 Enabled = file.Enabled,
                 Feeds = file.Feeds.Distinct(StringComparer.Ordinal).ToArray(),
                 CategoryRules = new CategoryRules(file.Categories.Default, file.Categories.Ignore, file.Categories.Rules)
@@ -130,6 +135,8 @@ public sealed partial class NewsSourceCatalog
     private sealed class SourceFile
     {
         public required string Name { get; init; }
+
+        public required string Category { get; init; }
 
         public required string BaseUrl { get; init; }
 

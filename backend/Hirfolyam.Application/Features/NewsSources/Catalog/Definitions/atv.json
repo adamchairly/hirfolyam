@@ -1,5 +1,6 @@
 {
   "name": "ATV",
+  "category": "domestic",
   "baseUrl": "https://www.atv.hu/",
   "iconUrl": "https://www.atv.hu/wp-content/uploads/2024/11/favicon-1.ico",
   "enabled": true,

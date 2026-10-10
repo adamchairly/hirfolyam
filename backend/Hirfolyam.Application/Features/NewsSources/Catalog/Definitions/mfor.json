@@ -1,5 +1,6 @@
 {
   "name": "Mfor.hu",
+  "category": "economy",
   "baseUrl": "https://mfor.hu/",
   "iconUrl": "https://mfor.hu/mfor/images/icons/apple-touch-icon-152x152.png",
   "enabled": true,

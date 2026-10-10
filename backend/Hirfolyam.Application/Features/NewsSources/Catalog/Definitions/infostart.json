@@ -1,5 +1,6 @@
 {
   "name": "Infostart",
+  "category": "domestic",
   "baseUrl": "https://infostart.hu/",
   "iconUrl": "https://infostart.hu/images/android-icon-192x192.png",
   "enabled": true,

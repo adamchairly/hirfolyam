@@ -1,5 +1,6 @@
 {
   "name": "Roadster",
+  "category": "lifestyle",
   "baseUrl": "https://roadster.hu/",
   "iconUrl": "https://roadster.hu/apple-touch-icon.png",
   "enabled": true,

@@ -1,5 +1,6 @@
 {
   "name": "BorsOnline",
+  "category": "tabloid",
   "baseUrl": "https://borsonline.origo.hu/",
   "iconUrl": "https://borsonline.origo.hu/apple-touch-icon.png",
   "enabled": true,
