@@ -23,6 +23,13 @@ function getCalendarDay(date: Date): number {
 
 export function formatPublishedAt(value: string, now: Date): string {
   const publishedAt = new Date(value)
+  const elapsedMs = now.getTime() - publishedAt.getTime()
+
+  if (elapsedMs < 3_600_000) {
+    const minutesAgo = Math.max(1, Math.floor(elapsedMs / 60_000))
+    return `${minutesAgo} perce`
+  }
+
   const daysAgo = getCalendarDay(now) - getCalendarDay(publishedAt)
   const time = timeFormatter.format(publishedAt)
 

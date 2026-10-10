@@ -53,17 +53,11 @@ function HotTopicList() {
   return (
     <section aria-label="AI-összefoglaló">
       <p className="flex items-center justify-end gap-1.5 text-[10px] leading-4 text-neutral-400 sm:text-[11px]">
-        <span>
-          AI-összefoglaló
-          {updatedAt && !Number.isNaN(updatedAt.getTime()) && (
-            <>
-              {' · '}
-              <time dateTime={updatedAt.toISOString()} className="tabular-nums text-neutral-300">
-                {timeFormatter.format(updatedAt)}
-              </time>
-            </>
-          )}
-        </span>
+        {updatedAt && !Number.isNaN(updatedAt.getTime()) && (
+          <time dateTime={updatedAt.toISOString()} className="tabular-nums text-neutral-300">
+            {timeFormatter.format(updatedAt)}
+          </time>
+        )}
         <AiNotice />
       </p>
 
