@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import type { ArticlesResponse } from '@/types/article'
-import type { HotTopicsResponse } from '@/types/hot-topic'
+import type { HotTopicDetail, HotTopicsResponse } from '@/types/hot-topic'
 import type { SourcesResponse } from '@/types/source'
 
 const api = axios.create({
@@ -53,6 +53,14 @@ export async function getArticlesByIds(ids: number[], signal: AbortSignal): Prom
 
 export async function getHotTopics(signal: AbortSignal): Promise<HotTopicsResponse> {
   const response = await api.get<HotTopicsResponse>('/hot-topics', {
+    signal,
+  })
+
+  return response.data
+}
+
+export async function getHotTopic(id: number, signal: AbortSignal): Promise<HotTopicDetail> {
+  const response = await api.get<HotTopicDetail>(`/hot-topics/${id}`, {
     signal,
   })
 

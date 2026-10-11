@@ -1,5 +1,6 @@
 using Hirfolyam.Application.Features;
 using Hirfolyam.Application.Options;
+using Hirfolyam.Application.Shared;
 using Hirfolyam.Domain.Entities;
 using Hirfolyam.Tests.Support;
 using OptionsFactory = Microsoft.Extensions.Options.Options;
@@ -95,6 +96,56 @@ public sealed class GetHotTopicsQueryHandlerTests
 
         Assert.That(result.Items, Is.Empty);
         Assert.That(result.GeneratedAt, Is.Null);
+    }
+
+    [Test]
+    public async Task ATopicIsReturnedByItsIdWithTheListedArticlesNewestFirst()
+    {
+        await SeedAsync(
+            [
+                CreateArticle(1, 1, Now.AddHours(-2)),
+                CreateArticle(2, 2, Now.AddHours(-1)),
+                CreateArticle(3, 1, Now.AddHours(-3))
+            ],
+            CreateSnapshot(Now.AddMinutes(-10), CreateTopic(1, "First", [1, 2, 99])));
+
+        var id = (await HandleAsync()).Items.Single().Id;
+        var topic = await HandleTopicAsync(id);
+
+        Assert.That(topic.Id, Is.EqualTo(id));
+        Assert.That(topic.Title, Is.EqualTo("First"));
+        Assert.That(topic.Summary, Is.EqualTo("First summary."));
+        Assert.That(topic.GeneratedAt, Is.EqualTo(Now.AddMinutes(-10)));
+        Assert.That(topic.Articles.Select(article => article.Id), Is.EqualTo(new long[] { 2, 1 }));
+        Assert.That(topic.Articles[0].Source.Key, Is.EqualTo("index"));
+    }
+
+    [Test]
+    public async Task ExpiredTopicsCanStillBeOpened()
+    {
+        var old = CreateTopic(1, "Old", [1]);
+        old.Id = 5;
+        await SeedAsync([CreateArticle(1, 1, Now)], CreateSnapshot(Now.AddDays(-2), old));
+
+        var topic = await HandleTopicAsync(5);
+
+        Assert.That(topic.Title, Is.EqualTo("Old"));
+    }
+
+    [Test]
+    public async Task AnUnknownTopicIsNotFound()
+    {
+        await SeedAsync([CreateArticle(1, 1, Now)], CreateSnapshot(Now, CreateTopic(1, "Topic", [1])));
+
+        Assert.That(() => HandleTopicAsync(42), Throws.TypeOf<NotFoundException>());
+    }
+
+    private async Task<GetHotTopicResponse> HandleTopicAsync(long id)
+    {
+        await using var context = TestDatabase.Create(databaseName);
+        var handler = new GetHotTopicQueryHandler(context);
+
+        return await handler.Handle(new GetHotTopicQuery { Id = id }, CancellationToken.None);
     }
 
     private async Task<GetHotTopicsResponse> HandleAsync()

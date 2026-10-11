@@ -13,6 +13,8 @@ public sealed class GetHotTopicsResponse
 
 public sealed class HotTopicResponse
 {
+    public long Id { get; init; }
+
     public required string Title { get; init; }
 
     public required string Summary { get; init; }

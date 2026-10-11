@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using FluentValidation;
 using FluentValidation.Results;
+using Hirfolyam.Application.Shared;
 using Hirfolyam.Presentation.Middlewares;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -24,6 +25,17 @@ public sealed class ExceptionMiddlewareTests
         Assert.That(body.GetProperty("code").GetInt32(), Is.EqualTo(422));
         Assert.That(body.GetProperty("message").GetString(),
             Is.EqualTo("The page must be greater than zero.; The page size must not exceed 100."));
+    }
+
+    [Test]
+    public async Task MissingResourceReturns404WithItsMessage()
+    {
+        var (context, body) = await InvokeAsync(new NotFoundException("Hot topic 5 was not found."));
+
+        Assert.That(context.Response.StatusCode, Is.EqualTo(StatusCodes.Status404NotFound));
+        Assert.That(body.GetProperty("error").GetString(), Is.EqualTo("NotFound"));
+        Assert.That(body.GetProperty("code").GetInt32(), Is.EqualTo(404));
+        Assert.That(body.GetProperty("message").GetString(), Is.EqualTo("Hot topic 5 was not found."));
     }
 
     // An InvalidOperationException is an internal failure too, for example from EF Core.

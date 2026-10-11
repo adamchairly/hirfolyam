@@ -96,7 +96,7 @@ export function SiteHeader() {
               <NavLink
                 to="/fresh"
                 className={({ isActive }) => cn(
-                  'block whitespace-nowrap border-b-2 py-3 text-xs font-semibold uppercase tracking-wide transition-colors',
+                  'block whitespace-nowrap border-b-2 py-3 text-sm font-semibold transition-colors',
                   isActive
                     ? 'border-neutral-100 text-neutral-50'
                     : 'border-transparent text-neutral-400 hover:border-neutral-600 hover:text-neutral-100',
@@ -111,7 +111,7 @@ export function SiteHeader() {
                 <NavLink
                   to={`/${category.slug}`}
                   className={({ isActive }) => cn(
-                    'block whitespace-nowrap border-b-2 py-3 text-xs font-semibold uppercase tracking-wide transition-colors',
+                    'block whitespace-nowrap border-b-2 py-3 text-sm font-semibold transition-colors',
                     isActive
                       ? 'border-neutral-100 text-neutral-50'
                       : 'border-transparent text-neutral-400 hover:border-neutral-600 hover:text-neutral-100',

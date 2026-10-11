@@ -54,7 +54,7 @@ export function SourcesPage() {
                   toggleCategory(category.slug)
                 }}
                 className={cn(
-                  'inline-flex min-h-9 items-center rounded-md bg-neutral-100 px-4 text-xs font-semibold uppercase tracking-wide text-neutral-950 transition-[background-color,opacity]',
+                  'inline-flex min-h-9 items-center rounded-md bg-neutral-100 px-4 text-sm font-semibold text-neutral-950 transition-[background-color,opacity]',
                   isEnabled ? 'hover:bg-neutral-300' : 'opacity-35 hover:opacity-60',
                 )}
               >
@@ -100,7 +100,7 @@ export function SourcesPage() {
           <h2
             id={`sources-${category.slug}`}
             className={cn(
-              'mb-3 text-xs font-semibold uppercase tracking-wide transition-colors',
+              'mb-3 text-sm font-semibold transition-colors',
               isEnabled ? 'text-neutral-300' : 'text-neutral-600',
             )}
           >

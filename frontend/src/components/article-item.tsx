@@ -16,12 +16,13 @@ interface ArticleItemProps {
   now: Date
   search?: string
   layout?: ArticleLayout
+  showLead?: boolean
 }
 
-export function ArticleItem({ article, now, search = '', layout = 'list' }: ArticleItemProps) {
+export function ArticleItem({ article, now, search = '', layout = 'list', showLead = true }: ArticleItemProps) {
   const [imageFailed, setImageFailed] = useState(false)
   const [failedIconUrl, setFailedIconUrl] = useState<string | null>(null)
-  const lead = toPlainText(article.lead)
+  const lead = showLead ? toPlainText(article.lead) : ''
   const icon = article.source.iconUrl
   const imageUrl = article.imageUrl?.trim()
   const hasImage = Boolean(imageUrl) && !imageFailed

@@ -1,0 +1,11 @@
+{
+  "name": "Recorder",
+  "category": "culture",
+  "baseUrl": "https://recorder.blog.hu/",
+  "iconUrl": "https://rec.hu/wp-content/uploads/2020/08/cropped-rec.hu_favicon_32x32px-1-180x180.png",
+  "enabled": true,
+  "feeds": ["https://recorder.blog.hu/rss"],
+  "categories": {
+    "default": "culture"
+  }
+}

@@ -1,6 +1,7 @@
 import { ArticleItem } from '@/components/article-item'
 import { useArticleLayout } from '@/hooks/use-article-layout'
 import { useCurrentTime } from '@/hooks/use-current-time'
+import type { ArticleLayout } from '@/lib/article-layout'
 import type { Article } from '@/types/article'
 
 interface ArticleListProps {
@@ -8,10 +9,14 @@ interface ArticleListProps {
   label: string
   isLoading: boolean
   search?: string
+  // Overrides the layout chosen by the reader.
+  layout?: ArticleLayout
+  showLeads?: boolean
 }
 
-export function ArticleList({ articles, label, isLoading, search }: ArticleListProps) {
-  const { layout } = useArticleLayout()
+export function ArticleList({ articles, label, isLoading, search, layout: fixedLayout, showLeads = true }: ArticleListProps) {
+  const { layout: chosenLayout } = useArticleLayout()
+  const layout = fixedLayout ?? chosenLayout
   const now = useCurrentTime()
 
   return (
@@ -24,7 +29,7 @@ export function ArticleList({ articles, label, isLoading, search }: ArticleListP
     >
       {articles.map((article) => (
         <li key={article.id}>
-          <ArticleItem article={article} now={now} search={search} layout={layout} />
+          <ArticleItem article={article} now={now} search={search} layout={layout} showLead={showLeads} />
         </li>
       ))}
     </ul>

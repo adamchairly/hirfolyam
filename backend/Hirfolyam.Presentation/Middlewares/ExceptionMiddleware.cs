@@ -29,6 +29,15 @@ public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionM
                 Code = StatusCodes.Status422UnprocessableEntity
             });
         }
+        catch (NotFoundException exception) when (!context.Response.HasStarted)
+        {
+            await WriteAsync(context, new ErrorResponse
+            {
+                Error = ErrorCodes.NotFound,
+                Message = exception.Message,
+                Code = StatusCodes.Status404NotFound
+            });
+        }
         catch (Exception exception)
         {
             logger.LogError(exception, "Unhandled exception while processing {Method} {Path}",

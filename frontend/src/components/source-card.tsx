@@ -51,11 +51,11 @@ export function SourceCard({ source, isEnabled, onToggle }: SourceCardProps) {
       </span>
 
       <span className="flex min-w-0 flex-col gap-0.5">
-        <span className="line-clamp-2 text-xs font-bold uppercase leading-4 tracking-wide text-neutral-100">
+        <span className="line-clamp-2 text-sm font-semibold leading-5 text-neutral-100">
           {source.name}
         </span>
 
-        <span className="text-[11px] font-semibold uppercase leading-4 tabular-nums text-neutral-400 transition-colors group-hover:text-neutral-200">
+        <span className="text-xs leading-4 tabular-nums text-neutral-400 transition-colors group-hover:text-neutral-200">
           {countFormatter.format(source.articleCount)} cikk
         </span>
       </span>

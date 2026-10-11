@@ -16,4 +16,13 @@ public sealed class HotTopicsController(ISender sender) : ControllerBase
     {
         return await sender.Send(new GetHotTopicsQuery(), cancellationToken);
     }
+
+    [HttpGet("{id:long}")]
+    [ProducesResponseType<GetHotTopicResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status500InternalServerError)]
+    public async Task<GetHotTopicResponse> GetByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return await sender.Send(new GetHotTopicQuery { Id = id }, cancellationToken);
+    }
 }

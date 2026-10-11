@@ -1,4 +1,5 @@
-import { useId, useState } from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { useHotTopics } from '@/hooks/use-hot-topics'
 import { useHotTopicsVisibility } from '@/hooks/use-hot-topics-visibility'
@@ -57,48 +58,24 @@ interface HotTopicItemProps {
 }
 
 function HotTopicItem({ topic, articles }: HotTopicItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const detailsId = useId()
-
   return (
     <li>
       <h3 className="text-base leading-snug font-bold tracking-tight text-neutral-50 sm:inline sm:text-lg">
-        {/* On small screens only the titles show until a topic is opened. */}
-        <button
-          type="button"
-          aria-expanded={isExpanded}
-          aria-controls={detailsId}
-          className="flex w-full items-start justify-between gap-3 text-left sm:hidden"
-          onClick={() => {
-            setIsExpanded((previous) => !previous)
-          }}
+        <Link
+          to={`/topics/${topic.id}`}
+          className="underline-offset-4 transition-colors hover:text-white hover:underline"
         >
-          <span>{topic.title}</span>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-            className={cn('mt-1 size-4 shrink-0 text-neutral-400 transition-transform', isExpanded && 'rotate-180')}
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </button>
-        <span className="max-sm:hidden">{topic.title}</span>
+          {topic.title}
+        </Link>
       </h3>
 
       {/* The sources follow the title on wide screens and the summary on small ones. */}
       <SourceIcons articles={articles} className="max-sm:hidden" />
 
-      <div id={detailsId} className={cn(!isExpanded && 'max-sm:hidden')}>
-        <p className="mt-1.5 text-sm leading-6 text-neutral-300">
-          {topic.summary}
-          <SourceIcons articles={articles} className="sm:hidden" />
-        </p>
-      </div>
+      <p className="mt-1.5 text-sm leading-6 text-neutral-300">
+        {topic.summary}
+        <SourceIcons articles={articles} className="sm:hidden" />
+      </p>
     </li>
   )
 }

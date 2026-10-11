@@ -1,8 +1,11 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { useArticleLayout } from '@/hooks/use-article-layout'
+import type { ArticleLayout } from '@/lib/article-layout'
 
-export function ArticleListSkeleton() {
-  const { layout } = useArticleLayout()
+// The layout overrides the one chosen by the reader.
+export function ArticleListSkeleton({ layout: fixedLayout }: { layout?: ArticleLayout }) {
+  const { layout: chosenLayout } = useArticleLayout()
+  const layout = fixedLayout ?? chosenLayout
 
   return (
     <div role="status">

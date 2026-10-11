@@ -9,6 +9,7 @@ export interface HotTopicArticle {
 }
 
 export interface HotTopic {
+  id: number
   title: string
   summary: string
   articles: HotTopicArticle[]
@@ -17,4 +18,13 @@ export interface HotTopic {
 export interface HotTopicsResponse {
   items: HotTopic[]
   generatedAt: string | null
+}
+
+// One topic with its articles in the usual list shape.
+export interface HotTopicDetail {
+  id: number
+  title: string
+  summary: string
+  generatedAt: string
+  articles: Article[]
 }

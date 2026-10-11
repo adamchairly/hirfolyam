@@ -53,6 +53,7 @@ internal sealed class GetHotTopicsQueryHandler(
             Items = topics
                 .Select(topic => new HotTopicResponse
                 {
+                    Id = topic.Id,
                     Title = topic.Title,
                     Summary = topic.Summary,
                     Articles = topic.ArticleIds
