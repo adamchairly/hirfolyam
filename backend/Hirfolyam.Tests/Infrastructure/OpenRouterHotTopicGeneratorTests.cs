@@ -11,13 +11,13 @@ namespace Hirfolyam.Tests.Infrastructure;
 public sealed class OpenRouterHotTopicGeneratorTests
 {
     private const string ValidTopics = """
-        {"topics":[{"title":"Orosz dízel","summary":"Egy mondat.","sourceIds":[1,2]}]}
+        {"topics":[{"title":"Orosz dízel","summary":"Egy mondat.","articleIds":[1,2]}]}
         """;
 
     private static readonly HotTopicArticle[] Articles =
     [
-        new(1, "Telex", "Első cím", "Első bevezető"),
-        new(2, "Index", "Második cím", "Második bevezető")
+        new(1, 1, "Telex", "Első cím", "Első bevezető"),
+        new(2, 2, "Index", "Második cím", "Második bevezető")
     ];
 
     [Test]
@@ -48,6 +48,7 @@ public sealed class OpenRouterHotTopicGeneratorTests
         var first = input.RootElement[0];
 
         Assert.That(root.GetProperty("model").GetString(), Is.EqualTo("openai/gpt-6-luna"));
+        Assert.That(root.GetProperty("max_tokens").GetInt32(), Is.EqualTo(16000));
         Assert.That(root.GetProperty("reasoning").GetProperty("effort").GetString(), Is.EqualTo("low"));
         Assert.That(root.TryGetProperty("temperature", out _), Is.False);
         Assert.That(root.GetProperty("messages")[0].GetProperty("content").GetString(), Does.Contain("Find the 3 hottest topics"));
@@ -73,7 +74,7 @@ public sealed class OpenRouterHotTopicGeneratorTests
     {
         var handler = new StubHandler(Envelope(ValidTopics));
 
-        await GenerateAsync(handler, articles: [new HotTopicArticle(1, "Telex", "Cím", new string('b', 5000))]);
+        await GenerateAsync(handler, articles: [new HotTopicArticle(1, 1, "Telex", "Cím", new string('b', 5000))]);
         using var request = JsonDocument.Parse(handler.RequestBody!);
         using var input = JsonDocument.Parse(request.RootElement.GetProperty("messages")[1].GetProperty("content").GetString()!);
 
@@ -85,8 +86,8 @@ public sealed class OpenRouterHotTopicGeneratorTests
     [TestCase("not JSON")]
     [TestCase("{\"topics\":null}")]
     [TestCase("{\"topics\":[{\"title\":\"T\",\"summary\":\"S\"}]}")]
-    [TestCase("{\"topics\":[{\"title\":\"T\",\"summary\":\"S\",\"sourceIds\":[\"1\"]}]}")]
-    [TestCase("{\"topics\":[{\"title\":\"T\",\"summary\":\"S\",\"sourceIds\":[1],\"extra\":1}]}")]
+    [TestCase("{\"topics\":[{\"title\":\"T\",\"summary\":\"S\",\"articleIds\":[\"1\"]}]}")]
+    [TestCase("{\"topics\":[{\"title\":\"T\",\"summary\":\"S\",\"articleIds\":[1],\"extra\":1}]}")]
     public void InvalidTopicsAreRejected(string topics)
     {
         var handler = new StubHandler(Envelope(topics));
@@ -102,17 +103,39 @@ public sealed class OpenRouterHotTopicGeneratorTests
         Assert.That(() => GenerateAsync(handler), Throws.TypeOf<InvalidDataException>());
     }
 
+    [Test]
+    public void ErrorResponseIsRejected()
+    {
+        var handler = new StubHandler("""{"error":{"message":"Rate limited"},"choices":[]}""");
+
+        Assert.That(() => GenerateAsync(handler), Throws.TypeOf<InvalidDataException>());
+    }
+
+    [TestCase("")]
+    [TestCase("  ")]
+    public void MissingApiKeyFailsWithoutARequest(string apiKey)
+    {
+        var handler = new StubHandler(Envelope(ValidTopics));
+
+        Assert.That(() => GenerateAsync(handler, apiKey: apiKey), Throws.TypeOf<InvalidOperationException>());
+        Assert.That(handler.RequestBody, Is.Null);
+    }
+
     private static async Task<HotTopicGeneration> GenerateAsync(
         StubHandler handler,
         int topicCount = 5,
         string reasoningEffort = "low",
-        HotTopicArticle[]? articles = null)
+        HotTopicArticle[]? articles = null,
+        string apiKey = "test-key")
     {
         using var client = new HttpClient(handler);
         var generator = new OpenRouterHotTopicGenerator(
             client,
-            OptionsFactory.Create(new OpenRouterOptions { ApiKey = "test-key" }),
-            OptionsFactory.Create(new HotTopicModelOptions { ReasoningEffort = reasoningEffort }));
+            OptionsFactory.Create(new OpenRouterOptions
+            {
+                ApiKey = apiKey,
+                HotTopics = new HotTopicModelOptions { ReasoningEffort = reasoningEffort }
+            }));
 
         return await generator.GenerateAsync(articles ?? Articles, topicCount, CancellationToken.None);
     }

@@ -1,6 +1,6 @@
 namespace Hirfolyam.Application.Features;
 
-public sealed record HotTopicArticle(long Id, string Source, string Title, string Lead);
+public sealed record HotTopicArticle(long Id, int SourceId, string SourceName, string Title, string LeadText);
 
 public sealed record HotTopicDraft(string Title, string Summary, IReadOnlyList<long> ArticleIds);
 

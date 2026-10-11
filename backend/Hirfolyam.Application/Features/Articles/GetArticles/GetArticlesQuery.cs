@@ -10,8 +10,6 @@ public sealed class GetArticlesQuery : IRequest<PagedResult<ArticleListItemRespo
     // Articles in these categories are left out. Articles without a category are kept.
     public string?[]? ExcludedCategories { get; init; }
 
-    public string? Source { get; init; }
-
     // A missing list includes all sources. An empty list includes none.
     public string?[]? Sources { get; init; }
 

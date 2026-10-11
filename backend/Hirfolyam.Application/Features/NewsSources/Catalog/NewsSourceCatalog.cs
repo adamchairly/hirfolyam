@@ -118,7 +118,7 @@ public sealed partial class NewsSourceCatalog
                 BaseUrl = file.BaseUrl,
                 IconUrl = file.IconUrl,
                 CategoryId = category.Id,
-                Enabled = file.Enabled,
+                IsEnabled = file.Enabled,
                 Feeds = file.Feeds.Distinct(StringComparer.Ordinal).ToArray(),
                 CategoryRules = new CategoryRules(file.Categories.Default, file.Categories.Ignore, file.Categories.Rules)
             };

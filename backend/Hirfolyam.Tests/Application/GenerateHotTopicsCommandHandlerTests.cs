@@ -35,9 +35,9 @@ public sealed class GenerateHotTopicsCommandHandlerTests
         await HandleAsync(generator, articleCount: 2);
 
         Assert.That(generator.Articles.Select(article => article.Id), Is.EqualTo(new long[] { 2, 3 }));
-        Assert.That(generator.Articles[0].Source, Is.EqualTo("Index"));
+        Assert.That(generator.Articles[0].SourceName, Is.EqualTo("Index"));
         Assert.That(generator.Articles[0].Title, Is.EqualTo("Title 2"));
-        Assert.That(generator.Articles[0].Lead, Is.EqualTo("Plain lead 2"));
+        Assert.That(generator.Articles[0].LeadText, Is.EqualTo("Plain lead 2"));
         Assert.That(generator.TopicCount, Is.EqualTo(5));
     }
 
@@ -64,11 +64,9 @@ public sealed class GenerateHotTopicsCommandHandlerTests
             ]
         };
 
-        var result = await HandleAsync(generator);
+        await HandleAsync(generator);
         var topics = await ReadTopicsAsync();
 
-        Assert.That(result.Succeeded, Is.True);
-        Assert.That(result.Topics, Is.EqualTo(3));
         Assert.That(topics.Select(topic => topic.Title), Is.EqualTo(new[]
         {
             "Three sources",
@@ -187,10 +185,8 @@ public sealed class GenerateHotTopicsCommandHandlerTests
             Topics = [new HotTopicDraft("One source", "Summary.", [1, 2])]
         };
 
-        var result = await HandleAsync(generator);
+        await HandleAsync(generator);
 
-        Assert.That(result.Succeeded, Is.True);
-        Assert.That(result.Topics, Is.Zero);
         Assert.That((await ReadSnapshotsAsync()).Single().Topics, Is.Empty);
     }
 
@@ -204,9 +200,8 @@ public sealed class GenerateHotTopicsCommandHandlerTests
             Failure = new HttpRequestException("Service unavailable", null, System.Net.HttpStatusCode.ServiceUnavailable)
         };
 
-        var result = await HandleAsync(generator);
+        await HandleAsync(generator);
 
-        Assert.That(result.Succeeded, Is.False);
         Assert.That((await ReadSnapshotsAsync()).Single().Topics.Single().Title, Is.EqualTo("Old"));
     }
 
@@ -215,14 +210,13 @@ public sealed class GenerateHotTopicsCommandHandlerTests
     {
         var generator = new StubGenerator();
 
-        var result = await HandleAsync(generator);
+        await HandleAsync(generator);
 
-        Assert.That(result.Succeeded, Is.False);
         Assert.That(generator.Articles, Is.Empty);
         Assert.That(await ReadSnapshotsAsync(), Is.Empty);
     }
 
-    private async Task<GenerateHotTopicsResponse> HandleAsync(
+    private async Task HandleAsync(
         StubGenerator generator,
         int articleCount = 100,
         int topicCount = 5)
@@ -239,7 +233,7 @@ public sealed class GenerateHotTopicsCommandHandlerTests
             new FixedTimeProvider(Now),
             NullLogger<GenerateHotTopicsCommandHandler>.Instance);
 
-        return await handler.Handle(new GenerateHotTopicsCommand(), CancellationToken.None);
+        await handler.Handle(new GenerateHotTopicsCommand(), CancellationToken.None);
     }
 
     private async Task SeedAsync(params Article[] articles)
@@ -299,7 +293,7 @@ public sealed class GenerateHotTopicsCommandHandlerTests
             UrlHash = id.ToString(),
             Title = $"Title {id}",
             Lead = $"<p>Plain lead {id}</p>",
-            LeadSearchText = $"Plain lead {id}",
+            LeadText = $"Plain lead {id}",
             PublishedAt = publishedAt,
             CreatedAt = publishedAt,
             UpdatedAt = publishedAt

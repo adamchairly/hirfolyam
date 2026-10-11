@@ -3,20 +3,13 @@ using Hirfolyam.Application.Shared;
 
 namespace Hirfolyam.Presentation.Middlewares;
 
-public sealed class ExceptionMiddleware
+public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
         {
@@ -24,41 +17,50 @@ public sealed class ExceptionMiddleware
             {
                 context.Response.StatusCode = StatusCodes.Status499ClientClosedRequest;
             }
+
+            return;
         }
         catch (ValidationException exception) when (!context.Response.HasStarted)
         {
-            context.Response.Clear();
-            context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
-
-            await context.Response.WriteAsJsonAsync(new BaseResponse
+            await WriteAsync(context, new ErrorResponse
             {
                 Error = ErrorCodes.ValidationError,
                 Message = string.Join("; ", exception.Errors.Select(error => error.ErrorMessage)),
-                Code = 422
+                Code = StatusCodes.Status422UnprocessableEntity
             });
         }
-        catch (InvalidOperationException exception) when (!context.Response.HasStarted)
+        catch (Exception exception)
         {
-            context.Response.Clear();
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            logger.LogError(exception, "Unhandled exception while processing {Method} {Path}",
+                context.Request.Method, context.Request.Path);
 
-            await context.Response.WriteAsJsonAsync(new BaseResponse
+            if (context.Response.HasStarted)
             {
-                Error = ErrorCodes.BadRequest,
-                Message = exception.Message,
-                Code = 400
-            });
-        }
-        catch (Exception) when (!context.Response.HasStarted)
-        {
-            context.Response.Clear();
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                throw;
+            }
 
-            await context.Response.WriteAsJsonAsync(new BaseResponse
+            // Internal details are only logged.
+            await WriteAsync(context, new ErrorResponse
             {
                 Error = ErrorCodes.InternalError,
-                Code = 500
+                Code = StatusCodes.Status500InternalServerError
             });
+
+            return;
         }
+
+        if (context.Response.StatusCode is not (StatusCodes.Status200OK or StatusCodes.Status404NotFound))
+        {
+            logger.LogInformation("HTTP {Method} {Path} responded {StatusCode}", context.Request.Method,
+                context.Request.Path, context.Response.StatusCode);
+        }
+    }
+
+    private static Task WriteAsync(HttpContext context, ErrorResponse response)
+    {
+        context.Response.Clear();
+        context.Response.StatusCode = response.Code!.Value;
+
+        return context.Response.WriteAsJsonAsync(response);
     }
 }

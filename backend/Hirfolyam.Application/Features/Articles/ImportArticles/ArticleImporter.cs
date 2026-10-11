@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using Hirfolyam.Application.Abstractions;
 using Hirfolyam.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -7,48 +9,39 @@ namespace Hirfolyam.Application.Features;
 internal sealed class ArticleImporter(
     IApplicationDbContext context,
     CategoryMapper categoryMapper,
-    TimeProvider timeProvider) : IArticleImporter
+    TimeProvider timeProvider)
 {
-    public async Task<bool> ImportAsync(
-        int sourceId,
-        string sourceKey,
-        RssArticle rssArticle,
-        CancellationToken cancellationToken)
+    // Returns false when the article is already stored.
+    public async Task<bool> ImportAsync(NewsSource source, RssArticle rssArticle, CancellationToken cancellationToken)
     {
         var url = UrlNormalizer.Normalize(rssArticle.Url);
         var externalId = string.IsNullOrWhiteSpace(rssArticle.ExternalId)
             ? url
             : rssArticle.ExternalId.Trim();
+        var externalIdHash = Hash(externalId);
+        var urlHash = Hash(url);
 
-        var identity = ArticleIdentityFactory.Create(sourceId, externalId, url);
-
-        if (await ExistsAsync(identity, cancellationToken))
+        if (await ExistsAsync(source.Id, externalIdHash, urlHash, cancellationToken))
         {
             return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(rssArticle.Title))
-        {
-            throw new InvalidDataException("The article title is empty.");
         }
 
         var now = timeProvider.GetUtcNow();
         var article = new Article
         {
-            NewsSourceId = sourceId,
-            CategoryId = categoryMapper.Map(sourceKey, rssArticle.Categories, url),
+            NewsSourceId = source.Id,
+            CategoryId = categoryMapper.Map(source.Key, rssArticle.Categories, url),
             ExternalId = externalId,
-            ExternalIdHash = identity.ExternalIdHash!,
+            ExternalIdHash = externalIdHash,
             Url = url,
-            UrlHash = identity.UrlHash,
+            UrlHash = urlHash,
             Title = rssArticle.Title,
             Lead = rssArticle.Description,
-            LeadSearchText = ArticleSearchText.FromHtml(rssArticle.Description),
+            LeadText = PlainText.FromHtml(rssArticle.Description),
             Content = rssArticle.Content,
             Author = rssArticle.Author,
             ImageUrl = rssArticle.ImageUrl,
-            PublishedAt = rssArticle.PublishedAt?.ToUniversalTime()
-                ?? throw new InvalidDataException("The publication date is missing."),
+            PublishedAt = rssArticle.PublishedAt.ToUniversalTime(),
             CreatedAt = now,
             UpdatedAt = now
         };
@@ -63,10 +56,8 @@ internal sealed class ArticleImporter(
         }
         catch (DbUpdateException)
         {
-            context.Entry(article).State = EntityState.Detached;
-
             // Another import stored the same article after the check above.
-            if (await ExistsAsync(identity, cancellationToken))
+            if (await ExistsAsync(source.Id, externalIdHash, urlHash, cancellationToken))
             {
                 return false;
             }
@@ -80,12 +71,16 @@ internal sealed class ArticleImporter(
         }
     }
 
-    private Task<bool> ExistsAsync(ArticleIdentity identity, CancellationToken cancellationToken)
+    internal static string Hash(string value)
+    {
+        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
+    }
+
+    private Task<bool> ExistsAsync(int sourceId, string externalIdHash, string urlHash, CancellationToken cancellationToken)
     {
         return context.Articles.AnyAsync(
-            article => article.NewsSourceId == identity.NewsSourceId
-                && ((identity.ExternalIdHash != null && article.ExternalIdHash == identity.ExternalIdHash)
-                    || article.UrlHash == identity.UrlHash),
+            article => article.NewsSourceId == sourceId
+                && (article.ExternalIdHash == externalIdHash || article.UrlHash == urlHash),
             cancellationToken);
     }
 }

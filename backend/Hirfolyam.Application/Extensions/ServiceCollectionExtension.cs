@@ -1,3 +1,5 @@
+using FluentValidation;
+using Hirfolyam.Application.Behaviors;
 using Hirfolyam.Application.Features;
 using Hirfolyam.Application.Options;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +12,13 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
+        var assembly = typeof(ServiceCollectionExtension).Assembly;
+
+        services.AddMediatR(mediator => mediator
+            .RegisterServicesFromAssembly(assembly)
+            .AddOpenBehavior(typeof(ValidationBehavior<,>)));
+        services.AddValidatorsFromAssembly(assembly);
+
         services.AddOptions<ImportOptions>()
             .Bind(configuration.GetSection(ImportOptions.SectionName))
             .Validate(options => options.LookbackHours is >= 1 and <= 720, "Import:LookbackHours must be from 1 to 720.")
@@ -25,7 +34,7 @@ public static class ServiceCollectionExtension
         services.TryAddSingleton(TimeProvider.System);
         services.AddSingleton(_ => NewsSourceCatalog.Load());
         services.AddSingleton<CategoryMapper>();
-        services.AddScoped<IArticleImporter, ArticleImporter>();
+        services.AddScoped<ArticleImporter>();
 
         return services;
     }

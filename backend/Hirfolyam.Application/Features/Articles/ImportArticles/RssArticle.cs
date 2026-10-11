@@ -8,7 +8,7 @@ public sealed record RssArticle
 
     public required string Url { get; init; }
 
-    public DateTimeOffset? PublishedAt { get; init; }
+    public required DateTimeOffset PublishedAt { get; init; }
 
     public string? Author { get; init; }
 

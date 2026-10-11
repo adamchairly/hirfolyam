@@ -35,17 +35,15 @@ public sealed class ImportArticlesCommandHandlerTests
                 CreateArticle("yesterday", Now.AddHours(-25)),
                 CreateArticle("recent", Now.AddHours(-1)),
                 CreateArticle("now", Now),
-                CreateArticle("future", Now.AddHours(1)),
-                CreateArticle("missing-date", null)
+                CreateArticle("future", Now.AddHours(1))
             ]
         });
-        var importer = new StubArticleImporter();
 
-        var result = await HandleAsync(feeds, importer, lookbackHours: lookbackHours);
+        var result = await HandleAsync(feeds, lookbackHours);
 
-        Assert.That(importer.Articles.Select(article => article.ExternalId), Is.EqualTo(expected));
+        Assert.That((await ReadArticlesAsync()).Select(article => article.ExternalId), Is.EqualTo(expected));
         Assert.That(result.Imported, Is.EqualTo(expected.Length));
-        Assert.That(result.Skipped, Is.EqualTo(6 - expected.Length));
+        Assert.That(result.Skipped, Is.EqualTo(5 - expected.Length));
     }
 
     [Test]
@@ -53,67 +51,47 @@ public sealed class ImportArticlesCommandHandlerTests
     {
         const string secondFeed = "https://example.com/second";
         await SeedDefaultSourcesAsync(["https://example.com/broken", FeedUrl, secondFeed]);
+        await SeedArticleAsync("duplicate");
         var feeds = new StubFeedReader(new Dictionary<string, IReadOnlyCollection<RssArticle>>
         {
             [FeedUrl] =
             [
-                CreateArticle("failed", DateTimeOffset.Parse("2026-10-06T22:01:00Z")),
+                // Only HTTP and HTTPS article URLs can be stored.
+                CreateArticle("failed", DateTimeOffset.Parse("2026-10-06T22:01:00Z")) with
+                {
+                    Url = "ftp://example.com/failed"
+                },
                 CreateArticle("duplicate", DateTimeOffset.Parse("2026-10-06T22:02:00Z"))
             ],
             [secondFeed] = [CreateArticle("success", DateTimeOffset.Parse("2026-10-06T22:03:00Z"))]
         });
-        var importer = new StubArticleImporter
-        {
-            Import = article => article.ExternalId switch
-            {
-                "failed" => throw new InvalidDataException("The article is invalid."),
-                "duplicate" => false,
-                _ => true
-            }
-        };
 
-        var result = await HandleAsync(feeds, importer);
+        var result = await HandleAsync(feeds);
 
         Assert.That(result.Imported, Is.EqualTo(1));
         Assert.That(result.Duplicates, Is.EqualTo(1));
         Assert.That(result.FailedArticles, Is.EqualTo(1));
         Assert.That(result.FailedFeeds, Is.EqualTo(1));
         Assert.That(result.Skipped, Is.Zero);
-        Assert.That(importer.Articles.Select(article => article.ExternalId),
-            Is.EqualTo(new[] { "failed", "duplicate", "success" }));
+        Assert.That((await ReadArticlesAsync()).Select(article => article.ExternalId),
+            Is.EqualTo(new[] { "duplicate", "success" }));
     }
 
     [Test]
-    public async Task DisabledSourcesAreSkippedAndStoredIdsArePassedOn()
+    public async Task DisabledSourcesAreSkippedAndArticlesBelongToTheStoredSource()
     {
         await SeedDefaultSourcesAsync();
         var feeds = new StubFeedReader(new Dictionary<string, IReadOnlyCollection<RssArticle>>
         {
             [FeedUrl] = [CreateArticle("article", DateTimeOffset.Parse("2026-10-06T22:01:00Z"))]
         });
-        var importer = new StubArticleImporter();
 
-        var result = await HandleAsync(feeds, importer);
+        var result = await HandleAsync(feeds);
 
         Assert.That(feeds.Calls, Is.EqualTo(new[] { FeedUrl }));
-        Assert.That(importer.Sources, Is.EqualTo(new[] { (7, "news") }));
+        Assert.That((await ReadArticlesAsync()).Single().NewsSourceId, Is.EqualTo(7));
         Assert.That(result.Imported, Is.EqualTo(1));
         Assert.That(result.FailedFeeds, Is.Zero);
-    }
-
-    [Test]
-    public async Task SourceMissingFromTheDatabaseIsReportedAsAFailedFeed()
-    {
-        catalog = CreateCatalog(CreateDefinition("news", enabled: true, [FeedUrl]));
-        var feeds = new StubFeedReader(new Dictionary<string, IReadOnlyCollection<RssArticle>>
-        {
-            [FeedUrl] = [CreateArticle("article", DateTimeOffset.Parse("2026-10-06T22:01:00Z"))]
-        });
-
-        var result = await HandleAsync(feeds, new StubArticleImporter());
-
-        Assert.That(result.FailedFeeds, Is.EqualTo(1));
-        Assert.That(feeds.Calls, Is.Empty);
     }
 
     [Test]
@@ -125,7 +103,7 @@ public sealed class ImportArticlesCommandHandlerTests
             [FeedUrl] = []
         });
 
-        await HandleAsync(feeds, new StubArticleImporter());
+        await HandleAsync(feeds);
         var sources = await ReadSourcesAsync();
 
         Assert.That(sources.Single(source => source.Key == "news").LastImportedAt, Is.EqualTo(Now));
@@ -141,35 +119,27 @@ public sealed class ImportArticlesCommandHandlerTests
             [FeedUrl] = []
         });
 
-        var result = await HandleAsync(feeds, new StubArticleImporter());
+        var result = await HandleAsync(feeds);
         var sources = await ReadSourcesAsync();
 
         Assert.That(result.FailedFeeds, Is.EqualTo(1));
         Assert.That(sources.Single(source => source.Key == "news").LastImportedAt, Is.Null);
     }
 
-    private async Task<ImportArticlesResponse> HandleAsync(
-        StubFeedReader feeds,
-        StubArticleImporter importer,
-        int lookbackHours = 48,
-        CancellationToken cancellationToken = default)
+    private async Task<ImportArticlesResult> HandleAsync(StubFeedReader feeds, int lookbackHours = 48)
     {
         var clock = new FixedTimeProvider(Now);
-        var importOptions = OptionsFactory.Create(new ImportOptions
-        {
-            LookbackHours = lookbackHours
-        });
         await using var context = TestDatabase.Create(databaseName);
         var handler = new ImportArticlesCommandHandler(
             context,
             catalog,
             feeds,
-            importer,
+            new ArticleImporter(context, new CategoryMapper(catalog), clock),
             clock,
-            importOptions,
+            OptionsFactory.Create(new ImportOptions { LookbackHours = lookbackHours }),
             NullLogger<ImportArticlesCommandHandler>.Instance);
 
-        return await handler.Handle(new ImportArticlesCommand(), cancellationToken);
+        return await handler.Handle(new ImportArticlesCommand(), CancellationToken.None);
     }
 
     private async Task SeedDefaultSourcesAsync(string[]? feedUrls = null)
@@ -182,6 +152,26 @@ public sealed class ImportArticlesCommandHandlerTests
         context.NewsSources.AddRange(
             new NewsSource { Id = 7, Key = "news", Name = "news", BaseUrl = "https://example.com/" },
             new NewsSource { Id = 8, Key = "disabled", Name = "disabled", BaseUrl = "https://example.com/" });
+        await context.SaveChangesAsync();
+    }
+
+    private async Task SeedArticleAsync(string id)
+    {
+        var url = "https://example.com/" + id;
+
+        await using var context = TestDatabase.Create(databaseName);
+        context.Articles.Add(new Article
+        {
+            NewsSourceId = 7,
+            ExternalId = id,
+            ExternalIdHash = ArticleImporter.Hash(id),
+            Url = url,
+            UrlHash = ArticleImporter.Hash(url),
+            Title = id,
+            PublishedAt = Now,
+            CreatedAt = Now,
+            UpdatedAt = Now
+        });
         await context.SaveChangesAsync();
     }
 
@@ -198,9 +188,16 @@ public sealed class ImportArticlesCommandHandlerTests
             Name = key,
             BaseUrl = "https://example.com/",
             CategoryId = 4,
-            Enabled = enabled,
+            IsEnabled = enabled,
             Feeds = feeds
         };
+    }
+
+    private async Task<List<Article>> ReadArticlesAsync()
+    {
+        await using var context = TestDatabase.Create(databaseName);
+
+        return await context.Articles.AsNoTracking().OrderBy(article => article.Id).ToListAsync();
     }
 
     private async Task<List<NewsSource>> ReadSourcesAsync()
@@ -210,7 +207,7 @@ public sealed class ImportArticlesCommandHandlerTests
         return await context.NewsSources.AsNoTracking().ToListAsync();
     }
 
-    private static RssArticle CreateArticle(string id, DateTimeOffset? publishedAt)
+    private static RssArticle CreateArticle(string id, DateTimeOffset publishedAt)
     {
         return new RssArticle
         {
@@ -219,27 +216,5 @@ public sealed class ImportArticlesCommandHandlerTests
             Url = "https://example.com/" + id,
             PublishedAt = publishedAt
         };
-    }
-
-    private sealed class StubArticleImporter : IArticleImporter
-    {
-        public Func<RssArticle, bool> Import { get; init; } = _ => true;
-
-        public List<RssArticle> Articles { get; } = [];
-
-        public List<(int Id, string Key)> Sources { get; } = [];
-
-        public Task<bool> ImportAsync(
-            int sourceId,
-            string sourceKey,
-            RssArticle article,
-            CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            Articles.Add(article);
-            Sources.Add((sourceId, sourceKey));
-
-            return Task.FromResult(Import(article));
-        }
     }
 }

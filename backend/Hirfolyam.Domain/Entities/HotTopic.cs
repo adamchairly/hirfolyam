@@ -6,6 +6,8 @@ public sealed class HotTopic
 
     public const int SummaryMaxLength = 500;
 
+    public const int MinSources = 2;
+
     public long Id { get; set; }
 
     public long SnapshotId { get; set; }

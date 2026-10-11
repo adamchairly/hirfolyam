@@ -2,9 +2,9 @@ using MediatR;
 
 namespace Hirfolyam.Application.Features;
 
-public sealed class ImportArticlesCommand : IRequest<ImportArticlesResponse>;
+public sealed class ImportArticlesCommand : IRequest<ImportArticlesResult>;
 
-public sealed class ImportArticlesResponse
+public sealed class ImportArticlesResult
 {
     public int Imported { get; set; }
 

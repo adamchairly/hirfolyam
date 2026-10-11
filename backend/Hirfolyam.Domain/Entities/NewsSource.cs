@@ -1,6 +1,5 @@
 namespace Hirfolyam.Domain.Entities;
 
-// A stored copy of a news source definition, kept for queries and article references.
 public sealed class NewsSource
 {
     public int Id { get; set; }
@@ -13,7 +12,7 @@ public sealed class NewsSource
 
     public string? IconUrl { get; set; }
 
-    // The category that fits the source best, used to group the sources.
+    // The category that fits the source best
     public int CategoryId { get; set; }
 
     public Category Category { get; set; } = null!;

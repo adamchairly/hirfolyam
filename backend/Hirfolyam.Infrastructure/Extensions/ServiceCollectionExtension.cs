@@ -5,10 +5,10 @@ using Hirfolyam.Infrastructure.Analysis;
 using Hirfolyam.Infrastructure.Feeds;
 using Hirfolyam.Infrastructure.Options;
 using Hirfolyam.Infrastructure.Persistence;
-using Hirfolyam.Infrastructure.StartupTasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Hirfolyam.Infrastructure.Extensions;
 
@@ -30,8 +30,6 @@ public static class ServiceCollectionExtension
 
         services.AddDbContext<NewsDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<NewsDbContext>());
-        services.AddScoped<NewsSourceSynchronizer>();
-        services.AddScoped<DatabaseStartupTask>();
 
         services.AddOptions<DatabaseOptions>()
             .Bind(configuration.GetSection(DatabaseOptions.SectionName))
@@ -68,17 +66,17 @@ public static class ServiceCollectionExtension
     private static void AddHotTopicGenerator(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<OpenRouterOptions>()
-            .Bind(configuration.GetSection(OpenRouterOptions.SectionName));
-
-        services.AddOptions<HotTopicModelOptions>()
-            .Bind(configuration.GetSection(HotTopicModelOptions.SectionName))
-            .Validate(options => !string.IsNullOrWhiteSpace(options.Model), "OpenRouter:HotTopics:Model is required.")
-            .Validate(options => options.TimeoutSeconds is >= 1 and <= 300, "OpenRouter:HotTopics:TimeoutSeconds must be from 1 to 300.")
+            .Bind(configuration.GetSection(OpenRouterOptions.SectionName))
+            .Validate(options => !string.IsNullOrWhiteSpace(options.HotTopics.Model), "OpenRouter:HotTopics:Model is required.")
+            .Validate(options => options.HotTopics.MaxTokens is >= 1 and <= 100000, "OpenRouter:HotTopics:MaxTokens must be from 1 to 100000.")
+            .Validate(options => options.HotTopics.TimeoutSeconds is >= 1 and <= 300, "OpenRouter:HotTopics:TimeoutSeconds must be from 1 to 300.")
             .ValidateOnStart();
 
-        services.AddHttpClient<IHotTopicGenerator, OpenRouterHotTopicGenerator>(client =>
+        services.AddHttpClient<IHotTopicGenerator, OpenRouterHotTopicGenerator>((provider, client) =>
         {
-            client.Timeout = Timeout.InfiniteTimeSpan;
+            var options = provider.GetRequiredService<IOptions<OpenRouterOptions>>().Value;
+
+            client.Timeout = TimeSpan.FromSeconds(options.HotTopics.TimeoutSeconds);
             client.MaxResponseContentBufferSize = 256 * 1024;
         })
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler

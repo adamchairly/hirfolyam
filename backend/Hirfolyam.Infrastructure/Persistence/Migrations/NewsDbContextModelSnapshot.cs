@@ -57,7 +57,7 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                     b.Property<string>("Lead")
                         .HasColumnType("text");
 
-                    b.Property<string>("LeadSearchText")
+                    b.Property<string>("LeadText")
                         .HasColumnType("text");
 
                     b.Property<int>("NewsSourceId")

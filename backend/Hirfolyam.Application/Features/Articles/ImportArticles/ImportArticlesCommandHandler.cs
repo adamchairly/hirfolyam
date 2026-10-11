@@ -12,22 +12,22 @@ internal sealed class ImportArticlesCommandHandler(
     IApplicationDbContext context,
     NewsSourceCatalog catalog,
     IRssFeedReader feedReader,
-    IArticleImporter articleImporter,
+    ArticleImporter articleImporter,
     TimeProvider timeProvider,
-    IOptions<ImportOptions> importOptions,
-    ILogger<ImportArticlesCommandHandler> logger) : IRequestHandler<ImportArticlesCommand, ImportArticlesResponse>
+    IOptions<ImportOptions> options,
+    ILogger<ImportArticlesCommandHandler> logger) : IRequestHandler<ImportArticlesCommand, ImportArticlesResult>
 {
-    public async Task<ImportArticlesResponse> Handle(ImportArticlesCommand request, CancellationToken cancellationToken)
+    public async Task<ImportArticlesResult> Handle(ImportArticlesCommand request, CancellationToken cancellationToken)
     {
         var startedAt = timeProvider.GetTimestamp();
         var storedSources = await context.NewsSources
             .ToDictionaryAsync(source => source.Key, cancellationToken);
         var sources = catalog.Sources
-            .Where(source => source.Enabled)
+            .Where(source => source.IsEnabled)
             .OrderBy(source => source.Key, StringComparer.Ordinal);
-        var now = timeProvider.GetUtcNow();
-        var start = now.AddHours(-importOptions.Value.LookbackHours);
-        var result = new ImportArticlesResponse();
+        var end = timeProvider.GetUtcNow();
+        var start = end.AddHours(-options.Value.LookbackHours);
+        var result = new ImportArticlesResult();
 
         logger.LogInformation(
             "Import started for articles published since {Start:yyyy-MM-dd HH:mm:ss}",
@@ -35,97 +35,33 @@ internal sealed class ImportArticlesCommandHandler(
 
         foreach (var source in sources)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using var sourceScope = logger.BeginScope(new Dictionary<string, object>
             {
                 ["NewsSource"] = source.Key
             });
 
-            if (!storedSources.TryGetValue(source.Key, out var storedSource))
-            {
-                result.FailedFeeds += source.Feeds.Count;
-                logger.LogError("News source {NewsSourceKey} is not stored; synchronize the sources first", source.Key);
-
-                continue;
-            }
-
-            var failedFeedsBefore = result.FailedFeeds;
+            // The startup synchronization stores every source of the catalog.
+            var storedSource = storedSources[source.Key];
+            var allFeedsRead = true;
 
             foreach (var feedUrl in source.Feeds)
             {
-                IReadOnlyCollection<RssArticle> articles;
-
-                try
-                {
-                    articles = await feedReader.ReadAsync(feedUrl, cancellationToken);
-                }
-                catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
-                {
-                    result.FailedFeeds++;
-                    logger.LogError(exception, "Feed import failed for {FeedUrl}", feedUrl);
-
-                    continue;
-                }
-
-                foreach (var article in articles)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (!article.PublishedAt.HasValue)
-                    {
-                        result.Skipped++;
-                        logger.LogWarning("Article has no publication date: {ArticleUrl}", article.Url);
-
-                        continue;
-                    }
-
-                    if (article.PublishedAt < start || article.PublishedAt > now)
-                    {
-                        result.Skipped++;
-                        continue;
-                    }
-
-                    try
-                    {
-                        var imported = await articleImporter.ImportAsync(
-                            storedSource.Id,
-                            source.Key,
-                            article,
-                            cancellationToken);
-
-                        if (imported)
-                        {
-                            result.Imported++;
-                        }
-                        else
-                        {
-                            result.Duplicates++;
-                        }
-                    }
-                    catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
-                    {
-                        result.FailedArticles++;
-                        logger.LogError(exception, "Article import failed for {ArticleUrl}", article.Url);
-                    }
-                }
+                allFeedsRead &= await ImportFeedAsync(storedSource, feedUrl, start, end, result, cancellationToken);
             }
 
-            if (result.FailedFeeds == failedFeedsBefore)
+            if (allFeedsRead)
             {
                 storedSource.LastImportedAt = timeProvider.GetUtcNow();
                 await context.SaveChangesAsync(cancellationToken);
             }
         }
 
-        var elapsed = timeProvider.GetElapsedTime(startedAt);
         var hasFailures = result.FailedFeeds > 0 || result.FailedArticles > 0;
-        var completionLogLevel = hasFailures ? LogLevel.Warning : LogLevel.Information;
 
         logger.Log(
-            completionLogLevel,
+            hasFailures ? LogLevel.Warning : LogLevel.Information,
             "Import finished in {ElapsedMilliseconds:F0} ms: {Imported} imported, {Duplicates} duplicates, {Skipped} skipped, {FailedFeeds} failed feeds, {FailedArticles} failed articles",
-            elapsed.TotalMilliseconds,
+            timeProvider.GetElapsedTime(startedAt).TotalMilliseconds,
             result.Imported,
             result.Duplicates,
             result.Skipped,
@@ -133,5 +69,67 @@ internal sealed class ImportArticlesCommandHandler(
             result.FailedArticles);
 
         return result;
+    }
+
+    // Returns false when the feed could not be read.
+    private async Task<bool> ImportFeedAsync(
+        NewsSource source,
+        string feedUrl,
+        DateTimeOffset start,
+        DateTimeOffset end,
+        ImportArticlesResult result,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyCollection<RssArticle> articles;
+
+        try
+        {
+            articles = await feedReader.ReadAsync(feedUrl, cancellationToken);
+        }
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            result.FailedFeeds++;
+            logger.LogWarning(exception, "Feed import failed for {FeedUrl}", feedUrl);
+
+            return false;
+        }
+
+        foreach (var article in articles)
+        {
+            if (article.PublishedAt < start || article.PublishedAt > end)
+            {
+                result.Skipped++;
+
+                continue;
+            }
+
+            await ImportArticleAsync(source, article, result, cancellationToken);
+        }
+
+        return true;
+    }
+
+    private async Task ImportArticleAsync(
+        NewsSource source,
+        RssArticle article,
+        ImportArticlesResult result,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (await articleImporter.ImportAsync(source, article, cancellationToken))
+            {
+                result.Imported++;
+            }
+            else
+            {
+                result.Duplicates++;
+            }
+        }
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            result.FailedArticles++;
+            logger.LogError(exception, "Article import failed for {ArticleUrl}", article.Url);
+        }
     }
 }

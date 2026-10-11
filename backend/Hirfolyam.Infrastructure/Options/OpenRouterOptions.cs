@@ -5,4 +5,6 @@ public sealed class OpenRouterOptions
     public const string SectionName = "OpenRouter";
 
     public string ApiKey { get; set; } = "";
+
+    public HotTopicModelOptions HotTopics { get; set; } = new();
 }

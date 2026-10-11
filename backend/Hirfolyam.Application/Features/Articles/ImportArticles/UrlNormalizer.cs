@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-
 namespace Hirfolyam.Application.Features;
 
 public static class UrlNormalizer
@@ -36,11 +33,6 @@ public static class UrlNormalizer
         };
 
         return builder.Uri.AbsoluteUri;
-    }
-
-    public static string Hash(string value)
-    {
-        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
     }
 
     private static bool IsTrackingParameter(string part)

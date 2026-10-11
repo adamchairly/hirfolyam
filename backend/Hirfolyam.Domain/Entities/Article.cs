@@ -20,7 +20,7 @@ public sealed class Article
 
     public string? Lead { get; set; }
 
-    public string? LeadSearchText { get; set; }
+    public string? LeadText { get; set; }
 
     public string? Content { get; set; }
 

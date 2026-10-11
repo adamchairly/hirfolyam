@@ -1,14 +1,13 @@
 using Hirfolyam.Application.Features;
 using Hirfolyam.Domain.Catalogs;
 using Hirfolyam.Domain.Entities;
-using Hirfolyam.Infrastructure.StartupTasks;
 using Hirfolyam.Tests.Support;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Hirfolyam.Tests.Infrastructure;
+namespace Hirfolyam.Tests.Application;
 
-public sealed class NewsSourceSynchronizerTests
+public sealed class SyncNewsSourcesCommandHandlerTests
 {
     private static readonly DateTimeOffset Now = DateTimeOffset.Parse("2026-10-06T12:00:00Z");
     private static readonly DateTimeOffset Earlier = Now.AddDays(-1);
@@ -88,16 +87,16 @@ public sealed class NewsSourceSynchronizerTests
         Assert.That(source.UpdatedAt, Is.EqualTo(Now));
     }
 
-    private async Task<NewsSourceSyncResult> HandleAsync(NewsSourceCatalog catalog)
+    private async Task<SyncNewsSourcesResult> HandleAsync(NewsSourceCatalog catalog)
     {
-        await using var database = TestDatabase.Create(databaseName);
-        var synchronizer = new NewsSourceSynchronizer(
-            database,
+        await using var context = TestDatabase.Create(databaseName);
+        var handler = new SyncNewsSourcesCommandHandler(
+            context,
             catalog,
             new FixedTimeProvider(Now),
-            NullLogger<NewsSourceSynchronizer>.Instance);
+            NullLogger<SyncNewsSourcesCommandHandler>.Instance);
 
-        return await synchronizer.SynchronizeAsync(CancellationToken.None);
+        return await handler.Handle(new SyncNewsSourcesCommand(), CancellationToken.None);
     }
 
     private async Task SeedAsync(NewsSource source)

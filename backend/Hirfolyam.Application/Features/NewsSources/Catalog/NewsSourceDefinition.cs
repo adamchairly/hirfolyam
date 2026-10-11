@@ -12,7 +12,7 @@ public sealed class NewsSourceDefinition
 
     public required int CategoryId { get; init; }
 
-    public bool Enabled { get; init; } = true;
+    public bool IsEnabled { get; init; } = true;
 
     public IReadOnlyList<string> Feeds { get; init; } = [];
 

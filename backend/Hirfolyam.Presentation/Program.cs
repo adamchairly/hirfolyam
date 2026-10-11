@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddApplication(builder.Configuration)
-    .AddApplicationMediator()
     .AddInfrastructure(builder.Configuration)
     .AddPresentation(builder.Configuration);
 
@@ -14,5 +13,5 @@ await using var app = builder.Build();
 
 app.UsePresentation();
 
-await app.Services.InitializeInfrastructureAsync();
+await app.Services.InitializeDatabaseAsync();
 await app.RunAsync();

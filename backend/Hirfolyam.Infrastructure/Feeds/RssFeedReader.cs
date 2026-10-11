@@ -47,7 +47,8 @@ public sealed class RssFeedReader(HttpClient client, ILogger<RssFeedReader> logg
             catch (Exception exception) when (
                 exception is XmlException or FormatException or ArgumentException or InvalidDataException)
             {
-                logger.LogWarning(exception, "Cannot read a feed item in {FeedUrl}: {ArticleUrl}", feedUrl, item.Link);
+                // The same broken item comes back on every run, so it is not logged as a warning.
+                logger.LogDebug(exception, "Cannot read a feed item in {FeedUrl}: {ArticleUrl}", feedUrl, item.Link);
             }
         }
 
@@ -63,15 +64,21 @@ public sealed class RssFeedReader(HttpClient client, ILogger<RssFeedReader> logg
             : atom.Links.FirstOrDefault(link => link.Relation is null or "alternate")?.Href;
         var url = AbsoluteUrl(link, feedUri)
             ?? throw new InvalidDataException("The feed item has no valid article URL.");
+        var title = WebUtility.HtmlDecode(item.Title);
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            throw new InvalidDataException("The feed item has no title.");
+        }
 
         var articleUri = new Uri(url);
-        var publishedAt = item.PublishingDate ?? item.SpecificItem switch
+        var publishedAt = (item.PublishingDate ?? item.SpecificItem switch
         {
             AtomFeedItem { PublishedDateString: null } entry => entry.UpdatedDate,
             Rss20FeedItem { PublishingDateString: null } rss => rss.DC?.Date,
             MediaRssFeedItem { PublishingDateString: null } rss => rss.DC?.Date,
             _ => null
-        };
+        }) ?? throw new InvalidDataException("The feed item has no publication date.");
 
         var author = atom is null
             ? string.IsNullOrWhiteSpace(item.Author) ? Value(element, "creator") : item.Author
@@ -89,9 +96,9 @@ public sealed class RssFeedReader(HttpClient client, ILogger<RssFeedReader> logg
         return new RssArticle
         {
             ExternalId = string.IsNullOrWhiteSpace(item.Id) ? null : item.Id,
-            Title = WebUtility.HtmlDecode(item.Title) ?? string.Empty,
+            Title = title,
             Url = url,
-            PublishedAt = publishedAt.HasValue ? new DateTimeOffset(publishedAt.Value).ToUniversalTime() : null,
+            PublishedAt = new DateTimeOffset(publishedAt).ToUniversalTime(),
             Author = string.IsNullOrWhiteSpace(author) ? null : WebUtility.HtmlDecode(author),
             Description = description,
             Content = content,

@@ -7,13 +7,13 @@ namespace Hirfolyam.Presentation.Controllers;
 
 [ApiController]
 [Route("api/hot-topics")]
-public sealed class HotTopicsController(IMediator mediator) : ControllerBase
+public sealed class HotTopicsController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<GetHotTopicsResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<BaseResponse>(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status500InternalServerError)]
     public async Task<GetHotTopicsResponse> GetAsync(CancellationToken cancellationToken)
     {
-        return await mediator.Send(new GetHotTopicsQuery(), cancellationToken);
+        return await sender.Send(new GetHotTopicsQuery(), cancellationToken);
     }
 }

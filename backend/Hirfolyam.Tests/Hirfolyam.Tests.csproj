@@ -4,7 +4,7 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Hirfolyam.Presentation/Hirfolyam.API.csproj" />
+    <ProjectReference Include="../Hirfolyam.Presentation/Hirfolyam.Presentation.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NUnit" />

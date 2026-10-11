@@ -1,4 +1,3 @@
-
 namespace Hirfolyam.Application.Features;
 
 public interface IRssFeedReader

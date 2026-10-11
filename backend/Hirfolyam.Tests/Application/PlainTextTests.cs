@@ -2,7 +2,7 @@ using Hirfolyam.Application.Features;
 
 namespace Hirfolyam.Tests.Application;
 
-public sealed class ArticleSearchTextTests
+public sealed class PlainTextTests
 {
     [TestCase(null, "")]
     [TestCase("", "")]
@@ -18,7 +18,7 @@ public sealed class ArticleSearchTextTests
     [TestCase("<p>Befejezetlen <b>leírás", "Befejezetlen leírás")]
     public void ConvertsDescriptionToVisibleText(string? html, string expected)
     {
-        var text = ArticleSearchText.FromHtml(html);
+        var text = PlainText.FromHtml(html);
 
         Assert.That(text, Is.EqualTo(expected));
     }

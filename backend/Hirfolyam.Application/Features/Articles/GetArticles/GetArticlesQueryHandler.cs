@@ -1,4 +1,5 @@
 using Hirfolyam.Application.Abstractions;
+using Hirfolyam.Application.Extensions;
 using Hirfolyam.Application.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ internal sealed class GetArticlesQueryHandler(IApplicationDbContext context)
 
         if (!string.IsNullOrWhiteSpace(request.Category))
         {
-            var category = request.Category.Trim().ToLowerInvariant();
+            var category = NormalizeKey(request.Category);
 
             articles = articles.Where(article =>
                 article.Category != null && article.Category.Slug == category);
@@ -22,11 +23,7 @@ internal sealed class GetArticlesQueryHandler(IApplicationDbContext context)
 
         if (request.ExcludedCategories is not null)
         {
-            var excludedCategories = request.ExcludedCategories
-                .Where(category => !string.IsNullOrWhiteSpace(category))
-                .Select(category => category!.Trim().ToLowerInvariant())
-                .Distinct()
-                .ToArray();
+            var excludedCategories = NormalizeKeys(request.ExcludedCategories);
 
             if (excludedCategories.Length > 0)
             {
@@ -35,24 +32,16 @@ internal sealed class GetArticlesQueryHandler(IApplicationDbContext context)
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(request.Source))
-        {
-            var source = request.Source.Trim().ToLowerInvariant();
-
-            articles = articles.Where(article => article.NewsSource.Key == source);
-        }
-
         if (request.Sources is not null)
         {
-            var sources = request.Sources
-                .Where(source => !string.IsNullOrWhiteSpace(source))
-                .Select(source => source!.Trim().ToLowerInvariant())
-                .Distinct()
-                .ToArray();
+            var sources = NormalizeKeys(request.Sources);
 
-            articles = sources.Length == 0
-                ? articles.Where(article => false)
-                : articles.Where(article => sources.Contains(article.NewsSource.Key));
+            if (sources.Length == 0)
+            {
+                return PagedResult<ArticleListItemResponse>.Empty(request.Page, request.PageSize);
+            }
+
+            articles = articles.Where(article => sources.Contains(article.NewsSource.Key));
         }
 
         if (request.Ids is not null)
@@ -64,25 +53,17 @@ internal sealed class GetArticlesQueryHandler(IApplicationDbContext context)
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
-            var search = request.Search.Trim()
-                .Replace("\\", "\\\\", StringComparison.Ordinal)
-                .Replace("%", "\\%", StringComparison.Ordinal)
-                .Replace("_", "\\_", StringComparison.Ordinal);
-            var pattern = $"%{search}%";
+            var pattern = ContainsPattern(request.Search);
 
             articles = articles.Where(article =>
                 EF.Functions.ILike(article.Title, pattern, "\\")
-                || (article.LeadSearchText != null
-                    && EF.Functions.ILike(article.LeadSearchText, pattern, "\\")));
+                || (article.LeadText != null
+                    && EF.Functions.ILike(article.LeadText, pattern, "\\")));
         }
 
-        var totalItems = await articles.CountAsync(cancellationToken);
-        var offset = checked((request.Page - 1) * request.PageSize);
-        var items = await articles
+        return await articles
             .OrderByDescending(article => article.PublishedAt)
             .ThenByDescending(article => article.Id)
-            .Skip(offset)
-            .Take(request.PageSize)
             .Select(article => new ArticleListItemResponse
             {
                 Id = article.Id,
@@ -106,14 +87,31 @@ internal sealed class GetArticlesQueryHandler(IApplicationDbContext context)
                 PublishedAt = article.PublishedAt,
                 Url = article.Url
             })
-            .ToListAsync(cancellationToken);
+            .ToPagedResultAsync(request.Page, request.PageSize, cancellationToken);
+    }
 
-        return new PagedResult<ArticleListItemResponse>
-        {
-            Items = items,
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalItems = totalItems
-        };
+    private static string NormalizeKey(string value)
+    {
+        return value.Trim().ToLowerInvariant();
+    }
+
+    private static string[] NormalizeKeys(string?[] values)
+    {
+        return values
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Select(value => NormalizeKey(value!))
+            .Distinct()
+            .ToArray();
+    }
+
+    // Matches the search text anywhere; the LIKE wildcards in it are escaped with a backslash.
+    private static string ContainsPattern(string search)
+    {
+        var escaped = search.Trim()
+            .Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("%", "\\%", StringComparison.Ordinal)
+            .Replace("_", "\\_", StringComparison.Ordinal);
+
+        return $"%{escaped}%";
     }
 }

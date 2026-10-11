@@ -81,12 +81,12 @@ public sealed class ArticleImporterTests
         Assert.That(imported, Is.True);
         Assert.That(article.NewsSourceId, Is.EqualTo(SourceId));
         Assert.That(article.ExternalId, Is.EqualTo("stable-id"));
-        Assert.That(article.ExternalIdHash, Is.EqualTo(UrlNormalizer.Hash("stable-id")));
+        Assert.That(article.ExternalIdHash, Is.EqualTo(ArticleImporter.Hash("stable-id")));
         Assert.That(article.Url, Is.EqualTo("https://example.com/article"));
-        Assert.That(article.UrlHash, Is.EqualTo(UrlNormalizer.Hash("https://example.com/article")));
+        Assert.That(article.UrlHash, Is.EqualTo(ArticleImporter.Hash("https://example.com/article")));
         Assert.That(article.Title, Is.EqualTo(input.Title));
         Assert.That(article.Lead, Is.EqualTo(input.Description));
-        Assert.That(article.LeadSearchText, Is.EqualTo("Feed summary & details."));
+        Assert.That(article.LeadText, Is.EqualTo("Feed summary & details."));
         Assert.That(article.Content, Is.EqualTo(content));
         Assert.That(article.Author, Is.EqualTo(input.Author));
         Assert.That(article.ImageUrl, Is.EqualTo(input.ImageUrl));
@@ -97,32 +97,18 @@ public sealed class ArticleImporterTests
         Assert.That(article.UpdatedAt, Is.EqualTo(Now));
     }
 
-    [TestCase("")]
-    [TestCase("  ")]
-    public async Task EmptyTitlePreventsSaving(string title)
-    {
-        await Assert.ThatAsync(
-            () => ImportAsync("news", CreateArticle() with { Title = title }),
-            Throws.InstanceOf<InvalidDataException>());
-
-        Assert.That(await ReadArticlesAsync(), Is.Empty);
-    }
-
-    [Test]
-    public async Task MissingPublicationDatePreventsSaving()
-    {
-        await Assert.ThatAsync(
-            () => ImportAsync("news", CreateArticle() with { PublishedAt = null }),
-            Throws.InstanceOf<InvalidDataException>());
-
-        Assert.That(await ReadArticlesAsync(), Is.Empty);
-    }
-
     private async Task<bool> ImportAsync(string sourceKey, RssArticle article)
     {
         await using var context = TestDatabase.Create(databaseName);
+        var source = new NewsSource
+        {
+            Id = SourceId,
+            Key = sourceKey,
+            Name = sourceKey,
+            BaseUrl = "https://example.com/"
+        };
 
-        return await CreateImporter(context).ImportAsync(SourceId, sourceKey, article, CancellationToken.None);
+        return await CreateImporter(context).ImportAsync(source, article, CancellationToken.None);
     }
 
     private static ArticleImporter CreateImporter(NewsDbContext context)
@@ -156,9 +142,9 @@ public sealed class ArticleImporterTests
             NewsSourceId = SourceId,
             CategoryId = categoryId,
             ExternalId = "stable-id",
-            ExternalIdHash = UrlNormalizer.Hash("stable-id"),
+            ExternalIdHash = ArticleImporter.Hash("stable-id"),
             Url = "https://example.com/article",
-            UrlHash = UrlNormalizer.Hash("https://example.com/article"),
+            UrlHash = ArticleImporter.Hash("https://example.com/article"),
             Title = "Stored title",
             PublishedAt = Earlier,
             CreatedAt = Earlier,

@@ -9,7 +9,7 @@ internal sealed class GetSourcesQueryHandler(IApplicationDbContext context)
 {
     public async Task<GetSourcesResponse> Handle(GetSourcesQuery request, CancellationToken cancellationToken)
     {
-        var sources = await context.NewsSources
+        var items = await context.NewsSources
             .AsNoTracking()
             .OrderBy(source => source.Name)
             .ThenBy(source => source.Key)
@@ -23,13 +23,12 @@ internal sealed class GetSourcesQueryHandler(IApplicationDbContext context)
                 ArticleCount = context.Articles.Count(article => article.NewsSourceId == source.Id)
             })
             .ToListAsync(cancellationToken);
-
         var lastUpdatedAt = await context.NewsSources
             .MaxAsync(source => source.LastImportedAt, cancellationToken);
 
         return new GetSourcesResponse
         {
-            Items = sources,
+            Items = items,
             LastUpdatedAt = lastUpdatedAt
         };
     }

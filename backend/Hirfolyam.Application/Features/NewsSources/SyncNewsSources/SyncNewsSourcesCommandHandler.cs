@@ -1,25 +1,23 @@
-using Hirfolyam.Application.Features;
+using Hirfolyam.Application.Abstractions;
 using Hirfolyam.Domain.Entities;
-using Hirfolyam.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Hirfolyam.Infrastructure.StartupTasks;
-
-public sealed record NewsSourceSyncResult(int Added, int Updated, int Disabled);
+namespace Hirfolyam.Application.Features;
 
 // Copies the source definitions into the database
 // Sources removed from the catalog are disabled
-public sealed class NewsSourceSynchronizer(
-    NewsDbContext database,
+internal sealed class SyncNewsSourcesCommandHandler(
+    IApplicationDbContext context,
     NewsSourceCatalog catalog,
     TimeProvider timeProvider,
-    ILogger<NewsSourceSynchronizer> logger)
+    ILogger<SyncNewsSourcesCommandHandler> logger) : IRequestHandler<SyncNewsSourcesCommand, SyncNewsSourcesResult>
 {
-    public async Task<NewsSourceSyncResult> SynchronizeAsync(CancellationToken cancellationToken)
+    public async Task<SyncNewsSourcesResult> Handle(SyncNewsSourcesCommand request, CancellationToken cancellationToken)
     {
         var now = timeProvider.GetUtcNow();
-        var stored = await database.NewsSources.ToDictionaryAsync(source => source.Key, cancellationToken);
+        var stored = await context.NewsSources.ToDictionaryAsync(source => source.Key, cancellationToken);
         var added = 0;
         var updated = 0;
         var disabled = 0;
@@ -28,14 +26,14 @@ public sealed class NewsSourceSynchronizer(
         {
             if (!stored.TryGetValue(definition.Key, out var source))
             {
-                database.NewsSources.Add(new NewsSource
+                context.NewsSources.Add(new NewsSource
                 {
                     Key = definition.Key,
                     Name = definition.Name,
                     BaseUrl = definition.BaseUrl,
                     IconUrl = definition.IconUrl,
                     CategoryId = definition.CategoryId,
-                    IsEnabled = definition.Enabled,
+                    IsEnabled = definition.IsEnabled,
                     CreatedAt = now,
                     UpdatedAt = now
                 });
@@ -44,22 +42,18 @@ public sealed class NewsSourceSynchronizer(
                 continue;
             }
 
-            if (source.Name == definition.Name
-                && source.BaseUrl == definition.BaseUrl
-                && source.IconUrl == definition.IconUrl
-                && source.CategoryId == definition.CategoryId
-                && source.IsEnabled == definition.Enabled)
-            {
-                continue;
-            }
-
             source.Name = definition.Name;
             source.BaseUrl = definition.BaseUrl;
             source.IconUrl = definition.IconUrl;
             source.CategoryId = definition.CategoryId;
-            source.IsEnabled = definition.Enabled;
-            source.UpdatedAt = now;
-            updated++;
+            source.IsEnabled = definition.IsEnabled;
+
+            // The change tracker reports a change only if a value differs.
+            if (context.Entry(source).State == EntityState.Modified)
+            {
+                source.UpdatedAt = now;
+                updated++;
+            }
         }
 
         // Removed sources keep their articles, so they are only disabled.
@@ -70,7 +64,7 @@ public sealed class NewsSourceSynchronizer(
             disabled++;
         }
 
-        await database.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation(
             "News sources synchronized: {Added} added, {Updated} updated, {Disabled} disabled",
@@ -78,6 +72,6 @@ public sealed class NewsSourceSynchronizer(
             updated,
             disabled);
 
-        return new NewsSourceSyncResult(added, updated, disabled);
+        return new SyncNewsSourcesResult(added, updated, disabled);
     }
 }

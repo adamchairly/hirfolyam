@@ -11,4 +11,14 @@ public class PagedResult<T>
     public int TotalItems { get; init; }
 
     public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
+
+    public static PagedResult<T> Empty(int page, int pageSize)
+    {
+        return new PagedResult<T>
+        {
+            Items = [],
+            Page = page,
+            PageSize = pageSize
+        };
+    }
 }

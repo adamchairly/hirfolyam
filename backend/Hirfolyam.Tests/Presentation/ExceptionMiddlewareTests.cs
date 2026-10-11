@@ -4,6 +4,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Hirfolyam.Presentation.Middlewares;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Hirfolyam.Tests.Presentation;
 
@@ -25,21 +26,13 @@ public sealed class ExceptionMiddlewareTests
             Is.EqualTo("The page must be greater than zero.; The page size must not exceed 100."));
     }
 
-    [Test]
-    public async Task InvalidOperationReturns400WithItsMessage()
+    // An InvalidOperationException is an internal failure too, for example from EF Core.
+    [TestCase(typeof(InvalidDataException))]
+    [TestCase(typeof(InvalidOperationException))]
+    public async Task UnexpectedFailureReturns500WithoutDetails(Type exceptionType)
     {
-        var (context, body) = await InvokeAsync(new InvalidOperationException("The request is invalid."));
-
-        Assert.That(context.Response.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
-        Assert.That(body.GetProperty("error").GetString(), Is.EqualTo("BadRequest"));
-        Assert.That(body.GetProperty("code").GetInt32(), Is.EqualTo(400));
-        Assert.That(body.GetProperty("message").GetString(), Is.EqualTo("The request is invalid."));
-    }
-
-    [Test]
-    public async Task UnexpectedFailureReturns500WithoutDetails()
-    {
-        var (context, body) = await InvokeAsync(new InvalidDataException("Internal storage failure."));
+        var exception = (Exception)Activator.CreateInstance(exceptionType, "Internal storage failure.")!;
+        var (context, body) = await InvokeAsync(exception);
 
         Assert.That(context.Response.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         Assert.That(body.GetProperty("error").GetString(), Is.EqualTo("InternalError"));
@@ -53,7 +46,7 @@ public sealed class ExceptionMiddlewareTests
         var context = new DefaultHttpContext();
         context.Response.Body = responseBody;
 
-        await new ExceptionMiddleware(_ => throw exception).InvokeAsync(context);
+        await new ExceptionMiddleware(_ => throw exception, NullLogger<ExceptionMiddleware>.Instance).InvokeAsync(context);
 
         using var document = JsonDocument.Parse(Encoding.UTF8.GetString(responseBody.ToArray()));
 

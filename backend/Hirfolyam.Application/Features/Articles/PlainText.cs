@@ -4,7 +4,7 @@ using HtmlAgilityPack;
 
 namespace Hirfolyam.Application.Features;
 
-public static partial class ArticleSearchText
+public static partial class PlainText
 {
     public static string FromHtml(string? value)
     {
