@@ -30,7 +30,7 @@ export function SiteHeader() {
         {/* Mobile: date above the rates on the left, weather centred across both rows on the right. */}
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_auto] items-center justify-between gap-x-3 gap-y-1 px-4 py-1.5 text-xs leading-4 sm:flex sm:min-h-9 sm:min-w-max sm:gap-x-4 sm:px-6">
           <time className="whitespace-nowrap text-neutral-400" dateTime={today.toISOString()}>
-            {dateFormatter.format(today).replace('. ', '.').replace(',', '')}
+            {dateFormatter.format(today).replaceAll('. ', '.').replace(',', '')}
           </time>
 
           <div className="contents sm:flex sm:shrink-0 sm:items-center sm:gap-5">
