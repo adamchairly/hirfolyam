@@ -56,10 +56,7 @@ services:
       postgres:
         condition: service_healthy
   frontend:
-    build:
-      context: ./frontend
-      args:
-        SOURCE_COMMIT: ${SOURCE_COMMIT:-}
+    build: ./frontend
     logging: *default-logging
     ports:
       - "5173:80"
