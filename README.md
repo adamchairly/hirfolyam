@@ -2,10 +2,7 @@
 
 hírfolyam is a Hungarian news aggregator that currently collects the RSS feeds of 60 news sources in one place, organized into categories, with AI-based summaries.
 
-<p>
-  <img src="docs/hirfolyam.png" alt="hírfolyam desktop view" width="65%">
-  <img src="docs/hirfolyam-mobil.png" alt="hírfolyam mobile view" width="32%">
-</p>
+![hírfolyam desktop and mobile view](docs/hirfolyam-preview.png)
 
 ## Features
 
