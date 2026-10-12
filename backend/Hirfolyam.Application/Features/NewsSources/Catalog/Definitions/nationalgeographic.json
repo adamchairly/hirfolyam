@@ -2,6 +2,7 @@
   "name": "National Geographic Magyarország",
   "category": "science-tech",
   "baseUrl": "https://ng.24.hu/",
+  "iconUrl": "https://ng.24.hu/uploads/2018/10/cropped-app-logo-180x180.png",
   "enabled": true,
   "feeds": ["https://ng.24.hu/feed/"],
   "categories": {
