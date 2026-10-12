@@ -52,7 +52,6 @@ services:
       ConnectionStrings__NewsDatabase: Host=postgres;Database=newsaggregator;Username=newsaggregator;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       Database__MigrateOnStartup: "true"
       OpenRouter__ApiKey: ${OPENROUTER_API_KEY:-}
-      SOURCE_COMMIT: ${SOURCE_COMMIT:-}
     depends_on:
       postgres:
         condition: service_healthy

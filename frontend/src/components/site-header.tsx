@@ -41,7 +41,7 @@ export function SiteHeader() {
             <time dateTime={today.toISOString()}>
               {dateFormatter.format(today).replaceAll('. ', '.').replace(',', '')}
             </time>
-            {nameday && <span className="text-neutral-300"> · {nameday}</span>}
+            {nameday && <span className="text-neutral-300"> {nameday}</span>}
           </p>
 
           <div className="contents sm:flex sm:shrink-0 sm:items-center sm:gap-5">
