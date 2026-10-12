@@ -1,3 +1,4 @@
+import { LoaderCircle } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 interface InfiniteScrollProps {
@@ -53,17 +54,7 @@ export function InfiniteScroll({
     <div ref={sentinelRef} className="flex min-h-24 items-center justify-center py-8">
       {isLoading && (
         <p role="status" className="flex items-center gap-2 text-sm text-neutral-400">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            aria-hidden="true"
-            className="size-4 animate-spin"
-          >
-            <path d="M12 3a9 9 0 1 0 9 9" />
-          </svg>
+          <LoaderCircle className="size-4 animate-spin" />
           {loadingLabel}
         </p>
       )}

@@ -1,32 +1,19 @@
-import type { ReactNode } from 'react'
+import { LayoutGrid, LayoutList, type LucideIcon } from 'lucide-react'
 
 import { useArticleLayout } from '@/hooks/use-article-layout'
 import type { ArticleLayout } from '@/lib/article-layout'
 import { cn } from '@/lib/utils'
 
-const options: { value: ArticleLayout, label: string, icon: ReactNode }[] = [
+const options: { value: ArticleLayout, label: string, icon: LucideIcon }[] = [
   {
     value: 'list',
     label: 'Lista nézet',
-    icon: (
-      <>
-        <rect x="4" y="5" width="6" height="5" rx="1" />
-        <rect x="4" y="14" width="6" height="5" rx="1" />
-        <path d="M14 6.5h6M14 9h4M14 15.5h6M14 18h4" />
-      </>
-    ),
+    icon: LayoutList,
   },
   {
     value: 'grid',
     label: 'Rács nézet',
-    icon: (
-      <>
-        <rect x="4" y="4" width="6.5" height="6.5" rx="1" />
-        <rect x="13.5" y="4" width="6.5" height="6.5" rx="1" />
-        <rect x="4" y="13.5" width="6.5" height="6.5" rx="1" />
-        <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1" />
-      </>
-    ),
+    icon: LayoutGrid,
   },
 ]
 
@@ -55,18 +42,7 @@ export function ArticleLayoutToggle({ className }: ArticleLayoutToggleProps) {
             updateLayout(option.value)
           }}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.75}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-            className="size-4"
-          >
-            {option.icon}
-          </svg>
+          <option.icon strokeWidth={1.75} className="size-4" />
         </button>
       ))}
     </div>

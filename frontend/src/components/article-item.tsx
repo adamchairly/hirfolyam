@@ -1,6 +1,6 @@
+import { Bookmark } from 'lucide-react'
 import { useState } from 'react'
 
-import { BookmarkIcon } from '@/components/bookmark-icon'
 import { HighlightedText } from '@/components/highlighted-text'
 import { useArticleLeadClamp } from '@/hooks/use-article-lead-clamp'
 import { useBookmarks } from '@/hooks/use-bookmarks'
@@ -120,7 +120,7 @@ export function ArticleItem({ article, now, search = '', layout = 'list', showLe
                 toggleBookmark(article.id)
               }}
             >
-              <BookmarkIcon filled={isSaved} className="size-4" />
+              <Bookmark fill={isSaved ? 'currentColor' : 'none'} strokeWidth={1.75} className="size-4" />
             </button>
             {icon && icon !== failedIconUrl && (
               <img

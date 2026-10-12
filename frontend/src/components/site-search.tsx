@@ -1,3 +1,4 @@
+import { Search, X } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useSearchParams, type Location } from 'react-router-dom'
 
@@ -147,18 +148,7 @@ export function SiteSearch({ expanded, onExpandedChange }: SiteSearchProps) {
           }
         }}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          aria-hidden="true"
-          className="size-4"
-        >
-          <circle cx="10.5" cy="10.5" r="6.5" />
-          <path d="m16 16 4 4" />
-        </svg>
+        <Search className="size-4" />
 
         {!expanded && <span>Keresés</span>}
       </button>
@@ -196,17 +186,7 @@ export function SiteSearch({ expanded, onExpandedChange }: SiteSearchProps) {
               className="size-7 shrink-0"
               onClick={clearSearch}
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                aria-hidden="true"
-                className="size-4"
-              >
-                <path d="m6 6 12 12M6 18 18 6" />
-              </svg>
+              <X className="size-4" />
             </Button>
           )}
         </>

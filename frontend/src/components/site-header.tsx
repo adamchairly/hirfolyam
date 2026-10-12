@@ -1,7 +1,7 @@
+import { Bookmark } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-import { BookmarkIcon } from '@/components/bookmark-icon'
 import { ExchangeRatesWidget } from '@/components/exchange-rates-widget'
 import { SiteSearch } from '@/components/site-search'
 import { WeatherWidget } from '@/components/weather-widget'
@@ -95,7 +95,7 @@ export function SiteHeader() {
                 : 'bg-black text-neutral-100 hover:bg-neutral-800',
             )}
           >
-            <BookmarkIcon className="size-5" />
+            <Bookmark strokeWidth={1.75} className="size-5" />
           </NavLink>
         </div>
       </div>
