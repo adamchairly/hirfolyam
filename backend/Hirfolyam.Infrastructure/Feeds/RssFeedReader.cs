@@ -3,6 +3,7 @@ using System.Net;
 using System.Xml.Linq;
 using System.Xml;
 using Hirfolyam.Application.Features;
+using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using Sagara.FeedReader.Feeds;
 using Sagara.FeedReader;
@@ -104,6 +105,8 @@ public sealed class RssFeedReader(HttpClient client, ILogger<RssFeedReader> logg
             Content = content,
             Categories = item.Categories.Where(name => !string.IsNullOrWhiteSpace(name)).ToArray(),
             ImageUrl = FindImage(element, articleUri)
+                ?? FindHtmlImage(description, articleUri)
+                ?? FindHtmlImage(content, articleUri)
         };
     }
 
@@ -131,6 +134,23 @@ public sealed class RssFeedReader(HttpClient client, ILogger<RssFeedReader> logg
         }
 
         return null;
+    }
+
+    // Some feeds only embed the image in the HTML of the item.
+    private static string? FindHtmlImage(string? html, Uri articleUri)
+    {
+        if (string.IsNullOrWhiteSpace(html))
+        {
+            return null;
+        }
+
+        var document = new HtmlDocument();
+        document.LoadHtml(html);
+
+        return document.DocumentNode
+            .Descendants("img")
+            .Select(image => AbsoluteUrl(WebUtility.HtmlDecode(image.GetAttributeValue("src", null)), articleUri))
+            .FirstOrDefault(url => url is not null);
     }
 
     private static string? Value(XElement? element, string name)

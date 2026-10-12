@@ -48,6 +48,37 @@ public sealed class RssFeedReaderTests
         Assert.That(article.PublishedAt.Offset, Is.EqualTo(TimeSpan.Zero));
     }
 
+    [Test]
+    public async Task ImageIsTakenFromItemHtmlWhenFeedHasNoMediaElement()
+    {
+        var articles = await ReadAsync("""
+            <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+              <channel>
+                <title>Example</title>
+                <link>https://example.com/</link>
+                <item>
+                  <title>Lead image</title>
+                  <link>https://example.com/lead</link>
+                  <pubDate>Tue, 06 Oct 2026 12:00:00 +0200</pubDate>
+                  <description><![CDATA[<img src="/images/lead.jpg?a=1&amp;b=2" />Lead]]></description>
+                  <content:encoded><![CDATA[<p><img src="https://example.com/content.jpg" /></p>]]></content:encoded>
+                </item>
+                <item>
+                  <title>Content image</title>
+                  <link>https://example.com/content</link>
+                  <pubDate>Tue, 06 Oct 2026 12:00:00 +0200</pubDate>
+                  <description>Lead</description>
+                  <content:encoded><![CDATA[<p><img src="data:image/gif;base64,R0lGOD" /><img src="https://example.com/content.jpg" /></p>]]></content:encoded>
+                </item>
+              </channel>
+            </rss>
+            """);
+
+        Assert.That(
+            articles.Select(article => article.ImageUrl),
+            Is.EqualTo(new[] { "https://example.com/images/lead.jpg?a=1&b=2", "https://example.com/content.jpg" }));
+    }
+
     private static async Task<IReadOnlyCollection<RssArticle>> ReadAsync(string feed)
     {
         using var client = new HttpClient(new StubHandler(feed));
