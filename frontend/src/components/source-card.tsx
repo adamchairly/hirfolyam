@@ -23,7 +23,7 @@ export function SourceCard({ source, isEnabled, onToggle }: SourceCardProps) {
       title={isEnabled ? 'Forrás kikapcsolása' : 'Forrás bekapcsolása'}
       onClick={onToggle}
       className={cn(
-        'group flex h-full min-h-14 w-full items-center gap-3 rounded-md border border-neutral-700/70 bg-neutral-900 px-3 py-2 text-left transition-[border-color,background-color,opacity] hover:border-neutral-500',
+        'group flex h-full min-h-14 w-full items-center gap-3 rounded-md bg-neutral-900 px-3 py-2 text-left transition-[background-color,opacity] hover:bg-neutral-950',
         !isEnabled && 'opacity-35 hover:opacity-60',
       )}
     >

@@ -70,7 +70,7 @@ export function SourcesPage() {
           <p role="status" className="sr-only">Források betöltése…</p>
           <div aria-hidden="true" className={gridClassName}>
             {Array.from({ length: 8 }, (_, index) => (
-              <div key={index} className="flex min-h-14 w-full items-center gap-3 rounded-md border border-neutral-700/70 bg-neutral-900 px-3 py-2">
+              <div key={index} className="flex min-h-14 w-full items-center gap-3 rounded-md bg-neutral-900 px-3 py-2">
                 <Skeleton className="size-8 shrink-0" />
                 <div className="space-y-1.5">
                   <Skeleton className="h-3 w-20" />

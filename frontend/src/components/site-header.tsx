@@ -26,7 +26,7 @@ export function SiteHeader() {
 
   return (
     <header className="bg-neutral-900 text-neutral-50">
-      <div className="overflow-x-auto border-b border-neutral-800/70 bg-neutral-950 [scrollbar-width:thin]">
+      <div className="overflow-x-auto bg-neutral-950 [scrollbar-width:thin]">
         {/* Mobile: date above the rates on the left, weather centred across both rows on the right. */}
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_auto] items-center justify-between gap-x-3 gap-y-1 px-4 py-1.5 text-xs leading-4 sm:flex sm:min-h-9 sm:min-w-max sm:gap-x-4 sm:px-6">
           <time className="whitespace-nowrap text-neutral-400" dateTime={today.toISOString()}>
@@ -65,10 +65,10 @@ export function SiteHeader() {
           <NavLink
             to="/sources"
             className={({ isActive }) => cn(
-              'inline-flex min-h-10 items-center justify-center rounded-md border px-3 text-xs font-semibold transition-colors sm:px-4 sm:text-sm',
+              'inline-flex min-h-10 items-center justify-center rounded-md px-3 text-xs font-semibold transition-colors sm:px-4 sm:text-sm',
               isActive
-                ? 'border-neutral-100 bg-neutral-100 text-neutral-950'
-                : 'border-neutral-600 text-neutral-100 hover:border-neutral-300 hover:bg-neutral-800',
+                ? 'bg-neutral-100 text-neutral-950'
+                : 'bg-black text-neutral-100 hover:bg-neutral-800',
             )}
           >
             Források
@@ -78,10 +78,10 @@ export function SiteHeader() {
             aria-label="Mentett hírek"
             title="Mentett hírek"
             className={({ isActive }) => cn(
-              'inline-flex size-10 items-center justify-center rounded-md border transition-colors',
+              'inline-flex size-10 items-center justify-center rounded-md transition-colors',
               isActive
-                ? 'border-neutral-100 bg-neutral-100 text-neutral-950'
-                : 'border-neutral-600 text-neutral-100 hover:border-neutral-300 hover:bg-neutral-800',
+                ? 'bg-neutral-100 text-neutral-950'
+                : 'bg-black text-neutral-100 hover:bg-neutral-800',
             )}
           >
             <BookmarkIcon className="size-5" />
@@ -89,7 +89,7 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <nav aria-label="Fő navigáció" className="border-b border-neutral-700">
+      <nav aria-label="Fő navigáció">
         <div className="overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:thin] sm:px-6">
           <ul className="mx-auto flex w-max min-w-full justify-center gap-6 sm:min-w-0 sm:gap-8">
             <li>

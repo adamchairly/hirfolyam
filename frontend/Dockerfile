@@ -1,9 +1,11 @@
 FROM node:24-alpine AS build
+RUN apk add --no-cache git
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build
+# The version comes from the last commit
+RUN --mount=type=bind,from=git,target=/app/.git npm run build
 
 FROM nginx:stable-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf

@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { ScrollToTop } from '@/components/scroll-to-top'
+import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { useSourceSelection } from '@/hooks/use-source-selection'
 import { CategoryPage } from '@/pages/category-page'
@@ -15,10 +16,10 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-svh bg-neutral-800 font-sans text-neutral-50">
+      <div className="flex min-h-svh flex-col bg-neutral-800 font-sans text-neutral-50">
         <SiteHeader />
 
-        <main className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-12 sm:px-6">
           <Routes>
             <Route path="/" element={<Navigate to="/fresh" replace />} />
             <Route path="/fresh" element={<FreshPage lastUpdatedAt={lastUpdatedAt} />} />
@@ -31,6 +32,8 @@ export default function App() {
             <Route path="*" element={<CategoryPage lastUpdatedAt={lastUpdatedAt} />} />
           </Routes>
         </main>
+
+        <SiteFooter />
 
         <ScrollToTop />
       </div>

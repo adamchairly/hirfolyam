@@ -56,7 +56,10 @@ services:
       postgres:
         condition: service_healthy
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      additional_contexts:
+        git: ./.git
     logging: *default-logging
     ports:
       - "5173:80"

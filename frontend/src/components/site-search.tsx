@@ -105,7 +105,7 @@ export function SiteSearch({ expanded, onExpandedChange }: SiteSearchProps) {
       ref={formRef}
       role="search"
       className={cn(
-        'flex h-10 max-w-full items-center gap-2 overflow-clip rounded-md border border-neutral-600 bg-neutral-900 px-[3px] transition-[width] duration-200 focus-within:border-neutral-300 motion-reduce:transition-none sm:max-w-none',
+        'flex h-10 max-w-full items-center gap-2 overflow-clip rounded-md bg-black px-[3px] transition-[width] duration-200 motion-reduce:transition-none sm:max-w-none',
         expanded
           ? 'w-full sm:w-60 md:w-56'
           : 'w-28',
