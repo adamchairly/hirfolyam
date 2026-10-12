@@ -79,6 +79,19 @@ public sealed class RssFeedReaderTests
             Is.EqualTo(new[] { "https://example.com/images/lead.jpg?a=1&b=2", "https://example.com/content.jpg" }));
     }
 
+    [Test]
+    public async Task PageImageIsTakenFromOpenGraphMetadata()
+    {
+        using var client = new HttpClient(new StubHandler("""
+            <html><head><meta property="og:image" content="/images/cover.jpg?a=1&amp;b=2"></head></html>
+            """));
+        var reader = new RssFeedReader(client, NullLogger<RssFeedReader>.Instance);
+
+        var image = await reader.FindPageImageAsync("https://example.com/article", CancellationToken.None);
+
+        Assert.That(image, Is.EqualTo("https://example.com/images/cover.jpg?a=1&b=2"));
+    }
+
     private static async Task<IReadOnlyCollection<RssArticle>> ReadAsync(string feed)
     {
         using var client = new HttpClient(new StubHandler(feed));

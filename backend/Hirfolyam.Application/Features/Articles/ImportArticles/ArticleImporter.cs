@@ -9,6 +9,7 @@ namespace Hirfolyam.Application.Features;
 internal sealed class ArticleImporter(
     IApplicationDbContext context,
     CategoryMapper categoryMapper,
+    IRssFeedReader feedReader,
     TimeProvider timeProvider)
 {
     // Returns false when the article is already stored.
@@ -21,6 +22,7 @@ internal sealed class ArticleImporter(
         var externalIdHash = Hash(externalId);
         var urlHash = Hash(url);
 
+        // Do not import already existing articles
         if (await ExistsAsync(source.Id, externalIdHash, urlHash, cancellationToken))
         {
             return false;
@@ -40,7 +42,8 @@ internal sealed class ArticleImporter(
             LeadText = PlainText.FromHtml(rssArticle.Description),
             Content = rssArticle.Content,
             Author = rssArticle.Author,
-            ImageUrl = rssArticle.ImageUrl,
+            // Some feeds have no images, at this point we know this is a new article
+            ImageUrl = rssArticle.ImageUrl ?? await feedReader.FindPageImageAsync(url, cancellationToken),
             PublishedAt = rssArticle.PublishedAt.ToUniversalTime(),
             CreatedAt = now,
             UpdatedAt = now

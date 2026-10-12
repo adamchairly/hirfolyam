@@ -56,6 +56,33 @@ public sealed class RssFeedReader(HttpClient client, ILogger<RssFeedReader> logg
         return articles;
     }
 
+    public async Task<string?> FindPageImageAsync(string articleUrl, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, articleUrl);
+            request.Headers.Accept.ParseAdd("text/html");
+
+            using var response = await client.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var document = new HtmlDocument();
+            document.LoadHtml(await response.Content.ReadAsStringAsync(cancellationToken));
+            var image = document.DocumentNode
+                .SelectSingleNode("//meta[@property='og:image']")
+                ?.GetAttributeValue("content", null);
+
+            return AbsoluteUrl(WebUtility.HtmlDecode(image), response.RequestMessage?.RequestUri ?? new Uri(articleUrl));
+        }
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            logger.LogDebug(exception, "Cannot read the page image of {ArticleUrl}", articleUrl);
+
+            // Do not throw
+            return null;
+        }
+    }
+
     private static RssArticle MapArticle(FeedItem item, Uri feedUri)
     {
         var element = item.SpecificItem?.ItemOrEntryElement;

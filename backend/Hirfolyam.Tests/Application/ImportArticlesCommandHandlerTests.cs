@@ -134,7 +134,7 @@ public sealed class ImportArticlesCommandHandlerTests
             context,
             catalog,
             feeds,
-            new ArticleImporter(context, new CategoryMapper(catalog), clock),
+            new ArticleImporter(context, new CategoryMapper(catalog), feeds, clock),
             clock,
             OptionsFactory.Create(new ImportOptions { LookbackHours = lookbackHours }),
             NullLogger<ImportArticlesCommandHandler>.Instance);

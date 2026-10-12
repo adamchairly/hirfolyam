@@ -18,4 +18,9 @@ internal sealed class StubFeedReader(Dictionary<string, IReadOnlyCollection<RssA
 
         return Task.FromResult(articles);
     }
+
+    public Task<string?> FindPageImageAsync(string articleUrl, CancellationToken cancellationToken)
+    {
+        return Task.FromResult<string?>(null);
+    }
 }

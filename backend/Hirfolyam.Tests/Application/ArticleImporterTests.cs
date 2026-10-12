@@ -113,7 +113,7 @@ public sealed class ArticleImporterTests
 
     private static ArticleImporter CreateImporter(NewsDbContext context)
     {
-        return new ArticleImporter(context, new CategoryMapper(Catalog), new FixedTimeProvider(Now));
+        return new ArticleImporter(context, new CategoryMapper(Catalog), new StubFeedReader([]), new FixedTimeProvider(Now));
     }
 
     private async Task SeedAsync(Article article)
