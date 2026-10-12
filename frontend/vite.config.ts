@@ -13,13 +13,17 @@ function readLastCommit(format: string): string {
   }
 }
 
-const commitDate = readLastCommit('%cd')
+// Docker builds have no git, only the SOURCE_COMMIT build arg
+const sourceCommit = process.env.SOURCE_COMMIT?.trim() ?? ''
+const buildDate = new Date().toISOString().slice(0, 10).replaceAll('-', '.')
+const commitHash = readLastCommit('%H') || sourceCommit
+const commitDate = readLastCommit('%cd') || (sourceCommit ? buildDate : '')
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   define: {
     __APP_VERSION__: JSON.stringify(commitDate || 'dev'),
-    __APP_COMMIT__: JSON.stringify(readLastCommit('%H')),
+    __APP_COMMIT__: JSON.stringify(commitHash),
   },
   resolve: {
     alias: {

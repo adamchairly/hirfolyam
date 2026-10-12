@@ -58,8 +58,8 @@ services:
   frontend:
     build:
       context: ./frontend
-      additional_contexts:
-        git: ./.git
+      args:
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-}
     logging: *default-logging
     ports:
       - "5173:80"
