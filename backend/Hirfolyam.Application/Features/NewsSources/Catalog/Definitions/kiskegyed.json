@@ -1,0 +1,25 @@
+{
+  "name": "Kiskegyed",
+  "category": "culture",
+  "baseUrl": "https://www.kiskegyed.hu/",
+  "iconUrl": "https://ocdn.eu/kiskegyed/resources/metaIcons/apple-icon-180x180.png",
+  "enabled": true,
+  "feeds": ["https://www.kiskegyed.hu/rss"],
+  "categories": {
+    "default": "culture",
+    "rules": {
+      "culture": {
+        "feed": ["Novella"],
+        "paths": ["/novella"]
+      },
+      "tabloid": {
+        "feed": ["Most történik", "Népszerű", "Képernyő", "Horoszkóp"],
+        "paths": ["/most-tortenik", "/nepszeru", "/kepernyo", "/horoszkop"]
+      },
+      "lifestyle": {
+        "feed": ["Család", "Életmód", "Gasztro"],
+        "paths": ["/csalad", "/eletmod", "/gasztro"]
+      }
+    }
+  }
+}

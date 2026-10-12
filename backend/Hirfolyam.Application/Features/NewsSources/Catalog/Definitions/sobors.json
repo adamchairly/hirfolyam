@@ -1,0 +1,11 @@
+{
+  "name": "Sóbors",
+  "category": "lifestyle",
+  "baseUrl": "https://sobors.hu/",
+  "iconUrl": "https://sobors.hu/neon/static/images/sobors/favicon_32x32.png",
+  "enabled": true,
+  "feeds": ["https://sobors.hu/feed/"],
+  "categories": {
+    "default": "lifestyle"
+  }
+}

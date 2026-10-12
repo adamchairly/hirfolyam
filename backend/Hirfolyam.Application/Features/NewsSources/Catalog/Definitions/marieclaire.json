@@ -1,0 +1,25 @@
+{
+  "name": "Marie Claire",
+  "category": "culture",
+  "baseUrl": "https://marieclaire.hu/",
+  "iconUrl": "https://marieclaire.hu/themes/marieclaire/images/favicon.ico",
+  "enabled": true,
+  "feeds": ["https://marieclaire.hu/feed/"],
+  "categories": {
+    "default": "culture",
+    "rules": {
+      "culture": {
+        "feed": ["Kultúra"],
+        "paths": ["/kultura"]
+      },
+      "tabloid": {
+        "feed": ["Sztárok", "Horoszkóp"],
+        "paths": ["/sztarok", "/horoszkop"]
+      },
+      "lifestyle": {
+        "feed": ["Divat", "Szépség", "Életmód", "Egészség", "Gasztró", "Lélek", "Utazás"],
+        "paths": ["/divat", "/szepseg", "/eletmod", "/egeszseg", "/gasztro", "/lelek", "/utazas"]
+      }
+    }
+  }
+}
