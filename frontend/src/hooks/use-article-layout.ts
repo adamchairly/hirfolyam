@@ -1,16 +1,11 @@
-import { useSyncExternalStore } from 'react'
-
-import {
-  getArticleLayout,
-  subscribeToArticleLayout,
-  updateArticleLayout,
-} from '@/lib/article-layout'
+import { useStoredValue } from '@/hooks/use-stored-value'
+import { articleLayout } from '@/lib/article-layout'
 
 export function useArticleLayout() {
-  const layout = useSyncExternalStore(subscribeToArticleLayout, getArticleLayout)
+  const layout = useStoredValue(articleLayout)
 
   return {
     layout,
-    updateLayout: updateArticleLayout,
+    updateLayout: articleLayout.set,
   }
 }

@@ -1,3 +1,5 @@
+import { createCachedRequest } from '@/lib/cached-request'
+
 export interface Weather {
   temperature: number
   minimum: number
@@ -26,7 +28,6 @@ interface WeatherCache {
   fetchedAt: number
 }
 
-const cacheKey = 'hirfolyam:weather:budapest:v1'
 const cacheDuration = 15 * 60_000
 const dateFormatter = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Europe/Budapest',
@@ -34,9 +35,6 @@ const dateFormatter = new Intl.DateTimeFormat('en-CA', {
   month: '2-digit',
   day: '2-digit',
 })
-
-let cache: WeatherCache | null = null
-let pendingRequest: Promise<Weather> | null = null
 
 function parseWeather(response: WeatherResponse | null | undefined): Weather {
   const current = response?.current
@@ -75,35 +73,21 @@ function parseWeather(response: WeatherResponse | null | undefined): Weather {
   }
 }
 
-function getCachedWeather(): Weather | null {
-  try {
-    if (!cache) {
-      const stored = localStorage.getItem(cacheKey)
-
-      if (stored) {
-        cache = JSON.parse(stored) as WeatherCache
-      }
-    }
-
-    if (!cache || typeof cache.fetchedAt !== 'number') {
-      return null
-    }
-
-    const age = Date.now() - cache.fetchedAt
-
-    if (!Number.isFinite(age) || age < 0 || age >= cacheDuration) {
-      return null
-    }
-
-    return parseWeather(cache.response)
-  } catch {
-    cache = null
-
+function readCachedWeather(cache: WeatherCache): Weather | null {
+  if (typeof cache.fetchedAt !== 'number') {
     return null
   }
+
+  const age = Date.now() - cache.fetchedAt
+
+  if (!Number.isFinite(age) || age < 0 || age >= cacheDuration) {
+    return null
+  }
+
+  return parseWeather(cache.response)
 }
 
-async function fetchWeather(): Promise<Weather> {
+async function fetchWeather() {
   const parameters = new URLSearchParams({
     latitude: '47.4979',
     longitude: '19.0402',
@@ -125,34 +109,18 @@ async function fetchWeather(): Promise<Weather> {
   }
 
   const data = await response.json() as WeatherResponse
-  const weather = parseWeather(data)
 
-  cache = {
-    response: data,
-    fetchedAt: Date.now(),
+  return {
+    value: parseWeather(data),
+    cache: {
+      response: data,
+      fetchedAt: Date.now(),
+    },
   }
-
-  try {
-    localStorage.setItem(cacheKey, JSON.stringify(cache))
-  } catch {
-    // Keep the memory cache when browser storage is not available.
-  }
-
-  return weather
 }
 
-export async function getWeather(): Promise<Weather> {
-  const cachedWeather = getCachedWeather()
-
-  if (cachedWeather) {
-    return cachedWeather
-  }
-
-  if (!pendingRequest) {
-    pendingRequest = fetchWeather().finally(() => {
-      pendingRequest = null
-    })
-  }
-
-  return pendingRequest
-}
+export const getWeather = createCachedRequest<[], Weather, WeatherCache>({
+  storageKey: 'hirfolyam:weather:budapest:v1',
+  readCache: readCachedWeather,
+  fetchValue: fetchWeather,
+})

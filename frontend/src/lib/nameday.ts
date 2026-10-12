@@ -1,3 +1,5 @@
+import { createCachedRequest } from '@/lib/cached-request'
+
 interface NamedayResponse {
   data?: {
     hu?: string
@@ -9,30 +11,7 @@ interface NamedayCache {
   names: string
 }
 
-const cacheKey = 'hirfolyam:nameday:hu:v1'
-
-let cache: NamedayCache | null = null
-let pendingRequest: Promise<string> | null = null
-
-function getCachedNameday(date: string): string | null {
-  try {
-    if (!cache) {
-      const stored = localStorage.getItem(cacheKey)
-
-      if (stored) {
-        cache = JSON.parse(stored) as NamedayCache
-      }
-    }
-
-    return cache?.date === date && typeof cache.names === 'string' ? cache.names : null
-  } catch {
-    cache = null
-
-    return null
-  }
-}
-
-async function fetchNameday(date: string): Promise<string> {
+async function fetchNameday(date: string) {
   const [, month, day] = date.split('-')
   const parameters = new URLSearchParams({
     day: String(Number(day)),
@@ -57,30 +36,17 @@ async function fetchNameday(date: string): Promise<string> {
     throw new Error('Invalid nameday data.')
   }
 
-  cache = { date, names }
-
-  try {
-    localStorage.setItem(cacheKey, JSON.stringify(cache))
-  } catch {
-    // Keep the memory cache when browser storage is not available.
+  return {
+    value: names,
+    cache: { date, names },
   }
-
-  return names
 }
 
 /** Hungarian name day(s) for a Budapest calendar date in YYYY-MM-DD format. */
-export async function getNameday(date: string): Promise<string> {
-  const cachedNameday = getCachedNameday(date)
-
-  if (cachedNameday) {
-    return cachedNameday
-  }
-
-  if (!pendingRequest) {
-    pendingRequest = fetchNameday(date).finally(() => {
-      pendingRequest = null
-    })
-  }
-
-  return pendingRequest
-}
+export const getNameday = createCachedRequest<[date: string], string, NamedayCache>({
+  storageKey: 'hirfolyam:nameday:hu:v1',
+  readCache: (cache, date) => cache.date === date && typeof cache.names === 'string' && cache.names
+    ? cache.names
+    : null,
+  fetchValue: fetchNameday,
+})

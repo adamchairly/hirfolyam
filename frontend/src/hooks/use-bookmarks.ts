@@ -1,13 +1,8 @@
-import { useSyncExternalStore } from 'react'
-
-import {
-  getBookmarks,
-  subscribeToBookmarks,
-  toggleBookmark,
-} from '@/lib/bookmarks'
+import { useStoredValue } from '@/hooks/use-stored-value'
+import { bookmarks as storedBookmarks, toggleBookmark } from '@/lib/bookmarks'
 
 export function useBookmarks() {
-  const bookmarks = useSyncExternalStore(subscribeToBookmarks, getBookmarks)
+  const bookmarks = useStoredValue(storedBookmarks)
 
   return {
     bookmarks,

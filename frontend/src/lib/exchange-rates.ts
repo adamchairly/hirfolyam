@@ -1,3 +1,5 @@
+import { createCachedRequest } from '@/lib/cached-request'
+
 interface DailyExchangeRates {
   eur: number
   usd: number
@@ -21,13 +23,9 @@ interface ExchangeRatesCache {
   fetchedAt: number
 }
 
-const cacheKey = 'hirfolyam:exchange-rates:ecb:huf:v2'
 const cacheDuration = 6 * 60 * 60_000
 const incompleteCacheDuration = 5 * 60_000
 const apiUrl = 'https://api.frankfurter.dev/v2/rates?base=EUR&quotes=HUF,USD&providers=ECB'
-
-let cache: ExchangeRatesCache | null = null
-let pendingRequest: Promise<ExchangeRates> | null = null
 
 function parseExchangeRates(response: RateResponse[]): DailyExchangeRates {
   if (!Array.isArray(response)) {
@@ -87,37 +85,23 @@ function getPreviousRates(
   return null
 }
 
-function getCachedExchangeRates(): ExchangeRates | null {
-  try {
-    if (!cache) {
-      const stored = localStorage.getItem(cacheKey)
-
-      if (stored) {
-        cache = JSON.parse(stored) as ExchangeRatesCache
-      }
-    }
-
-    if (!cache || typeof cache.fetchedAt !== 'number') {
-      return null
-    }
-
-    const age = Date.now() - cache.fetchedAt
-    const rates = parseExchangeRates(cache.response)
-    const previous = getPreviousRates(cache.previousResponse, rates.date)
-    const duration = previous ? cacheDuration : incompleteCacheDuration
-
-    if (!Number.isFinite(age) || age < 0 || age >= duration) {
-      return null
-    }
-
-    return {
-      ...rates,
-      previous,
-    }
-  } catch {
-    cache = null
-
+function readCachedExchangeRates(cache: ExchangeRatesCache): ExchangeRates | null {
+  if (typeof cache.fetchedAt !== 'number') {
     return null
+  }
+
+  const age = Date.now() - cache.fetchedAt
+  const rates = parseExchangeRates(cache.response)
+  const previous = getPreviousRates(cache.previousResponse, rates.date)
+  const duration = previous ? cacheDuration : incompleteCacheDuration
+
+  if (!Number.isFinite(age) || age < 0 || age >= duration) {
+    return null
+  }
+
+  return {
+    ...rates,
+    previous,
   }
 }
 
@@ -135,7 +119,7 @@ async function fetchRateResponse(url: string): Promise<RateResponse[]> {
   return await response.json() as RateResponse[]
 }
 
-async function fetchExchangeRates(): Promise<ExchangeRates> {
+async function fetchExchangeRates() {
   const data = await fetchRateResponse(apiUrl)
   const rates = parseExchangeRates(data)
   const previousDate = new Date(rates.date)
@@ -154,36 +138,21 @@ async function fetchExchangeRates(): Promise<ExchangeRates> {
 
   const previous = getPreviousRates(previousResponse, rates.date)
 
-  cache = {
-    response: data,
-    previousResponse: previous ? previousResponse : null,
-    fetchedAt: Date.now(),
-  }
-
-  try {
-    localStorage.setItem(cacheKey, JSON.stringify(cache))
-  } catch {
-    // Keep the memory cache when browser storage is not available.
-  }
-
   return {
-    ...rates,
-    previous,
+    value: {
+      ...rates,
+      previous,
+    },
+    cache: {
+      response: data,
+      previousResponse: previous ? previousResponse : null,
+      fetchedAt: Date.now(),
+    },
   }
 }
 
-export async function getExchangeRates(): Promise<ExchangeRates> {
-  const cachedRates = getCachedExchangeRates()
-
-  if (cachedRates) {
-    return cachedRates
-  }
-
-  if (!pendingRequest) {
-    pendingRequest = fetchExchangeRates().finally(() => {
-      pendingRequest = null
-    })
-  }
-
-  return pendingRequest
-}
+export const getExchangeRates = createCachedRequest<[], ExchangeRates, ExchangeRatesCache>({
+  storageKey: 'hirfolyam:exchange-rates:ecb:huf:v2',
+  readCache: readCachedExchangeRates,
+  fetchValue: fetchExchangeRates,
+})
