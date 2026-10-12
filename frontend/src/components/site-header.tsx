@@ -6,6 +6,7 @@ import { ExchangeRatesWidget } from '@/components/exchange-rates-widget'
 import { SiteSearch } from '@/components/site-search'
 import { WeatherWidget } from '@/components/weather-widget'
 import { useCurrentTime } from '@/hooks/use-current-time'
+import { useNameday } from '@/hooks/use-nameday'
 import { useSourceSelection } from '@/hooks/use-source-selection'
 import { categories } from '@/lib/categories'
 import { cn } from '@/lib/utils'
@@ -17,10 +18,17 @@ const dateFormatter = new Intl.DateTimeFormat('hu-HU', {
   day: '2-digit',
   weekday: 'long',
 })
+const isoDateFormatter = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Europe/Budapest',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
 
 export function SiteHeader() {
   const [searchExpanded, setSearchExpanded] = useState(false)
   const today = useCurrentTime()
+  const nameday = useNameday(isoDateFormatter.format(today))
   const { disabledCategorySlugs } = useSourceSelection()
   const visibleCategories = categories.filter((category) => !disabledCategorySlugs.includes(category.slug))
 
@@ -29,9 +37,12 @@ export function SiteHeader() {
       <div className="overflow-x-auto bg-neutral-950 [scrollbar-width:thin]">
         {/* Mobile: date above the rates on the left, weather centred across both rows on the right. */}
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_auto] items-center justify-between gap-x-3 gap-y-1 px-4 py-1.5 text-xs leading-4 sm:flex sm:min-h-9 sm:min-w-max sm:gap-x-4 sm:px-6">
-          <time className="whitespace-nowrap text-neutral-400" dateTime={today.toISOString()}>
-            {dateFormatter.format(today).replaceAll('. ', '.').replace(',', '')}
-          </time>
+          <p className="whitespace-nowrap text-neutral-400">
+            <time dateTime={today.toISOString()}>
+              {dateFormatter.format(today).replaceAll('. ', '.').replace(',', '')}
+            </time>
+            {nameday && <span className="text-neutral-300"> · {nameday}</span>}
+          </p>
 
           <div className="contents sm:flex sm:shrink-0 sm:items-center sm:gap-5">
             <div className="max-sm:row-start-2">

@@ -3,6 +3,7 @@ import axios from 'axios'
 import type { ArticlesResponse } from '@/types/article'
 import type { HotTopicDetail, HotTopicsResponse } from '@/types/hot-topic'
 import type { SourcesResponse } from '@/types/source'
+import type { VersionResponse } from '@/types/version'
 
 const api = axios.create({
   baseURL: '/api',
@@ -69,6 +70,14 @@ export async function getHotTopic(id: number, signal: AbortSignal): Promise<HotT
 
 export async function getSources(signal: AbortSignal): Promise<SourcesResponse> {
   const response = await api.get<SourcesResponse>('/sources', {
+    signal,
+  })
+
+  return response.data
+}
+
+export async function getVersion(signal: AbortSignal): Promise<VersionResponse> {
+  const response = await api.get<VersionResponse>('/version', {
     signal,
   })
 

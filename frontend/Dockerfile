@@ -3,8 +3,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-# There is no .git in the build context, so the commit hash comes from build arg
-ARG SOURCE_COMMIT
 RUN npm run build
 
 FROM nginx:stable-alpine
