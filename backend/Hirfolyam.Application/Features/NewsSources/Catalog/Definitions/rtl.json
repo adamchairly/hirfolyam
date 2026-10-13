@@ -1,0 +1,29 @@
+{
+  "name": "RTL",
+  "category": "domestic",
+  "baseUrl": "https://rtl.hu/",
+  "iconUrl": "https://rtl.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://rss.rtl.hu/"],
+  "categories": {
+    "default": "tabloid",
+    "rules": {
+      "domestic": {
+        "feed": ["Híradó", "Belföld"],
+        "paths": ["/hirado", "/belfold"]
+      },
+      "economy": {
+        "feed": ["Bank360"],
+        "paths": ["/bank360"]
+      },
+      "sport": {
+        "feed": ["Sport"],
+        "paths": ["/sport", "/uefa"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Utazás"],
+        "paths": ["/eletmod", "/utazas"]
+      }
+    }
+  }
+}

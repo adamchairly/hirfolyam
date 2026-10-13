@@ -1,0 +1,11 @@
+{
+  "name": "HWSW",
+  "category": "science-tech",
+  "baseUrl": "https://www.hwsw.hu/",
+  "iconUrl": "https://www.hwsw.hu/apple-touch-icon.png",
+  "enabled": true,
+  "feeds": ["https://www.hwsw.hu/xml/latest_news_rss.xml"],
+  "categories": {
+    "default": "science-tech"
+  }
+}

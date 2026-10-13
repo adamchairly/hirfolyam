@@ -1,0 +1,11 @@
+{
+  "name": "Kultúra.hu",
+  "category": "culture",
+  "baseUrl": "https://kultura.hu/",
+  "iconUrl": "https://kultura.hu/build/favicons/favicon-96x96.d1b054ae.png",
+  "enabled": true,
+  "feeds": ["https://kultura.hu/feed"],
+  "categories": {
+    "default": "culture"
+  }
+}

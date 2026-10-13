@@ -1,0 +1,11 @@
+{
+  "name": "Bank360",
+  "category": "economy",
+  "baseUrl": "https://bank360.hu/",
+  "iconUrl": "https://bank360.hu/assets/icon/favicon120x120.png",
+  "enabled": true,
+  "feeds": ["https://bank360.hu/blog/rss.xml"],
+  "categories": {
+    "default": "economy"
+  }
+}

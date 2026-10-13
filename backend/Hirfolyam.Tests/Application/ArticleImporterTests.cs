@@ -25,14 +25,31 @@ public sealed class ArticleImporterTests
     [Test]
     public async Task ExistingArticleIsNotSavedOrChangedAgain()
     {
-        await SeedAsync(CreateStoredArticle(categoryId: null));
+        var stored = CreateStoredArticle(categoryId: null);
+        stored.ImageUrl = "https://example.com/stored.jpg";
+        await SeedAsync(stored);
 
         var imported = await ImportAsync("news", CreateArticle());
         var article = (await ReadArticlesAsync()).Single();
 
         Assert.That(imported, Is.False);
         Assert.That(article.CategoryId, Is.Null);
+        Assert.That(article.ImageUrl, Is.EqualTo("https://example.com/stored.jpg"));
         Assert.That(article.UpdatedAt, Is.EqualTo(Earlier));
+    }
+
+    [Test]
+    public async Task MissingImageOfExistingArticleIsAddedFromTheFeed()
+    {
+        await SeedAsync(CreateStoredArticle(categoryId: null));
+
+        var imported = await ImportAsync("news", CreateArticle());
+        var article = (await ReadArticlesAsync()).Single();
+
+        Assert.That(imported, Is.False);
+        Assert.That(article.ImageUrl, Is.EqualTo("https://example.com/cover.jpg"));
+        Assert.That(article.Title, Is.EqualTo("Stored title"));
+        Assert.That(article.UpdatedAt, Is.EqualTo(Now));
     }
 
     [Test]

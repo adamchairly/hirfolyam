@@ -25,6 +25,24 @@ internal sealed class ArticleImporter(
         // Do not import already existing articles
         if (await ExistsAsync(source.Id, externalIdHash, urlHash, cancellationToken))
         {
+            // Some sites add the image to the feed item only after publishing.
+            if (rssArticle.ImageUrl is not null)
+            {
+                var existing = await context.Articles.FirstOrDefaultAsync(
+                    article => article.NewsSourceId == source.Id
+                        && (article.ExternalIdHash == externalIdHash || article.UrlHash == urlHash)
+                        && article.ImageUrl == null,
+                    cancellationToken);
+
+                if (existing is not null)
+                {
+                    existing.ImageUrl = rssArticle.ImageUrl;
+                    existing.UpdatedAt = timeProvider.GetUtcNow();
+                    await context.SaveChangesAsync(cancellationToken);
+                    context.Entry(existing).State = EntityState.Detached;
+                }
+            }
+
             return false;
         }
 

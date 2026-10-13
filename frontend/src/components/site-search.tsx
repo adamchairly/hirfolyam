@@ -109,7 +109,7 @@ export function SiteSearch({ expanded, onExpandedChange }: SiteSearchProps) {
         'flex h-10 max-w-full items-center gap-2 overflow-clip rounded-md bg-black px-[3px] transition-[width] duration-200 motion-reduce:transition-none sm:max-w-none',
         expanded
           ? 'w-full sm:w-60 md:w-56'
-          : 'w-28',
+          : 'w-24 sm:w-26',
       )}
       onSubmit={(event) => {
         event.preventDefault()
@@ -137,8 +137,8 @@ export function SiteSearch({ expanded, onExpandedChange }: SiteSearchProps) {
         aria-expanded={expanded}
         title={expanded ? 'Kereső bezárása' : 'Keresés'}
         className={cn(
-          'inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-sm bg-transparent text-xs font-semibold text-neutral-300 transition-colors hover:text-neutral-50 focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-inset focus-visible:outline-none sm:text-sm',
-          expanded ? 'w-8' : 'w-full px-2',
+          'inline-flex h-8 shrink-0 items-center gap-2 rounded-sm bg-transparent px-2 text-xs font-semibold text-neutral-300 transition-colors hover:text-neutral-50 focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-inset focus-visible:outline-none sm:text-sm',
+          expanded ? 'w-8' : 'w-full',
         )}
         onClick={() => {
           if (expanded) {
@@ -148,7 +148,7 @@ export function SiteSearch({ expanded, onExpandedChange }: SiteSearchProps) {
           }
         }}
       >
-        <Search className="size-4" />
+        <Search className="size-4 shrink-0" />
 
         {!expanded && <span>Keresés</span>}
       </button>
