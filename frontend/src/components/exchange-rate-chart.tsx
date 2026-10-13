@@ -60,7 +60,9 @@ const dayFormatter = new Intl.DateTimeFormat('hu-HU', {
 })
 
 const sectionClassName = 'rounded-md bg-neutral-900 p-4 sm:p-6'
+const compactSectionClassName = 'rounded-md bg-neutral-900 p-4'
 const chartHeight = 200
+const compactChartHeight = 160
 const axisWidth = 44
 const axisHeight = 20
 const plotTop = 8
@@ -215,9 +217,12 @@ function getMovement(current: number, previous: number | undefined) {
 interface ExchangeRateChartProps {
   currency: string
   points: ExchangeRatePoint[]
+  // Fits a narrow column: less padding, a lower chart and tighter range buttons.
+  compact?: boolean
 }
 
-export function ExchangeRateChart({ currency, points: history }: ExchangeRateChartProps) {
+export function ExchangeRateChart({ currency, points: history, compact = false }: ExchangeRateChartProps) {
+  const height = compact ? compactChartHeight : chartHeight
   const titleId = useId()
   const [containerRef, width] = useElementWidth<HTMLDivElement>()
   const [range, setRange] = useState(defaultRange)
@@ -229,7 +234,7 @@ export function ExchangeRateChart({ currency, points: history }: ExchangeRateCha
   const periodMovement = getMovement(current.rate, points.length > 1 ? first.rate : undefined)
   const { low, high, ticks, tickFormatter } = getScale(points)
   const plotWidth = Math.max(width - axisWidth, 0)
-  const plotBottom = chartHeight - axisHeight
+  const plotBottom = height - axisHeight
   const getX = (index: number) => points.length > 1 ? (index / (points.length - 1)) * plotWidth : plotWidth
   const getY = (rate: number) => plotTop + ((high - rate) / (high - low)) * (plotBottom - plotTop)
   const line = points.map((point, index) => `${index === 0 ? 'M' : 'L'}${getX(index)},${getY(point.rate)}`).join('')
@@ -272,7 +277,7 @@ export function ExchangeRateChart({ currency, points: history }: ExchangeRateCha
   }
 
   return (
-    <section aria-labelledby={titleId} className={sectionClassName}>
+    <section aria-labelledby={titleId} className={compact ? compactSectionClassName : sectionClassName}>
       <h2 id={titleId} className="text-sm font-semibold text-neutral-300">
         {currency} / HUF
       </h2>
@@ -307,10 +312,10 @@ export function ExchangeRateChart({ currency, points: history }: ExchangeRateCha
         onKeyDown={handleKeyDown}
         onBlur={() => setActiveIndex(null)}
         className="relative mt-6 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-offset-4 focus-visible:ring-offset-neutral-900"
-        style={{ height: chartHeight }}
+        style={{ height }}
       >
         {width > 0 && (
-          <svg width={width} height={chartHeight} aria-hidden="true" className="block overflow-visible">
+          <svg width={width} height={height} aria-hidden="true" className="block overflow-visible">
             {ticks.map((tick) => (
               <g key={tick}>
                 <line x1={0} x2={plotWidth} y1={getY(tick)} y2={getY(tick)} className="stroke-neutral-800" strokeWidth={1} />
@@ -329,7 +334,7 @@ export function ExchangeRateChart({ currency, points: history }: ExchangeRateCha
               <text
                 key={index}
                 x={getX(index)}
-                y={chartHeight - 4}
+                y={height - 4}
                 textAnchor="middle"
                 className="fill-neutral-500 text-[11px]"
               >
@@ -394,7 +399,8 @@ export function ExchangeRateChart({ currency, points: history }: ExchangeRateCha
             aria-pressed={option === range}
             onClick={() => selectRange(option)}
             className={cn(
-              'rounded px-2 py-1 text-[11px] font-semibold transition-colors',
+              'rounded py-1 text-[11px] font-semibold transition-colors',
+              compact ? 'px-1.5' : 'px-2',
               option === range
                 ? 'bg-neutral-800 text-neutral-50'
                 : 'text-neutral-500 hover:text-neutral-200',
@@ -408,9 +414,9 @@ export function ExchangeRateChart({ currency, points: history }: ExchangeRateCha
   )
 }
 
-export function ExchangeRateChartSkeleton() {
+export function ExchangeRateChartSkeleton({ compact = false }: { compact?: boolean }) {
   return (
-    <div aria-hidden="true" className={sectionClassName}>
+    <div aria-hidden="true" className={compact ? compactSectionClassName : sectionClassName}>
       <Skeleton className="h-4 w-20" />
       <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <Skeleton className="h-10 w-36" />
@@ -419,7 +425,7 @@ export function ExchangeRateChartSkeleton() {
           <Skeleton className="h-3 w-44" />
         </div>
       </div>
-      <Skeleton className="mt-6 w-full" style={{ height: chartHeight }} />
+      <Skeleton className="mt-6 w-full" style={{ height: compact ? compactChartHeight : chartHeight }} />
       <Skeleton className="mx-auto mt-4 h-6 w-64" />
     </div>
   )

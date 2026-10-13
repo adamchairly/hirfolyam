@@ -33,12 +33,14 @@ export function WeatherWidget() {
       <WeatherIcon kind={condition?.icon ?? 'unknown'} isDay={weather?.isDay} />
 
       {/* On mobile the range drops below, so the widget fits beside the two-row date and rates. */}
-      <span className="grid grid-cols-[auto_auto] items-baseline gap-x-2 whitespace-nowrap sm:flex" aria-hidden="true">
-        <span className="text-sm font-bold tabular-nums text-neutral-100">{temperature}</span>
-        <span className="text-[11px] font-semibold text-neutral-300 transition-colors group-hover:text-neutral-50">
-          Budapest
+      <span className="flex flex-col whitespace-nowrap sm:flex-row sm:items-baseline sm:gap-2" aria-hidden="true">
+        <span className="flex items-baseline gap-2">
+          <span className="text-sm font-bold tabular-nums text-neutral-100">{temperature}</span>
+          <span className="text-[11px] font-semibold text-neutral-300 transition-colors group-hover:text-neutral-50">
+            Budapest
+          </span>
         </span>
-        <span className="col-span-2 text-[11px] leading-4 tabular-nums text-neutral-400">
+        <span className="text-[11px] leading-4 tabular-nums text-neutral-400">
           {!weather && hasError ? 'Nem elérhető' : range}
         </span>
       </span>
