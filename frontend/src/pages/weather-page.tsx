@@ -46,7 +46,7 @@ export function WeatherPage() {
           rel="noopener noreferrer"
           className="transition-colors hover:text-neutral-300"
         >
-          Data by Open-Meteo
+          Open-Meteo
         </a>
       </p>
     </>
