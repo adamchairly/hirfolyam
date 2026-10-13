@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom'
+
 import { WeatherIcon } from '@/components/weather-icon'
-import { useWeather } from '@/hooks/use-weather'
+import { useCityForecasts } from '@/hooks/use-city-forecasts'
 import { getWeatherCondition } from '@/lib/weather-condition'
 
 function formatTemperature(value: number): string {
@@ -7,23 +9,24 @@ function formatTemperature(value: number): string {
 }
 
 export function WeatherWidget() {
-  const { weather, isLoading, hasError } = useWeather()
+  // Loads every city, so the weather page already finds them in the cache.
+  const { forecasts, isLoading, hasError } = useCityForecasts()
+  const weather = forecasts?.[0] ?? null
+  const today = weather?.days[0]
   const condition = weather ? getWeatherCondition(weather.code, weather.isDay) : null
   const temperature = weather ? formatTemperature(weather.temperature) : '—°C'
-  const range = weather
-    ? `${formatTemperature(weather.minimum)} / ${formatTemperature(weather.maximum)}`
+  const range = today
+    ? `${formatTemperature(today.minimum)} / ${formatTemperature(today.maximum)}`
     : '— / —'
   const status = hasError ? 'Az időjárás most nem elérhető.' : 'Időjárás betöltése…'
-  const description = weather
-    ? `Budapest: ${temperature}, ${condition?.label}. Napi minimum: ${formatTemperature(weather.minimum)}, maximum: ${formatTemperature(weather.maximum)}.`
+  const description = today
+    ? `Budapest: ${temperature}, ${condition?.label}. Napi minimum: ${formatTemperature(today.minimum)}, maximum: ${formatTemperature(today.maximum)}.`
     : `Budapest: ${status}`
 
   return (
-    <a
-      href="https://open-meteo.com/"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${description} Adatok: Open Meteo, egész fokra kerekítve. A forrás megnyitása új lapon.`}
+    <Link
+      to="/weather"
+      aria-label={`${description} Adatok: Open Meteo, egész fokra kerekítve. Az előrejelzés megnyitása.`}
       aria-busy={isLoading}
       title={`${description} Forrás: Open Meteo (CC BY 4.0), egész fokra kerekítve.`}
       className="group flex min-h-6 shrink-0 items-center gap-2 rounded-sm"
@@ -37,9 +40,9 @@ export function WeatherWidget() {
           Budapest
         </span>
         <span className="col-span-2 text-[11px] leading-4 tabular-nums text-neutral-400">
-          {hasError ? 'Nem elérhető' : range}
+          {!weather && hasError ? 'Nem elérhető' : range}
         </span>
       </span>
-    </a>
+    </Link>
   )
 }

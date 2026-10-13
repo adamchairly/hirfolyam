@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
 import type { WeatherIconKind } from '@/lib/weather-condition'
 
 const icons: Record<Exclude<WeatherIconKind, 'partlyCloudy'>, LucideIcon> = {
@@ -25,10 +26,16 @@ const icons: Record<Exclude<WeatherIconKind, 'partlyCloudy'>, LucideIcon> = {
   unknown: Thermometer,
 }
 
-export function WeatherIcon({ kind, isDay = true }: { kind: WeatherIconKind, isDay?: boolean }) {
+interface WeatherIconProps {
+  kind: WeatherIconKind
+  isDay?: boolean
+  className?: string
+}
+
+export function WeatherIcon({ kind, isDay = true, className }: WeatherIconProps) {
   const Icon = kind === 'partlyCloudy'
     ? (isDay ? CloudSun : CloudMoon)
     : icons[kind]
 
-  return <Icon strokeWidth={1.5} className="size-6 shrink-0 text-neutral-300" />
+  return <Icon strokeWidth={1.5} className={cn('size-6 shrink-0 text-neutral-300', className)} />
 }

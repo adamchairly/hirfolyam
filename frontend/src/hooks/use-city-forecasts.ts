@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { getWeather, type Weather } from '@/lib/weather'
+import { getCityForecasts, type Forecast } from '@/lib/forecast'
 
-export function useWeather() {
-  const [weather, setWeather] = useState<Weather | null>(null)
+export function useCityForecasts() {
+  const [forecasts, setForecasts] = useState<Forecast[] | null>(null)
+  const [attempt, setAttempt] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
@@ -19,15 +20,15 @@ export function useWeather() {
       loading = true
 
       try {
-        const currentWeather = await getWeather()
+        const currentForecasts = await getCityForecasts()
 
         if (!disposed) {
-          setWeather(currentWeather)
+          setForecasts(currentForecasts)
           setHasError(false)
         }
       } catch {
+        // The last forecasts stay on screen when a refresh fails.
         if (!disposed) {
-          setWeather(null)
           setHasError(true)
         }
       } finally {
@@ -54,11 +55,18 @@ export function useWeather() {
       document.removeEventListener('visibilitychange', refresh)
       window.removeEventListener('online', refresh)
     }
-  }, [])
+  }, [attempt])
+
+  function retry() {
+    setIsLoading(true)
+    setHasError(false)
+    setAttempt((previous) => previous + 1)
+  }
 
   return {
-    weather,
+    forecasts,
     isLoading,
     hasError,
+    retry,
   }
 }

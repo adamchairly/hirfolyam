@@ -28,7 +28,7 @@ export function ArticleLayoutToggle({ className }: ArticleLayoutToggleProps) {
     <div
       role="group"
       aria-label="Elrendezés"
-      className={cn('inline-flex items-center gap-0.5 rounded-md border border-neutral-700 p-0.5', className)}
+      className={cn('inline-flex items-center gap-0.5 rounded-md bg-neutral-900/35 p-0.5', className)}
     >
       {options.map((option) => (
         <button
@@ -37,7 +37,7 @@ export function ArticleLayoutToggle({ className }: ArticleLayoutToggleProps) {
           aria-label={option.label}
           aria-pressed={layout === option.value}
           title={option.label}
-          className="inline-flex size-7 items-center justify-center rounded-[4px] text-neutral-500 outline-none transition-colors hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-ring/50 aria-pressed:bg-neutral-700 aria-pressed:text-neutral-50"
+          className="inline-flex size-7 items-center justify-center rounded-[4px] text-neutral-500 outline-none transition-colors hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-ring/50 aria-pressed:bg-neutral-900 aria-pressed:text-neutral-50"
           onClick={() => {
             updateLayout(option.value)
           }}

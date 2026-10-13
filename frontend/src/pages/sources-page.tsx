@@ -53,10 +53,7 @@ export function SourcesPage() {
                 onClick={() => {
                   toggleCategory(category.slug)
                 }}
-                className={cn(
-                  'inline-flex min-h-9 items-center rounded-md bg-neutral-100 px-4 text-sm font-semibold text-neutral-950 transition-[background-color,opacity]',
-                  isEnabled ? 'hover:bg-neutral-300' : 'opacity-35 hover:opacity-60',
-                )}
+                className="inline-flex min-h-9 items-center rounded-md bg-neutral-900/35 px-4 text-sm font-semibold text-neutral-500 outline-none transition-colors hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-ring/50 aria-pressed:bg-neutral-900 aria-pressed:text-neutral-50"
               >
                 {category.name}
               </button>

@@ -10,6 +10,7 @@ import { HotTopicPage } from '@/pages/hot-topic-page'
 import { SavedPage } from '@/pages/saved-page'
 import { SearchPage } from '@/pages/search-page'
 import { SourcesPage } from '@/pages/sources-page'
+import { WeatherPage } from '@/pages/weather-page'
 
 export default function App() {
   const { lastUpdatedAt } = useSourceSelection()
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/soruces" element={<Navigate to="/sources" replace />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/topics/:id" element={<HotTopicPage />} />
+            <Route path="/weather" element={<WeatherPage />} />
             <Route path="/:slug" element={<CategoryPage lastUpdatedAt={lastUpdatedAt} />} />
             <Route path="*" element={<CategoryPage lastUpdatedAt={lastUpdatedAt} />} />
           </Routes>
