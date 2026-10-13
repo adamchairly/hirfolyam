@@ -14,10 +14,10 @@ export function WeatherWidget() {
   const weather = forecasts?.[0] ?? null
   const today = weather?.days[0]
   const condition = weather ? getWeatherCondition(weather.code, weather.isDay) : null
-  const temperature = weather ? formatTemperature(weather.temperature) : '—°C'
+  const temperature = weather ? formatTemperature(weather.temperature) : '-°C'
   const range = today
     ? `${formatTemperature(today.minimum)} / ${formatTemperature(today.maximum)}`
-    : '— / —'
+    : '- / -'
   const status = hasError ? 'Az időjárás most nem elérhető.' : 'Időjárás betöltése…'
   const description = today
     ? `Budapest: ${temperature}, ${condition?.label}. Napi minimum: ${formatTemperature(today.minimum)}, maximum: ${formatTemperature(today.maximum)}.`
@@ -28,7 +28,6 @@ export function WeatherWidget() {
       to="/weather"
       aria-label={`${description} Adatok: Open Meteo, egész fokra kerekítve. Az előrejelzés megnyitása.`}
       aria-busy={isLoading}
-      title={`${description} Forrás: Open Meteo (CC BY 4.0), egész fokra kerekítve.`}
       className="group flex min-h-6 shrink-0 items-center gap-2 rounded-sm"
     >
       <WeatherIcon kind={condition?.icon ?? 'unknown'} isDay={weather?.isDay} />
@@ -36,7 +35,7 @@ export function WeatherWidget() {
       {/* On mobile the range drops below, so the widget fits beside the two-row date and rates. */}
       <span className="grid grid-cols-[auto_auto] items-baseline gap-x-2 whitespace-nowrap sm:flex" aria-hidden="true">
         <span className="text-sm font-bold tabular-nums text-neutral-100">{temperature}</span>
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-neutral-300 transition-colors group-hover:text-neutral-50">
+        <span className="text-[11px] font-semibold text-neutral-300 transition-colors group-hover:text-neutral-50">
           Budapest
         </span>
         <span className="col-span-2 text-[11px] leading-4 tabular-nums text-neutral-400">

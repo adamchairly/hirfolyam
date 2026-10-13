@@ -4,6 +4,7 @@ import { getExchangeRates, type ExchangeRates } from '@/lib/exchange-rates'
 
 export function useExchangeRates() {
   const [rates, setRates] = useState<ExchangeRates | null>(null)
+  const [attempt, setAttempt] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
@@ -26,8 +27,8 @@ export function useExchangeRates() {
           setHasError(false)
         }
       } catch {
+        // The last rates stay on screen when a refresh fails.
         if (!disposed) {
-          setRates(null)
           setHasError(true)
         }
       } finally {
@@ -54,11 +55,18 @@ export function useExchangeRates() {
       document.removeEventListener('visibilitychange', refresh)
       window.removeEventListener('online', refresh)
     }
-  }, [])
+  }, [attempt])
+
+  function retry() {
+    setIsLoading(true)
+    setHasError(false)
+    setAttempt((previous) => previous + 1)
+  }
 
   return {
     rates,
     isLoading,
     hasError,
+    retry,
   }
 }

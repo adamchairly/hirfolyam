@@ -1,6 +1,6 @@
 import { createCachedRequest } from '@/lib/cached-request'
 
-interface DailyExchangeRates {
+export interface DailyExchangeRates {
   eur: number
   usd: number
   date: string
@@ -8,6 +8,8 @@ interface DailyExchangeRates {
 
 export interface ExchangeRates extends DailyExchangeRates {
   previous: DailyExchangeRates | null
+  // Oldest first, the last day is the current one. Covers the past five years.
+  history: DailyExchangeRates[]
 }
 
 interface RateResponse {
@@ -19,7 +21,6 @@ interface RateResponse {
 
 interface ExchangeRatesCache {
   response: RateResponse[]
-  previousResponse: RateResponse[] | null
   fetchedAt: number
 }
 
@@ -27,62 +28,80 @@ const cacheDuration = 6 * 60 * 60_000
 const incompleteCacheDuration = 5 * 60_000
 const apiUrl = 'https://api.frankfurter.dev/v2/rates?base=EUR&quotes=HUF,USD&providers=ECB'
 
-function parseExchangeRates(response: RateResponse[]): DailyExchangeRates {
-  if (!Array.isArray(response)) {
-    throw new Error('Invalid exchange rate data.')
-  }
-
-  const huf = response.find((item) => item?.base === 'EUR' && item.quote === 'HUF')
-  const usd = response.find((item) => item?.base === 'EUR' && item.quote === 'USD')
-
-  if (
-    typeof huf?.rate !== 'number'
-    || !Number.isFinite(huf.rate)
-    || huf.rate <= 0
-    || typeof usd?.rate !== 'number'
-    || !Number.isFinite(usd.rate)
-    || usd.rate <= 0
-    || typeof huf.date !== 'string'
-    || !/^\d{4}-\d{2}-\d{2}$/.test(huf.date)
-    || !Number.isFinite(Date.parse(huf.date))
-    || new Date(huf.date).toISOString().slice(0, 10) !== huf.date
-    || huf.date !== usd.date
-  ) {
-    throw new Error('Invalid exchange rate data.')
-  }
-
-  const usdInHuf = huf.rate / usd.rate
-
-  if (!Number.isFinite(usdInHuf) || usdInHuf <= 0) {
-    throw new Error('Invalid exchange rate data.')
-  }
-
-  return {
-    eur: huf.rate,
-    usd: usdInHuf,
-    date: huf.date,
-  }
+function isRate(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0
 }
 
-function getPreviousRates(
-  response: RateResponse[] | null,
-  currentDate: string,
-): DailyExchangeRates | null {
-  if (!response) {
-    return null
+function isDate(value: unknown): value is string {
+  return typeof value === 'string'
+    && /^\d{4}-\d{2}-\d{2}$/.test(value)
+    && Number.isFinite(Date.parse(value))
+    && new Date(value).toISOString().slice(0, 10) === value
+}
+
+function invalidExchangeRates(): never {
+  throw new Error('Invalid exchange rate data.')
+}
+
+function parseExchangeRateHistory(response: RateResponse[]): DailyExchangeRates[] {
+  if (!Array.isArray(response)) {
+    return invalidExchangeRates()
   }
 
-  try {
-    const previous = parseExchangeRates(response)
+  const days = new Map<string, { huf?: number, usd?: number }>()
 
-    if (previous.date < currentDate) {
-      return previous
+  for (const item of response) {
+    if (item?.base !== 'EUR' || !isRate(item.rate) || !isDate(item.date)) {
+      return invalidExchangeRates()
     }
-  } catch {
-    // Keep current rates when previous data is invalid.
+
+    const day = days.get(item.date) ?? {}
+
+    if (item.quote === 'HUF') {
+      day.huf = item.rate
+    } else if (item.quote === 'USD') {
+      day.usd = item.rate
+    }
+
+    days.set(item.date, day)
   }
 
-  return null
+  const history: DailyExchangeRates[] = []
+
+  for (const [date, { huf, usd }] of days) {
+    // A day missing one of the rates is left out of the history.
+    if (huf === undefined || usd === undefined) {
+      continue
+    }
+
+    const usdInHuf = huf / usd
+
+    if (!isRate(usdInHuf)) {
+      return invalidExchangeRates()
+    }
+
+    history.push({
+      eur: huf,
+      usd: usdInHuf,
+      date,
+    })
+  }
+
+  if (history.length === 0) {
+    return invalidExchangeRates()
+  }
+
+  return history.sort((first, second) => first.date.localeCompare(second.date))
+}
+
+function parseExchangeRates(response: RateResponse[]): ExchangeRates {
+  const history = parseExchangeRateHistory(response)
+
+  return {
+    ...history[history.length - 1],
+    previous: history.length > 1 ? history[history.length - 2] : null,
+    history,
+  }
 }
 
 function readCachedExchangeRates(cache: ExchangeRatesCache): ExchangeRates | null {
@@ -92,21 +111,22 @@ function readCachedExchangeRates(cache: ExchangeRatesCache): ExchangeRates | nul
 
   const age = Date.now() - cache.fetchedAt
   const rates = parseExchangeRates(cache.response)
-  const previous = getPreviousRates(cache.previousResponse, rates.date)
-  const duration = previous ? cacheDuration : incompleteCacheDuration
+  const duration = rates.previous ? cacheDuration : incompleteCacheDuration
 
   if (!Number.isFinite(age) || age < 0 || age >= duration) {
     return null
   }
 
-  return {
-    ...rates,
-    previous,
-  }
+  return rates
 }
 
-async function fetchRateResponse(url: string): Promise<RateResponse[]> {
-  const response = await fetch(url, {
+// One request brings the past five years, the header and the currency page both read it.
+async function fetchExchangeRates() {
+  const from = new Date()
+
+  from.setUTCFullYear(from.getUTCFullYear() - 5)
+
+  const response = await fetch(`${apiUrl}&from=${from.toISOString().slice(0, 10)}`, {
     signal: AbortSignal.timeout(10_000),
     credentials: 'omit',
     referrerPolicy: 'no-referrer',
@@ -116,43 +136,19 @@ async function fetchRateResponse(url: string): Promise<RateResponse[]> {
     throw new Error('Exchange rate request failed.')
   }
 
-  return await response.json() as RateResponse[]
-}
-
-async function fetchExchangeRates() {
-  const data = await fetchRateResponse(apiUrl)
-  const rates = parseExchangeRates(data)
-  const previousDate = new Date(rates.date)
-
-  previousDate.setUTCDate(previousDate.getUTCDate() - 1)
-
-  let previousResponse: RateResponse[] | null = null
-
-  try {
-    previousResponse = await fetchRateResponse(
-      `${apiUrl}&date=${previousDate.toISOString().slice(0, 10)}`,
-    )
-  } catch {
-    // Keep current rates when the previous request fails.
-  }
-
-  const previous = getPreviousRates(previousResponse, rates.date)
+  const data = await response.json() as RateResponse[]
 
   return {
-    value: {
-      ...rates,
-      previous,
-    },
+    value: parseExchangeRates(data),
     cache: {
       response: data,
-      previousResponse: previous ? previousResponse : null,
       fetchedAt: Date.now(),
     },
   }
 }
 
 export const getExchangeRates = createCachedRequest<[], ExchangeRates, ExchangeRatesCache>({
-  storageKey: 'hirfolyam:exchange-rates:ecb:huf:v2',
+  storageKey: 'hirfolyam:exchange-rates:ecb:huf:v4',
   readCache: readCachedExchangeRates,
   fetchValue: fetchExchangeRates,
 })

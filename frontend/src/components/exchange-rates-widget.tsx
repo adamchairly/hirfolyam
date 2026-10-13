@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 import { useExchangeRates } from '@/hooks/use-exchange-rates'
 import { cn } from '@/lib/utils'
 
@@ -51,8 +53,8 @@ function getRateMovement(rate: number | undefined, previous: number | undefined)
 
 export function ExchangeRatesWidget() {
   const { rates, isLoading, hasError } = useExchangeRates()
-  const eur = rates ? rateFormatter.format(rates.eur) : '—'
-  const usd = rates ? rateFormatter.format(rates.usd) : '—'
+  const eur = rates ? rateFormatter.format(rates.eur) : '-'
+  const usd = rates ? rateFormatter.format(rates.usd) : '-'
   const eurMovement = getRateMovement(rates?.eur, rates?.previous?.eur)
   const usdMovement = getRateMovement(rates?.usd, rates?.previous?.usd)
   const status = hasError ? 'Az árfolyamok most nem elérhetők.' : 'Árfolyamok betöltése…'
@@ -64,13 +66,10 @@ export function ExchangeRatesWidget() {
     : status
 
   return (
-    <a
-      href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${description} ${rates ? `${comparison} ` : ''}Forrás: ECB, Frankfurter API. A forrás megnyitása új lapon.`}
+    <Link
+      to="/currency"
+      aria-label={`${description} ${rates ? `${comparison} ` : ''}Forrás: ECB, Frankfurter API. Az árfolyamok alakulásának megnyitása.`}
       aria-busy={isLoading}
-      title={description}
       className="group flex min-h-6 shrink-0 items-center gap-3 rounded-sm text-xs"
     >
       <span className="flex items-baseline gap-1.5 whitespace-nowrap" aria-hidden="true">
@@ -90,6 +89,6 @@ export function ExchangeRatesWidget() {
         </span>
         <span className="text-[10px] text-neutral-400 max-sm:hidden">Ft</span>
       </span>
-    </a>
+    </Link>
   )
 }
