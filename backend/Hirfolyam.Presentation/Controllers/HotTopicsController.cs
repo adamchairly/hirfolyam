@@ -11,10 +11,11 @@ public sealed class HotTopicsController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<GetHotTopicsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status500InternalServerError)]
-    public async Task<GetHotTopicsResponse> GetAsync(CancellationToken cancellationToken)
+    public async Task<GetHotTopicsResponse> GetAsync([FromQuery] GetHotTopicsQuery query, CancellationToken cancellationToken)
     {
-        return await sender.Send(new GetHotTopicsQuery(), cancellationToken);
+        return await sender.Send(query, cancellationToken);
     }
 
     [HttpGet("{id:long}")]

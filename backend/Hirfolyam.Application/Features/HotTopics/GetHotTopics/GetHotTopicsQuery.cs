@@ -2,7 +2,21 @@ using MediatR;
 
 namespace Hirfolyam.Application.Features;
 
-public sealed class GetHotTopicsQuery : IRequest<GetHotTopicsResponse>;
+public sealed class GetHotTopicsQuery : IRequest<GetHotTopicsResponse>
+{
+    public HotTopicPeriod Period { get; init; }
+}
+
+public enum HotTopicPeriod
+{
+    // The newest hourly topics
+    Hour,
+
+    // The newest summary of calendar day
+    Today,
+
+    Yesterday
+}
 
 public sealed class GetHotTopicsResponse
 {

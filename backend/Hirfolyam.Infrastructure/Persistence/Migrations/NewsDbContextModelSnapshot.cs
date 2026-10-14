@@ -235,6 +235,9 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                         .HasPrecision(18, 10)
                         .HasColumnType("numeric(18,10)");
 
+                    b.Property<DateOnly?>("Day")
+                        .HasColumnType("date");
+
                     b.Property<DateTimeOffset>("GeneratedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -250,6 +253,8 @@ namespace Hirfolyam.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Day");
 
                     b.HasIndex("GeneratedAt");
 

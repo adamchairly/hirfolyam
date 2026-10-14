@@ -1,5 +1,6 @@
 using Hirfolyam.Application.Abstractions;
 using Hirfolyam.Application.Options;
+using Hirfolyam.Application.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,11 +14,21 @@ internal sealed class GetHotTopicsQueryHandler(
 {
     public async Task<GetHotTopicsResponse> Handle(GetHotTopicsQuery request, CancellationToken cancellationToken)
     {
-        var cutoff = timeProvider.GetUtcNow().AddHours(-options.Value.MaxAgeHours);
-        var snapshot = await context.HotTopicSnapshots
-            .AsNoTracking()
+        var now = timeProvider.GetUtcNow();
+        var cutoff = now.AddHours(-options.Value.MaxAgeHours);
+        var today = BudapestTime.GetDay(now);
+        var yesterday = today.AddDays(-1);
+        var snapshots = context.HotTopicSnapshots.AsNoTracking();
+
+        snapshots = request.Period switch
+        {
+            HotTopicPeriod.Today => snapshots.Where(snapshot => snapshot.Day == today),
+            HotTopicPeriod.Yesterday => snapshots.Where(snapshot => snapshot.Day == yesterday),
+            _ => snapshots.Where(snapshot => snapshot.Day == null && snapshot.GeneratedAt >= cutoff)
+        };
+
+        var snapshot = await snapshots
             .Include(snapshot => snapshot.Topics)
-            .Where(snapshot => snapshot.GeneratedAt >= cutoff)
             .OrderByDescending(snapshot => snapshot.GeneratedAt)
             .ThenByDescending(snapshot => snapshot.Id)
             .FirstOrDefaultAsync(cancellationToken);

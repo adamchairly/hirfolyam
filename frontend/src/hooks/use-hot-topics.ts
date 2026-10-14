@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react'
 
 import { getHotTopics } from '@/lib/api'
-import type { HotTopic } from '@/types/hot-topic'
+import type { HotTopic, HotTopicPeriod } from '@/types/hot-topic'
 
-// The topics change once an hour; a missed refresh only delays the next summary.
+// The topics change at most once an hour; a missed refresh only delays the next summary.
 const refreshInterval = 5 * 60_000
 
-export function useHotTopics() {
-  const [topics, setTopics] = useState<HotTopic[]>([])
+interface LoadedTopics {
+  period: HotTopicPeriod
+  topics: HotTopic[]
+}
+
+export function useHotTopics(period: HotTopicPeriod) {
+  const [loaded, setLoaded] = useState<LoadedTopics | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -22,13 +27,16 @@ export function useHotTopics() {
       isPending = true
 
       try {
-        const response = await getHotTopics(controller.signal)
+        const response = await getHotTopics(period, controller.signal)
 
         if (!controller.signal.aborted) {
-          setTopics(response.items)
+          setLoaded({ period, topics: response.items })
         }
       } catch {
-        // The block is optional, so a failed request keeps the last topics.
+        // The block is optional: a failed refresh keeps the last topics, a failed switch shows none.
+        if (!controller.signal.aborted) {
+          setLoaded((previous) => previous?.period === period ? previous : { period, topics: [] })
+        }
       } finally {
         isPending = false
       }
@@ -55,9 +63,11 @@ export function useHotTopics() {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', refreshOnVisible)
     }
-  }, [])
+  }, [period])
 
   return {
-    topics,
+    // Until the selected period arrives, these are the topics of the previous one.
+    topics: loaded?.topics ?? [],
+    isLoading: loaded?.period !== period,
   }
 }

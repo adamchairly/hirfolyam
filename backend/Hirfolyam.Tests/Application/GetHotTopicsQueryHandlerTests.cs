@@ -99,6 +99,56 @@ public sealed class GetHotTopicsQueryHandlerTests
     }
 
     [Test]
+    public async Task SummariesOfADayAreNotShownAsHourlyTopics()
+    {
+        await SeedAsync(
+            [CreateArticle(1, 1, Now), CreateArticle(2, 2, Now)],
+            CreateSnapshot(Now.AddHours(-1), CreateTopic(1, "Hourly", [1, 2])),
+            CreateDailySnapshot(new DateOnly(2026, 10, 10), Now.AddMinutes(-5), CreateTopic(1, "Daily", [1, 2])));
+
+        var result = await HandleAsync();
+
+        Assert.That(result.Items.Select(topic => topic.Title), Is.EqualTo(new[] { "Hourly" }));
+    }
+
+    [Test]
+    public async Task TodayAndYesterdayShowTheNewestSummaryOfTheirDay()
+    {
+        await SeedAsync(
+            [CreateArticle(1, 1, Now), CreateArticle(2, 2, Now)],
+            CreateSnapshot(Now.AddMinutes(-5), CreateTopic(1, "Hourly", [1, 2])),
+            CreateDailySnapshot(new DateOnly(2026, 10, 10), Now.AddHours(-2), CreateTopic(1, "Noon", [1, 2])),
+            CreateDailySnapshot(new DateOnly(2026, 10, 10), Now.AddHours(-1), CreateTopic(1, "Afternoon", [1, 2])),
+            CreateDailySnapshot(new DateOnly(2026, 10, 9), Now.AddHours(-14), CreateTopic(1, "Yesterday", [1, 2])),
+            CreateDailySnapshot(new DateOnly(2026, 10, 8), Now.AddHours(-38), CreateTopic(1, "Older", [1, 2])));
+
+        var today = await HandleAsync(HotTopicPeriod.Today);
+        var yesterday = await HandleAsync(HotTopicPeriod.Yesterday);
+
+        Assert.That(today.Items.Select(topic => topic.Title), Is.EqualTo(new[] { "Afternoon" }));
+        Assert.That(today.GeneratedAt, Is.EqualTo(Now.AddHours(-1)));
+        Assert.That(today.Items[0].Articles.Select(article => article.Id), Is.EqualTo(new long[] { 2, 1 }));
+        Assert.That(yesterday.Items.Select(topic => topic.Title), Is.EqualTo(new[] { "Yesterday" }));
+    }
+
+    [Test]
+    public async Task TheDaysFollowTheBudapestCalendar()
+    {
+        // Half past midnight in Budapest, still the previous day in UTC.
+        var now = DateTimeOffset.Parse("2026-10-10T22:30:00Z");
+        await SeedAsync(
+            [CreateArticle(1, 1, Now), CreateArticle(2, 2, Now)],
+            CreateDailySnapshot(new DateOnly(2026, 10, 10), Now.AddHours(8), CreateTopic(1, "Evening", [1, 2])));
+
+        var today = await HandleAsync(HotTopicPeriod.Today, now);
+        var yesterday = await HandleAsync(HotTopicPeriod.Yesterday, now);
+
+        Assert.That(today.Items, Is.Empty);
+        Assert.That(today.GeneratedAt, Is.Null);
+        Assert.That(yesterday.Items.Select(topic => topic.Title), Is.EqualTo(new[] { "Evening" }));
+    }
+
+    [Test]
     public async Task ATopicIsReturnedByItsIdWithTheListedArticlesNewestFirst()
     {
         await SeedAsync(
@@ -148,15 +198,17 @@ public sealed class GetHotTopicsQueryHandlerTests
         return await handler.Handle(new GetHotTopicQuery { Id = id }, CancellationToken.None);
     }
 
-    private async Task<GetHotTopicsResponse> HandleAsync()
+    private async Task<GetHotTopicsResponse> HandleAsync(
+        HotTopicPeriod period = HotTopicPeriod.Hour,
+        DateTimeOffset? now = null)
     {
         await using var context = TestDatabase.Create(databaseName);
         var handler = new GetHotTopicsQueryHandler(
             context,
             OptionsFactory.Create(new HotTopicsOptions { MaxAgeHours = 3 }),
-            new FixedTimeProvider(Now));
+            new FixedTimeProvider(now ?? Now));
 
-        return await handler.Handle(new GetHotTopicsQuery(), CancellationToken.None);
+        return await handler.Handle(new GetHotTopicsQuery { Period = period }, CancellationToken.None);
     }
 
     private async Task SeedAsync(Article[] articles, params HotTopicSnapshot[] snapshots)
@@ -208,6 +260,14 @@ public sealed class GetHotTopicsQueryHandlerTests
             ArticleCount = 100,
             Topics = [.. topics]
         };
+    }
+
+    private static HotTopicSnapshot CreateDailySnapshot(DateOnly day, DateTimeOffset generatedAt, params HotTopic[] topics)
+    {
+        var snapshot = CreateSnapshot(generatedAt, topics);
+        snapshot.Day = day;
+
+        return snapshot;
     }
 
     private static HotTopic CreateTopic(int rank, string title, long[] articleIds)

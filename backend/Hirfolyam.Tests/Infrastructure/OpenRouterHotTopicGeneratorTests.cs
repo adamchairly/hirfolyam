@@ -111,6 +111,43 @@ public sealed class OpenRouterHotTopicGeneratorTests
         Assert.That(() => GenerateAsync(handler), Throws.TypeOf<InvalidDataException>());
     }
 
+    [Test]
+    public async Task DailyRequestContainsTheTopicsAndReturnsTheStories()
+    {
+        var handler = new StubHandler(Envelope("""
+            {"topics":[{"title":"Napi történet","summary":"Két mondat. Itt a második.","topicIds":[11,12]}]}
+            """));
+
+        var result = await GenerateDailyAsync(handler, topicCount: 4);
+        using var request = JsonDocument.Parse(handler.RequestBody!);
+        var root = request.RootElement;
+        var format = root.GetProperty("response_format").GetProperty("json_schema");
+        using var input = JsonDocument.Parse(root.GetProperty("messages")[1].GetProperty("content").GetString()!);
+        var story = result.Topics.Single();
+
+        Assert.That(root.GetProperty("model").GetString(), Is.EqualTo("openai/gpt-6-luna"));
+        Assert.That(root.GetProperty("messages")[0].GetProperty("content").GetString(), Does.Contain("Find the 4 most important stories of the day"));
+        Assert.That(format.GetProperty("name").GetString(), Is.EqualTo("daily_topics"));
+        Assert.That(format.GetProperty("schema").GetRawText(), Does.Contain("\"topicIds\""));
+        Assert.That(input.RootElement.GetArrayLength(), Is.EqualTo(2));
+        Assert.That(input.RootElement[0].GetProperty("id").GetInt64(), Is.EqualTo(11));
+        Assert.That(input.RootElement[0].GetProperty("title").GetString(), Is.EqualTo("Reggeli téma"));
+        Assert.That(input.RootElement[0].GetProperty("summary").GetString(), Is.EqualTo("Reggeli mondat."));
+        Assert.That(story.Title, Is.EqualTo("Napi történet"));
+        Assert.That(story.Summary, Is.EqualTo("Két mondat. Itt a második."));
+        Assert.That(story.TopicIds, Is.EqualTo(new long[] { 11, 12 }));
+        Assert.That(result.InputTokens, Is.EqualTo(10000));
+        Assert.That(result.CostUsd, Is.EqualTo(0.0016m));
+    }
+
+    [Test]
+    public void DailyStoriesWithArticleIdsAreRejected()
+    {
+        var handler = new StubHandler(Envelope(ValidTopics));
+
+        Assert.That(() => GenerateDailyAsync(handler), Throws.InstanceOf<Exception>());
+    }
+
     [TestCase("")]
     [TestCase("  ")]
     public void MissingApiKeyFailsWithoutARequest(string apiKey)
@@ -138,6 +175,22 @@ public sealed class OpenRouterHotTopicGeneratorTests
             }));
 
         return await generator.GenerateAsync(articles ?? Articles, topicCount, CancellationToken.None);
+    }
+
+    private static async Task<DailyTopicGeneration> GenerateDailyAsync(StubHandler handler, int topicCount = 5)
+    {
+        using var client = new HttpClient(handler);
+        var generator = new OpenRouterHotTopicGenerator(
+            client,
+            OptionsFactory.Create(new OpenRouterOptions { ApiKey = "test-key" }));
+
+        return await generator.GenerateDailyAsync(
+            [
+                new DailyTopicInput(11, "Reggeli téma", "Reggeli mondat."),
+                new DailyTopicInput(12, "Délutáni téma", "Délutáni mondat.")
+            ],
+            topicCount,
+            CancellationToken.None);
     }
 
     private static string Envelope(string topics, string finishReason = "stop")

@@ -353,5 +353,13 @@ public sealed class GenerateHotTopicsCommandHandlerTests
 
             return Task.FromResult(new HotTopicGeneration(Topics, InputTokens, OutputTokens, CostUsd));
         }
+
+        public Task<DailyTopicGeneration> GenerateDailyAsync(
+            IReadOnlyList<DailyTopicInput> topics,
+            int topicCount,
+            CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

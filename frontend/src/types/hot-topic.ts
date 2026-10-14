@@ -15,6 +15,9 @@ export interface HotTopic {
   articles: HotTopicArticle[]
 }
 
+// The newest hourly topics, or the newest summary of a day.
+export type HotTopicPeriod = 'hour' | 'today' | 'yesterday'
+
 export interface HotTopicsResponse {
   items: HotTopic[]
   generatedAt: string | null

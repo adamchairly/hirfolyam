@@ -5,7 +5,7 @@ import { useHotTopics } from '@/hooks/use-hot-topics'
 import { useHotTopicsVisibility } from '@/hooks/use-hot-topics-visibility'
 import { useSourceSelection } from '@/hooks/use-source-selection'
 import { cn } from '@/lib/utils'
-import type { HotTopic, HotTopicArticle } from '@/types/hot-topic'
+import type { HotTopic, HotTopicArticle, HotTopicPeriod } from '@/types/hot-topic'
 
 // One link per outlet: the newest of its articles about the topic.
 function getSourceArticles(topic: HotTopic, disabledSourceKeys: string[]): HotTopicArticle[] {
@@ -28,7 +28,8 @@ export function HotTopics() {
 }
 
 function HotTopicList() {
-  const { topics } = useHotTopics()
+  const [period, setPeriod] = useState<HotTopicPeriod>('hour')
+  const { topics, isLoading } = useHotTopics(period)
   const { disabledSourceKeys } = useSourceSelection()
   const visibleTopics = topics
     .map((topic) => ({
@@ -36,19 +37,76 @@ function HotTopicList() {
       articles: getSourceArticles(topic, disabledSourceKeys),
     }))
     .filter(({ articles }) => articles.length > 0)
-
-  if (visibleTopics.length === 0) {
-    return null
-  }
+  const emptyMessage = topics.length > 0
+    ? 'Az összefoglaló témái kikapcsolt forrásokból származnak.'
+    : periods.find((option) => option.value === period)?.emptyMessage
 
   return (
     <section aria-label="AI-összefoglaló">
-      <ul className="space-y-5 sm:space-y-6">
-        {visibleTopics.map(({ topic, articles }) => (
-          <HotTopicItem key={topic.title} topic={topic} articles={articles} />
-        ))}
-      </ul>
+      <HotTopicPeriodSwitch period={period} onChange={setPeriod} />
+
+      {/* The previous topics stay dimmed until the selected period arrives. */}
+      <div aria-busy={isLoading} className={cn('mt-4 transition-opacity', isLoading && 'opacity-50')}>
+        {visibleTopics.length > 0 ? (
+          <ul className="space-y-5 sm:space-y-6">
+            {visibleTopics.map(({ topic, articles }) => (
+              <HotTopicItem key={topic.title} topic={topic} articles={articles} />
+            ))}
+          </ul>
+        ) : !isLoading && (
+          <p role="status" className="text-sm text-neutral-400">
+            {emptyMessage}
+          </p>
+        )}
+      </div>
     </section>
+  )
+}
+
+const periods: { value: HotTopicPeriod, label: string, emptyMessage: string }[] = [
+  {
+    value: 'hour',
+    label: 'Elmúlt óra',
+    emptyMessage: 'Az elmúlt órából nincs összefoglaló.',
+  },
+  {
+    value: 'today',
+    label: 'Ma',
+    emptyMessage: 'Ma még nem készült összefoglaló.',
+  },
+  {
+    value: 'yesterday',
+    label: 'Tegnap',
+    emptyMessage: 'Tegnapról nincs összefoglaló.',
+  },
+]
+
+interface HotTopicPeriodSwitchProps {
+  period: HotTopicPeriod
+  onChange: (period: HotTopicPeriod) => void
+}
+
+function HotTopicPeriodSwitch({ period, onChange }: HotTopicPeriodSwitchProps) {
+  return (
+    <div
+      role="group"
+      aria-label="Összefoglaló időszaka"
+      className="inline-flex items-center gap-0.5 rounded-md bg-neutral-900/35 p-0.5"
+    >
+      {periods.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          aria-pressed={period === option.value}
+          className="inline-flex h-7 items-center rounded-[4px] px-2.5 text-xs font-medium text-neutral-500 outline-none transition-colors hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-ring/50 aria-pressed:bg-neutral-900 aria-pressed:text-neutral-50"
+          onClick={() => {
+            onChange(option.value)
+          }}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
   )
 }
 

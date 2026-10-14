@@ -7,4 +7,6 @@ public sealed class JobsOptions
     public JobScheduleOptions Import { get; set; } = new();
 
     public JobScheduleOptions HotTopics { get; set; } = new();
+
+    public JobScheduleOptions DailyTopics { get; set; } = new();
 }

@@ -12,5 +12,6 @@ public sealed class HotTopicSnapshotConfiguration : IEntityTypeConfiguration<Hot
         builder.Property(snapshot => snapshot.Model).HasMaxLength(100);
         builder.Property(snapshot => snapshot.CostUsd).HasPrecision(18, 10);
         builder.HasIndex(snapshot => snapshot.GeneratedAt);
+        builder.HasIndex(snapshot => snapshot.Day);
     }
 }

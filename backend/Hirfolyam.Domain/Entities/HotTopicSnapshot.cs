@@ -1,9 +1,11 @@
 namespace Hirfolyam.Domain.Entities;
 
-// Snapshots are kept, so the topics of a whole day can be summarized
 public sealed class HotTopicSnapshot
 {
     public long Id { get; set; }
+
+    // Set only on the summaries of a whole day
+    public DateOnly? Day { get; set; }
 
     public DateTimeOffset GeneratedAt { get; set; }
 

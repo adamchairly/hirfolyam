@@ -12,6 +12,9 @@ public static class ServiceCollectionExtension
     // Gives the startup import time to finish before the first hot topic run.
     private static readonly TimeSpan HotTopicsStartupDelay = TimeSpan.FromMinutes(2);
 
+    // Gives the startup hot topic run time to finish, so the day includes its topics.
+    private static readonly TimeSpan DailyTopicsStartupDelay = TimeSpan.FromMinutes(5);
+
     public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers().ConfigureApiBehaviorOptions(options =>
@@ -53,6 +56,11 @@ public static class ServiceCollectionExtension
             if (jobs.HotTopics.Enabled)
             {
                 scheduler.AddScheduledJob<GenerateHotTopicsJob>("hot-topics", jobs.HotTopics, HotTopicsStartupDelay);
+            }
+
+            if (jobs.DailyTopics.Enabled)
+            {
+                scheduler.AddScheduledJob<GenerateDailyTopicsJob>("daily-topics", jobs.DailyTopics, DailyTopicsStartupDelay);
             }
         });
 
