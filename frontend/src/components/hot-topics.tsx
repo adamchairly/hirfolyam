@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { InfoWidgets } from '@/components/info-widgets'
 import { useHotTopics } from '@/hooks/use-hot-topics'
 import { useHotTopicsVisibility } from '@/hooks/use-hot-topics-visibility'
 import { useSourceSelection } from '@/hooks/use-source-selection'
@@ -42,21 +41,14 @@ function HotTopicList() {
     return null
   }
 
-  // The widgets take the right third on wide screens, on smaller ones there is no room for them.
   return (
-    <div className="lg:grid lg:grid-cols-3 lg:items-start lg:gap-8">
-      <section aria-label="AI-összefoglaló" className="lg:col-span-2">
-        <ul className="space-y-5 sm:space-y-6">
-          {visibleTopics.map(({ topic, articles }) => (
-            <HotTopicItem key={topic.title} topic={topic} articles={articles} />
-          ))}
-        </ul>
-      </section>
-
-      <aside aria-label="Információk" className="max-lg:hidden">
-        <InfoWidgets />
-      </aside>
-    </div>
+    <section aria-label="AI-összefoglaló">
+      <ul className="space-y-5 sm:space-y-6">
+        {visibleTopics.map(({ topic, articles }) => (
+          <HotTopicItem key={topic.title} topic={topic} articles={articles} />
+        ))}
+      </ul>
+    </section>
   )
 }
 
