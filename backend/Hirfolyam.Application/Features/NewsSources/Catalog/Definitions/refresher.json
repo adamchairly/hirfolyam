@@ -1,0 +1,31 @@
+{
+  "name": "Refresher",
+  "category": "lifestyle",
+  "baseUrl": "https://refresher.hu/",
+  "iconUrl": "https://refresher.hu/favicon.png",
+  "enabled": true,
+  "feeds": ["https://refresher.hu/rss"],
+  "categories": {
+    "default": "lifestyle",
+    "rules": {
+      "politics": {
+        "feed": ["Közélet"]
+      },
+      "domestic": {
+        "feed": ["Társadalom"]
+      },
+      "culture": {
+        "feed": ["Kultúra", "Film + sorozat", "Zene"]
+      },
+      "science-tech": {
+        "feed": ["Tech-Tudomány"]
+      },
+      "tabloid": {
+        "feed": ["ENTR"]
+      },
+      "lifestyle": {
+        "feed": ["Életmód", "Gasztro", "Történetek"]
+      }
+    }
+  }
+}
