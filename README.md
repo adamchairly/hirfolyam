@@ -14,8 +14,6 @@ hírfolyam is a Hungarian news aggregator that currently collects the RSS feeds 
 - **Sources**: choose which news sources articles are shown.
 - **Bookmark articles**: bookmark articles to read later.
 - **List and grid views**: switchable layout for articles.
-- **Weather**: Weather page showing forecast for the biggest Hungarian cities and optionally for current location.
-- **Currency**: Historical exchange rates of forint over the past five years.
 - **RSS feed**: public feed available at /api/rss containing the latest articles from all the sources.
 
 ## License

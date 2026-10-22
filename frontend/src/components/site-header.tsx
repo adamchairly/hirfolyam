@@ -2,9 +2,7 @@ import { Bookmark } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-import { ExchangeRatesWidget } from '@/components/exchange-rates-widget'
 import { SiteSearch } from '@/components/site-search'
-import { WeatherWidget } from '@/components/weather-widget'
 import { useCurrentTime } from '@/hooks/use-current-time'
 import { useNameday } from '@/hooks/use-nameday'
 import { useSourceSelection } from '@/hooks/use-source-selection'
@@ -35,24 +33,13 @@ export function SiteHeader() {
   return (
     <header className="bg-neutral-900 text-neutral-50">
       <div className="overflow-x-auto bg-neutral-950 [scrollbar-width:thin]">
-        {/* Mobile: date above the rates on the left, weather centred across both rows on the right. */}
-        <div className="mx-auto grid max-w-7xl grid-cols-[auto_auto] items-center justify-between gap-x-3 gap-y-1 px-4 py-1.5 text-xs leading-4 sm:flex sm:min-h-9 sm:min-w-max sm:gap-x-4 sm:px-6">
+        <div className="mx-auto flex min-h-9 max-w-7xl items-center px-4 py-1.5 text-xs leading-4 sm:px-6">
           <p className="whitespace-nowrap text-neutral-400">
             <time dateTime={today.toISOString()}>
               {dateFormatter.format(today).replaceAll('. ', '.').replace(',', '')}
             </time>
             {nameday && <span className="text-neutral-300"> {nameday}</span>}
           </p>
-
-          <div className="contents sm:flex sm:shrink-0 sm:items-center sm:gap-5">
-            <div className="max-sm:row-start-2">
-              <ExchangeRatesWidget />
-            </div>
-
-            <div className="max-sm:col-start-2 max-sm:row-span-2 max-sm:row-start-1 max-sm:justify-self-end">
-              <WeatherWidget />
-            </div>
-          </div>
         </div>
       </div>
 
