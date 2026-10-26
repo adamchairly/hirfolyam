@@ -1,5 +1,5 @@
 import { Popover } from 'radix-ui'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useHotTopics } from '@/hooks/use-hot-topics'
@@ -142,9 +142,47 @@ function HotTopicItem({ topic, articles }: HotTopicItemProps) {
 const stackedIconCount = 3
 
 function TopicSources({ articles }: { articles: HotTopicArticle[] }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const isClosedByScrollRef = useRef(false)
+
+  // Following the button through a page scroll makes the popover jerk, so scrolling anything else closes it.
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    function handleOutsideScroll(event: Event) {
+      if (event.target instanceof Node && !contentRef.current?.contains(event.target)) {
+        isClosedByScrollRef.current = true
+        setIsOpen(false)
+      }
+    }
+
+    // Scroll events do not bubble, so the capture phase sees the page and every inner scroll area.
+    window.addEventListener('scroll', handleOutsideScroll, { capture: true, passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleOutsideScroll, { capture: true })
+    }
+  }, [isOpen])
+
+  // On closing, Radix focuses the button and so scrolls the page back to it; after a scroll the page stays put.
+  function handleCloseAutoFocus(event: Event) {
+    if (isClosedByScrollRef.current) {
+      isClosedByScrollRef.current = false
+      event.preventDefault()
+      triggerRef.current?.focus({ preventScroll: true })
+    }
+  }
+
   return (
-    <Popover.Root>
-      <Popover.Trigger className="group inline-flex h-6 items-center gap-1.5 rounded-full bg-neutral-900 pr-2.5 pl-[3px] align-middle text-xs font-medium whitespace-nowrap text-neutral-300 transition-colors hover:bg-neutral-950 hover:text-neutral-50 data-[state=open]:bg-neutral-950 data-[state=open]:text-neutral-50">
+    <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
+      <Popover.Trigger
+        ref={triggerRef}
+        className="group inline-flex h-6 items-center gap-1.5 rounded-full bg-neutral-900 pr-2.5 pl-[3px] align-middle text-xs font-medium whitespace-nowrap text-neutral-300 transition-colors hover:bg-neutral-950 hover:text-neutral-50 data-[state=open]:bg-neutral-950 data-[state=open]:text-neutral-50"
+      >
         <span className="flex -space-x-1">
           {articles.slice(0, stackedIconCount).map((article) => (
             // The ring takes the button's colour, so the overlapping icons look cut out.
@@ -163,11 +201,13 @@ function TopicSources({ articles }: { articles: HotTopicArticle[] }) {
 
       <Popover.Portal>
         <Popover.Content
+          ref={contentRef}
           align="start"
           sideOffset={8}
           collisionPadding={16}
           aria-label="Források"
-          className="z-50 w-88 max-w-[calc(100vw-2rem)] origin-(--radix-popover-content-transform-origin) overflow-hidden rounded-lg bg-neutral-900 shadow-xl shadow-black/40 ring-1 ring-white/10 duration-100 outline-none data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+          onCloseAutoFocus={handleCloseAutoFocus}
+          className="z-50 w-88 max-w-[calc(100vw-2rem)] origin-(--radix-popover-content-transform-origin) overflow-hidden rounded-lg bg-neutral-900 shadow-xl shadow-black/40 duration-100 outline-none data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
         >
           <SourceList articles={articles} />
         </Popover.Content>
