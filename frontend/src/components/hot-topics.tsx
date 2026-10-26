@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { Popover } from 'radix-ui'
+import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useHotTopics } from '@/hooks/use-hot-topics'
@@ -117,8 +118,10 @@ interface HotTopicItemProps {
 
 function HotTopicItem({ topic, articles }: HotTopicItemProps) {
   return (
-    <li>
-      <h3 className="text-base leading-snug font-bold tracking-tight text-neutral-50 sm:inline sm:text-lg">
+    // The item has the title's font size and line height, so the source button lines up with the title.
+    <li className="text-base leading-snug sm:text-lg">
+      {/* The margin stays on the title's line when the button wraps to the next one. */}
+      <h3 className="mr-2 inline font-bold tracking-tight text-neutral-50">
         <Link
           to={`/topics/${topic.id}`}
           className="underline-offset-4 transition-colors hover:text-white hover:underline"
@@ -127,64 +130,148 @@ function HotTopicItem({ topic, articles }: HotTopicItemProps) {
         </Link>
       </h3>
 
-      {/* The sources follow the title on wide screens and the summary on small ones. */}
-      <SourceIcons articles={articles} className="max-sm:hidden" />
+      <TopicSources articles={articles} />
 
       <p className="mt-1.5 text-sm leading-6 text-neutral-300">
         {topic.summary}
-        <SourceIcons articles={articles} className="sm:hidden" />
       </p>
     </li>
   )
 }
 
-function SourceIcons({ articles, className }: { articles: HotTopicArticle[], className?: string }) {
+const stackedIconCount = 3
+
+function TopicSources({ articles }: { articles: HotTopicArticle[] }) {
   return (
-    <span
-      role="group"
-      aria-label="Források"
-      className={cn('ml-2 inline-flex flex-wrap items-center gap-1.5 align-middle', className)}
-    >
-      {articles.map((article) => (
-        <SourceLink key={article.id} article={article} />
-      ))}
-    </span>
+    <Popover.Root>
+      <Popover.Trigger className="group inline-flex h-6 items-center gap-1.5 rounded-full bg-neutral-900 pr-2.5 pl-[3px] align-middle text-xs font-medium whitespace-nowrap text-neutral-300 transition-colors hover:bg-neutral-950 hover:text-neutral-50 data-[state=open]:bg-neutral-950 data-[state=open]:text-neutral-50">
+        <span className="flex -space-x-1">
+          {articles.slice(0, stackedIconCount).map((article) => (
+            // The ring takes the button's colour, so the overlapping icons look cut out.
+            <SourceIcon
+              key={article.id}
+              source={article.source}
+              className="size-4.5 ring-2 ring-neutral-900 transition-shadow group-hover:ring-neutral-950 group-data-[state=open]:ring-neutral-950"
+            />
+          ))}
+        </span>
+
+        <span className="tabular-nums">
+          {articles.length} forrás
+        </span>
+      </Popover.Trigger>
+
+      <Popover.Portal>
+        <Popover.Content
+          align="start"
+          sideOffset={8}
+          collisionPadding={16}
+          aria-label="Források"
+          className="z-50 w-88 max-w-[calc(100vw-2rem)] origin-(--radix-popover-content-transform-origin) overflow-hidden rounded-lg bg-neutral-900 shadow-xl shadow-black/40 ring-1 ring-white/10 duration-100 outline-none data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+        >
+          <SourceList articles={articles} />
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
 
-function SourceLink({ article }: { article: HotTopicArticle }) {
-  const [iconFailed, setIconFailed] = useState(false)
-  const icon = article.source.iconUrl
+// The list takes at most the free space and scrolls beyond it; its fading bottom shows that more sources follow.
+function SourceList({ articles }: { articles: HotTopicArticle[] }) {
+  const [hasMoreBelow, setHasMoreBelow] = useState(false)
+
+  // The free space is known only once the popover is placed, and it changes with the viewport.
+  const observeList = useCallback((list: HTMLDivElement | null) => {
+    if (!list) {
+      return
+    }
+
+    const observer = new ResizeObserver(() => {
+      setHasMoreBelow(canScrollDown(list))
+    })
+
+    observer.observe(list)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   return (
-    <a
-      href={article.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      title={article.title}
-      aria-label={`${article.source.name}: ${article.title} (új lapon nyílik meg)`}
-      className="inline-flex items-center rounded-sm opacity-80 transition-opacity hover:opacity-100"
+    <div
+      ref={observeList}
+      className={cn(
+        // The scroll padding keeps a row reached with the keyboard above the fade.
+        'max-h-[min(36rem,var(--radix-popover-content-available-height))] scroll-pb-10 overflow-y-auto overscroll-contain p-1 [scrollbar-width:thin]',
+        hasMoreBelow && '[mask-image:linear-gradient(to_bottom,#000_calc(100%_-_2.5rem),transparent)]',
+      )}
+      onScroll={(event) => {
+        setHasMoreBelow(canScrollDown(event.currentTarget))
+      }}
     >
-      {icon && !iconFailed ? (
+      <ul>
+        {articles.map((article) => (
+          <li key={article.id}>
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${article.source.name}: ${article.title} (új lapon nyílik meg)`}
+              className="group flex items-start gap-3 rounded-md px-2.5 py-2 transition-colors hover:bg-neutral-800 focus-visible:bg-neutral-800 focus-visible:-outline-offset-2"
+            >
+              <SourceIcon source={article.source} className="size-5" />
+
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs leading-4 font-semibold text-neutral-100">
+                  {article.source.name}
+                </span>
+                <span className="mt-0.5 line-clamp-2 text-xs leading-4 text-neutral-400 transition-colors group-hover:text-neutral-300">
+                  {article.title}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function canScrollDown(element: HTMLElement) {
+  return element.scrollHeight - element.scrollTop - element.clientHeight > 1
+}
+
+interface SourceIconProps {
+  source: HotTopicArticle['source']
+  className?: string
+}
+
+// A light disc keeps the dark, transparent logos visible and the mixed shapes uniform.
+function SourceIcon({ source, className }: SourceIconProps) {
+  const [failedIconUrl, setFailedIconUrl] = useState<string | null>(null)
+  const icon = source.iconUrl
+
+  return (
+    <span className={cn('flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-50', className)}>
+      {icon && icon !== failedIconUrl ? (
         <img
           src={icon}
           alt=""
-          width={16}
-          height={16}
+          width={20}
+          height={20}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
-          className="size-4 shrink-0 rounded-sm object-contain"
+          className="size-full object-cover"
           onError={() => {
-            setIconFailed(true)
+            setFailedIconUrl(icon)
           }}
         />
       ) : (
-        // Without an icon the name stands in, so the source can still be opened.
-        <span className="text-xs text-neutral-400 underline decoration-neutral-600 underline-offset-2">
-          {article.source.name}
+        <span aria-hidden="true" className="text-[9px] leading-none font-bold text-neutral-900">
+          {source.name.slice(0, 1).toLocaleUpperCase('hu-HU')}
         </span>
       )}
-    </a>
+    </span>
   )
 }
