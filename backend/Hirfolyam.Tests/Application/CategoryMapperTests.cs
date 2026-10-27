@@ -73,8 +73,6 @@ public sealed class CategoryMapperTests
     [TestCase("magyarnarancs", "Belpol", "politics")]
     [TestCase("atlatszo", "Világtérkép", "world")]
     [TestCase("direkt36", "Kórházi fertőzések", "domestic")]
-    [TestCase("merce", "felsőoktatás", "domestic")]
-    [TestCase("mandiner", "Makronóm", "economy")]
     [TestCase("valaszonline", "diplomácia", "world")]
     [TestCase("police", "Határrendészet", "domestic")]
     [TestCase("penzcentrum", "Szórakozás", "tabloid")]
@@ -84,8 +82,6 @@ public sealed class CategoryMapperTests
     [TestCase("magyarmezogazdasag", "Természet", "science-tech")]
     [TestCase("csakfoci", "Külföldi körkép", "sport")]
     [TestCase("vezess", "Forma-1", "sport")]
-    [TestCase("roadster", "Road Trip", "lifestyle")]
-    [TestCase("roadster", "Kult", "culture")]
     [TestCase("egeszsegkalauz", "Orvostudományi kutatások", "science-tech")]
     [TestCase("maszol", "Belföld", "world")]
     public void MapsKnownSourceCategories(string key, string category, string expectedSlug)
@@ -160,7 +156,6 @@ public sealed class CategoryMapperTests
     [TestCase("magyarmezogazdasag", "economy")]
     [TestCase("csakfoci", "sport")]
     [TestCase("vezess", "science-tech")]
-    [TestCase("roadster", "lifestyle")]
     [TestCase("noklapja", "lifestyle")]
     [TestCase("egeszsegkalauz", "lifestyle")]
     public void UsesAnExplicitSourceDefaultWhenTheFeedHasNoCategory(string key, string expectedSlug)

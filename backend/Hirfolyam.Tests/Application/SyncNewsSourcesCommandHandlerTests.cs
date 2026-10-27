@@ -27,8 +27,8 @@ public sealed class SyncNewsSourcesCommandHandlerTests
         var sources = await ReadSourcesAsync();
         var telex = sources.Single(source => source.Key == "telex");
 
-        Assert.That(result.Added, Is.EqualTo(68));
-        Assert.That(sources, Has.Count.EqualTo(68));
+        Assert.That(result.Added, Is.EqualTo(65));
+        Assert.That(sources, Has.Count.EqualTo(65));
         Assert.That(telex.Name, Is.EqualTo("Telex"));
         Assert.That(telex.BaseUrl, Is.EqualTo("https://telex.hu/"));
         Assert.That(telex.CategoryId, Is.EqualTo(CategoryId("domestic")));
